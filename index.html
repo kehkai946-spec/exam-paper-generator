@@ -3,1138 +3,326 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 맞춤형 시험지 생성기</title>
-    <!-- 마크다운 변환 라이브러리 -->
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <style>
-        body { font-family: 'Pretendard', sans-serif; background-color: #f4f7f6; color: #333; line-height: 1.6; padding: 20px; max-width: 900px; margin: 0 auto; }
-        h1 { text-align: center; color: #2c3e50; }
-        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        label { font-weight: bold; display: block; margin-bottom: 8px; }
-        input, textarea { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
-        button { background-color: #007bff; color: white; border: none; padding: 15px 20px; border-radius: 6px; cursor: pointer; font-size: 16px; width: 100%; font-weight: bold; transition: background 0.3s; }
-        button:hover { background-color: #0056b3; }
-        #loading { display: none; text-align: center; font-weight: bold; color: #007bff; margin-top: 15px; }
-        #result { background: #fff; padding: 30px; border-radius: 12px; border-top: 5px solid #007bff; display: none; }
-    </style>
-</head>
-<body>
-
-    <h1>📝 AI 맞춤형 시험지 생성기</h1>
-
-    <div class="card">
-        <label>🔑 Gemini API 키 입력</label>
-        <input type="password" id="apiKey" placeholder="Google AI Studio에서 발급받은 API 키를 입력하세요">
-        
-        <label>📚 출제 지시사항 (프롬프트)</label>
-        <textarea id="promptInput" rows="5" placeholder="예: 주어진 범위에서 수능형 객관식 3문제와 내신형 서술형 1문제를 출제해 줘."></textarea>
-        
-        <label>🔗 참고 텍스트 (직접 복사-붙여넣기)</label>
-        <textarea id="contextInput" rows="4" placeholder="시험 범위에 해당하는 텍스트나 지문을 여기에 붙여넣으세요."></textarea>
-
-        <button onclick="generateExam()">🚀 시험지 생성 시작</button>
-        <div id="loading">AI가 완벽한 한국어 시험지를 출제하고 있습니다... ⏳</div>
-    </div>
-
-    <div id="result" class="card"></div>
-
-    <script>
-        async function generateExam() {
-            const apiKey = document.getElementById('apiKey').value;
-            const prompt = document.getElementById('promptInput').value;
-            const context = document.getElementById('contextInput').value;
-            const loading = document.getElementById('loading');
-            const resultDiv = document.getElementById('result');
-
-            if (!apiKey || !prompt) {
-                alert("API 키와 출제 지시사항을 모두 입력해주세요!");
-                return;
-            }
-
-            loading.style.display = "block";
-            resultDiv.style.display = "none";
-
-            // 시스템 프롬프트 + 사용자 프롬프트 결합
-            const finalPrompt = `당신은 대한민국 최고의 시험 출제 위원입니다. 
-다음 지시사항과 텍스트를 바탕으로 완벽한 한국어로 문제를 출제하세요.
-문제, 정답, 상세한 해설(오답 노트 포함)을 명확히 구분하여 마크다운으로 작성하세요.
-
-[출제 지시사항]: ${prompt}
-[참고 텍스트]: ${context}`;
-
-            try {
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${apiKey}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: finalPrompt }] }]
-                    })
-                });
-
-                const data = await response.json();
-                
-                if (data.error) {
-                    throw new Error(data.error.message);
-                }
-
-                const aiText = data.candidates[0].content.parts[0].text;
-                resultDiv.innerHTML = marked.parse(aiText); // 마크다운 렌더링
-                resultDiv.style.display = "block";
-
-            } catch (error) {
-                alert("오류가 발생했습니다: " + error.message);
-            } finally {
-                loading.style.display = "none";
-            }
-        }
-    </script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 맞춤형 시험지 생성기</title>
+    <title>AI Smart Study Dashboard</title>
     
-    <!-- 1. 깔끔한 웹 폰트 적용 (Pretendard) -->
+    <!-- 폰트 및 아이콘 -->
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
-    
-    <!-- 2. 마크다운 변환 라이브러리 -->
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    
-    <!-- 3. 수학 수식 렌더링 라이브러리 (MathJax) -->
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-
-    <style>
-        body { 
-            font-family: 'Pretendard', sans-serif; 
-            background-color: #f4f7f6; 
-            color: #333; 
-            line-height: 1.6; 
-            padding: 20px; 
-            max-width: 900px; 
-            margin: 0 auto; 
-        }
-        h1 { text-align: center; color: #2c3e50; font-weight: 800; }
-        .card { 
-            background: white; 
-            padding: 30px; 
-            border-radius: 12px; 
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); 
-            margin-bottom: 20px; 
-        }
-        label { font-weight: 600; display: block; margin-bottom: 8px; color: #555; }
-        input, textarea { 
-            width: 100%; 
-            padding: 12px; 
-            margin-bottom: 20px; 
-            border: 1px solid #ddd; 
-            border-radius: 8px; 
-            box-sizing: border-box; 
-            font-family: inherit;
-        }
-        input:focus, textarea:focus { outline: none; border-color: #007bff; }
-        
-        .btn-group { display: flex; gap: 10px; }
-        button { 
-            background-color: #2c3e50; 
-            color: white; 
-            border: none; 
-            padding: 15px 20px; 
-            border-radius: 8px; 
-            cursor: pointer; 
-            font-size: 16px; 
-            font-weight: bold; 
-            flex: 1;
-            transition: all 0.2s; 
-        }
-        button:hover { background-color: #1a252f; transform: translateY(-2px); }
-        .print-btn { background-color: #007bff; display: none; }
-        .print-btn:hover { background-color: #0056b3; }
-        
-        #loading { display: none; text-align: center; font-weight: bold; color: #007bff; margin-top: 15px; }
-        #result { background: #fff; padding: 40px; border-radius: 12px; display: none; line-height: 1.8; }
-        
-        /* 4. PDF 인쇄용 스타일 (출력할 땐 입력창 숨기고 문제만 보이게) */
-        @media print {
-            body { background-color: white; margin: 0; padding: 0; }
-            .input-section, h1 { display: none !important; }
-            #result { border: none; box-shadow: none; padding: 0; display: block; }
-        }
-    </style>
-</head>
-<body>
-
-    <h1>📝 맞춤형 시험지 생성 랩 (Lab)</h1>
-
-    <div class="card input-section">
-        <label>🔑 Gemini API 키</label>
-        <input type="password" id="apiKey" placeholder="API 키를 입력하세요">
-        
-        <label>📚 출제 지시사항 (프롬프트)</label>
-        <textarea id="promptInput" rows="4" placeholder="예: 주어진 텍스트에서 상징적 의미를 묻는 서술형 1문제와, 공통수학 공식 적용 객관식 2문제를 출제해 줘."></textarea>
-        
-        <label>🔗 참고 텍스트 (범위 입력)</label>
-        <textarea id="contextInput" rows="4" placeholder="시험 범위 텍스트나 문학 지문 등을 붙여넣으세요."></textarea>
-
-        <div class="btn-group">
-            <button onclick="generateExam()">🚀 시험지 생성하기</button>
-            <button class="print-btn" id="printBtn" onclick="window.print()">🖨️ PDF로 저장 / 인쇄</button>
-        </div>
-        <div id="loading">AI가 텍스트를 분석하고 완벽한 시험지를 출제 중입니다... ⏳</div>
-    </div>
-
-    <div id="result" class="card"></div>
-
-    <script>
-        async function generateExam() {
-            const apiKey = document.getElementById('apiKey').value;
-            const prompt = document.getElementById('promptInput').value;
-            const context = document.getElementById('contextInput').value;
-            const loading = document.getElementById('loading');
-            const resultDiv = document.getElementById('result');
-            const printBtn = document.getElementById('printBtn');
-
-            if (!apiKey || !prompt) {
-                alert("API 키와 출제 지시사항을 확인해주세요!");
-                return;
-            }
-
-            loading.style.display = "block";
-            resultDiv.style.display = "none";
-            printBtn.style.display = "none";
-
-            const finalPrompt = `당신은 대한민국 최고의 고등학교 시험 출제 위원입니다. 
-다음 지시사항과 텍스트를 바탕으로 완벽한 한국어로 문제를 출제하세요.
-수학 기호나 수식이 있다면 반드시 LaTeX 형식($수식$, $$수식$$)을 사용하세요.
-문제, 정답, 상세한 해설을 명확히 구분하여 마크다운으로 작성하세요.
-
-[출제 지시사항]: ${prompt}
-[참고 텍스트]: ${context}`;
-
-            try {
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${apiKey}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: finalPrompt }] }]
-                    })
-                });
-
-                const data = await response.json();
-                
-                if (data.error) throw new Error(data.error.message);
-
-                const aiText = data.candidates[0].content.parts[0].text;
-                
-                // 마크다운 렌더링 후 화면에 표시
-                resultDiv.innerHTML = marked.parse(aiText); 
-                resultDiv.style.display = "block";
-                printBtn.style.display = "block"; // 인쇄 버튼 활성화
-
-                // 수식이 있다면 MathJax로 다시 렌더링
-                if (window.MathJax) {
-                    MathJax.typesetPromise([resultDiv]);
-                }
-
-            } catch (error) {
-                alert("오류가 발생했습니다: " + error.message);
-            } finally {
-                loading.style.display = "none";
-            }
-        }
-    </script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Exam Lab Pro</title>
-    
-    <!-- 웹 폰트 (Pretendard) -->
-    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
-    <!-- 아이콘 (FontAwesome) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- 필수 라이브러리: 마크다운 및 수식 렌더링 -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
     <style>
         :root {
-            --primary: #2563eb;
-            --primary-hover: #1d4ed8;
-            --bg: #f8fafc;
-            --card-bg: #ffffff;
-            --text-main: #0f172a;
+            --primary: #1e3a8a; /* 학원 느낌의 신뢰감 있는 네이비 */
+            --primary-hover: #1e40af;
+            --secondary: #3b82f6;
+            --bg-color: #f1f5f9;
+            --sidebar-bg: #ffffff;
+            --text-dark: #0f172a;
             --text-muted: #64748b;
             --border: #e2e8f0;
         }
         
-        body { font-family: 'Pretendard', sans-serif; background-color: var(--bg); color: var(--text-main); margin: 0; padding: 40px 20px; line-height: 1.6; }
-        .container { max-width: 900px; margin: 0 auto; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Pretendard', sans-serif; background-color: var(--bg-color); color: var(--text-dark); display: flex; height: 100vh; overflow: hidden; }
         
-        /* 헤더 & 탭 */
-        .header { text-align: center; margin-bottom: 40px; }
-        .header h1 { font-weight: 800; font-size: 2.2rem; color: var(--text-main); margin-bottom: 10px; }
-        .tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
-        .tab-btn { background: none; border: none; font-size: 1.1rem; font-weight: 600; color: var(--text-muted); padding: 10px 20px; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s; }
-        .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+        /* 사이드바 (학원 관리 메뉴 스타일) */
+        .sidebar { width: 260px; background: var(--sidebar-bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 20px 0; }
+        .sidebar-header { padding: 0 20px 20px; border-bottom: 1px solid var(--border); margin-bottom: 20px; text-align: center; }
+        .sidebar-header h1 { font-size: 1.4rem; color: var(--primary); font-weight: 800; }
         
-        /* 카드 UI */
-        .card { background: var(--card-bg); padding: 35px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid var(--border); margin-bottom: 25px; transition: opacity 0.3s ease; }
+        .menu-item { padding: 15px 25px; cursor: pointer; display: flex; align-items: center; gap: 12px; font-weight: 600; color: var(--text-muted); transition: 0.2s; border-left: 4px solid transparent; }
+        .menu-item:hover { background: #f8fafc; color: var(--primary); }
+        .menu-item.active { background: #eff6ff; color: var(--primary); border-left-color: var(--primary); }
+        .menu-item i { font-size: 1.2rem; width: 24px; text-align: center; }
         
-        /* 입력 폼 */
-        .form-group { margin-bottom: 25px; }
-        label { font-weight: 700; display: block; margin-bottom: 10px; color: var(--text-main); font-size: 0.95rem; }
-        input[type="password"], input[type="text"], textarea, select { 
-            width: 100%; padding: 14px; border: 1.5px solid var(--border); border-radius: 10px; 
-            font-size: 1rem; font-family: inherit; transition: border-color 0.2s; box-sizing: border-box; background-color: #fcfcfc;
-        }
-        input:focus, textarea:focus, select:focus { outline: none; border-color: var(--primary); background-color: #fff; }
-        
-        .flex-row { display: flex; gap: 15px; }
-        .flex-row .form-group { flex: 1; }
+        .api-key-section { margin-top: auto; padding: 20px; border-top: 1px solid var(--border); }
+        .api-key-section label { font-size: 0.85rem; font-weight: bold; color: var(--text-muted); margin-bottom: 8px; display: block; }
+        .api-key-section input { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.9rem; }
 
-        /* 버튼 */
-        button.action-btn { 
-            background-color: var(--primary); color: white; border: none; padding: 16px 24px; 
-            border-radius: 12px; cursor: pointer; font-size: 1.1rem; font-weight: 700; width: 100%; 
-            transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px;
-        }
-        button.action-btn:hover { background-color: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.2); }
-        button.secondary-btn { background-color: #10b981; margin-top: 15px; }
-        button.secondary-btn:hover { background-color: #059669; }
+        /* 메인 콘텐츠 영역 */
+        .main-content { flex: 1; padding: 40px; overflow-y: auto; }
+        .page-section { display: none; max-width: 900px; margin: 0 auto; animation: fadeIn 0.3s ease; }
+        .page-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .page-title { font-size: 1.8rem; font-weight: 800; margin-bottom: 25px; color: var(--text-dark); display: flex; align-items: center; gap: 10px; }
         
-        /* 로딩 애니메이션 */
-        #loading { display: none; text-align: center; font-weight: 600; color: var(--primary); padding: 20px; }
-        .spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(37,99,235,0.3); border-radius: 50%; border-top-color: var(--primary); animation: spin 1s ease-in-out infinite; margin-right: 10px; vertical-align: middle; }
+        /* 폼 및 카드 디자인 */
+        .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid var(--border); margin-bottom: 20px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-weight: 700; margin-bottom: 8px; font-size: 0.95rem; }
+        input[type="text"], textarea, select { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 1rem; background: #f8fafc; }
+        input:focus, textarea:focus, select:focus { outline: none; border-color: var(--secondary); background: white; }
+        
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+
+        /* 파일 업로드 존 */
+        .upload-zone { border: 2px dashed var(--secondary); background: #eff6ff; padding: 30px; text-align: center; border-radius: 12px; cursor: pointer; position: relative; transition: 0.2s; }
+        .upload-zone:hover { background: #dbeafe; }
+        .upload-zone input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+        .upload-zone i { font-size: 2.5rem; color: var(--secondary); margin-bottom: 10px; }
+        #previewArea { display: none; margin-top: 15px; font-weight: 600; color: var(--primary); }
+
+        /* 버튼 및 로딩 */
+        .btn-primary { background: var(--primary); color: white; border: none; padding: 16px 20px; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; width: 100%; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-primary:hover { background: var(--primary-hover); }
+        .btn-success { background: #10b981; margin-top: 15px; }
+        
+        .loader { display: none; text-align: center; padding: 30px; font-weight: bold; color: var(--secondary); }
+        .spinner { display: inline-block; width: 24px; height: 24px; border: 3px solid rgba(59,130,246,0.3); border-radius: 50%; border-top-color: var(--secondary); animation: spin 1s linear infinite; margin-right: 10px; vertical-align: middle; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* 결과창 */
-        #result-section { display: none; }
-        .exam-paper { padding: 40px; background: white; border-radius: 12px; border-top: 6px solid var(--primary); box-shadow: 0 4px 15px rgba(0,0,0,0.05); font-size: 1.05rem; }
-        .exam-paper h2, .exam-paper h3 { color: #1e293b; margin-top: 30px; }
-        .exam-paper blockquote { border-left: 4px solid var(--primary); background: #f0fdf4; padding: 15px; margin: 20px 0; border-radius: 0 8px 8px 0; }
+        /* 결과 표시 영역 */
+        .result-box { background: white; padding: 40px; border-radius: 12px; border-top: 5px solid var(--primary); box-shadow: 0 4px 15px rgba(0,0,0,0.05); line-height: 1.8; margin-top: 20px; display: none; }
+        .result-box h2 { color: var(--primary); margin-top: 30px; border-bottom: 2px solid var(--border); padding-bottom: 10px; }
         
-        /* 보관함 */
-        #archive-section { display: none; }
-        .history-item { padding: 20px; border: 1px solid var(--border); border-radius: 10px; margin-bottom: 15px; cursor: pointer; transition: all 0.2s; }
-        .history-item:hover { border-color: var(--primary); background-color: #f8fafc; }
-        
-        /* 인쇄 최적화 */
+        /* 통계 배지 (오답률 등) */
+        .stat-badge { display: inline-block; padding: 5px 12px; background: #fee2e2; color: #dc2626; border-radius: 20px; font-weight: bold; font-size: 0.9rem; margin-bottom: 15px; }
+
         @media print {
-            body { background: white; padding: 0; }
-            .no-print { display: none !important; }
-            .exam-paper { border: none; box-shadow: none; padding: 0; }
-            .exam-paper blockquote { background: transparent; border-color: #ccc; }
+            .sidebar, .no-print, .card { display: none !important; }
+            body, .main-content { background: white; padding: 0; height: auto; overflow: visible; }
+            .result-box { display: block; border: none; box-shadow: none; padding: 0; }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="header no-print">
-            <h1><i class="fa-solid fa-flask"></i> AI Exam Lab Pro</h1>
-            <p style="color: var(--text-muted);">가장 진보된 맞춤형 시험지 생성 및 아카이브 시스템</p>
+    <!-- 좌측 사이드바 메뉴 -->
+    <nav class="sidebar no-print">
+        <div class="sidebar-header">
+            <h1><i class="fa-solid fa-graduation-cap"></i> Smart Study Lab</h1>
+        </div>
+        
+        <div class="menu-item active" onclick="navTo('generate')">
+            <i class="fa-solid fa-pen-to-square"></i> 맞춤형 시험지 출제
+        </div>
+        <div class="menu-item" onclick="navTo('grading')">
+            <i class="fa-solid fa-clipboard-check"></i> 채점 및 오답률 분석
+        </div>
+        <div class="menu-item" onclick="navTo('archive')">
+            <i class="fa-solid fa-box-archive"></i> 학습 데이터 보관함
         </div>
 
-        <!-- 탭 네비게이션 -->
-        <div class="tabs no-print">
-            <button class="tab-btn active" onclick="switchTab('create')">새 시험지 만들기</button>
-            <button class="tab-btn" onclick="switchTab('archive')">보관함 (기록)</button>
+        <div class="api-key-section">
+            <label><i class="fa-solid fa-key"></i> 시스템 API 키 (Gemini)</label>
+            <input type="password" id="sysApiKey" placeholder="API Key 입력" onchange="saveApiKey()">
         </div>
+    </nav>
 
-        <!-- 새 시험지 만들기 탭 -->
-        <div id="create-section" class="no-print">
-            <div class="card">
-                <div class="form-group">
-                    <label><i class="fa-solid fa-key"></i> Gemini API 키 (자동 저장)</label>
-                    <input type="password" id="apiKey" placeholder="API 키를 한 번 입력하면 내 PC에 안전하게 저장됩니다.">
-                </div>
-
-                <div class="flex-row">
-                    <div class="form-group">
-                        <label><i class="fa-solid fa-layer-group"></i> 출제 유형</label>
-                        <select id="examType">
-                            <option value="객관식 위주 (수능형)">수능형 객관식 위주</option>
-                            <option value="서술형 위주 (내신형)">내신형 서술형/논술형 위주</option>
-                            <option value="객관식/서술형 혼합">객관식/서술형 밸런스 혼합</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label><i class="fa-solid fa-chart-simple"></i> 난이도 설정</label>
-                        <select id="difficulty">
-                            <option value="최상 (킬러 문항 포함, 심층 추론)">최상 (킬러 문항 포함)</option>
-                            <option value="상 (응용 및 복합 개념)" selected>상 (응용 및 복합 개념)</option>
-                            <option value="중 (기본 개념 및 표준 적용)">중 (기본 개념 확인)</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label><i class="fa-solid fa-pen-nib"></i> 핵심 지시사항</label>
-                    <textarea id="promptInput" rows="2" placeholder="예: 공통수학1 복소수와 좌표평면의 논리적 증명 과정, 또는 문학 지문에서 화자의 심리 변화 출제"></textarea>
-                </div>
-                
-                <div class="form-group">
-                    <label><i class="fa-solid fa-file-lines"></i> 시험 범위 텍스트 (지문, 개념 등)</label>
-                    <textarea id="contextInput" rows="5" placeholder="분석할 문학 지문, 생명과학 실험 데이터(예: 천연 추출물 항균 효과 결과치), 또는 수학 개념을 자유롭게 붙여넣으세요."></textarea>
-                </div>
-
-                <button class="action-btn" onclick="generateExam()">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i> 고품질 시험지 출제하기
-                </button>
-                <div id="loading"><div class="spinner"></div>AI가 복합적인 논리를 구성하여 문제를 설계하고 있습니다...</div>
-            </div>
-        </div>
-
-        <!-- 결과창 -->
-        <div id="result-section">
-            <div class="exam-paper" id="result-content"></div>
-            <button class="action-btn secondary-btn no-print" onclick="window.print()">
-                <i class="fa-solid fa-print"></i> PDF로 깔끔하게 저장 및 인쇄
-            </button>
-        </div>
-
-        <!-- 보관함 탭 -->
-        <div id="archive-section" class="no-print card">
-            <h2><i class="fa-solid fa-box-archive"></i> 최근 생성된 시험지</h2>
-            <div id="history-list">기록이 없습니다.</div>
-        </div>
-    </div>
-
-    <script>
-        // 페이지 로드 시 API 키 복구
-        window.onload = function() {
-            const savedKey = localStorage.getItem('geminiApiKey');
-            if (savedKey) document.getElementById('apiKey').value = savedKey;
-            loadHistory();
-        };
-
-        // 탭 전환 로직
-        function switchTab(tab) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+    <!-- 메인 화면 -->
+    <main class="main-content">
+        
+        <!-- 1. 시험지 출제 메뉴 -->
+        <section id="page-generate" class="page-section active">
+            <h2 class="page-title"><i class="fa-solid fa-pen-to-square"></i> 맞춤형 시험지 출제소</h2>
             
-            if(tab === 'create') {
-                document.getElementById('create-section').style.display = 'block';
-                document.getElementById('archive-section').style.display = 'none';
-                document.getElementById('result-section').style.display = 'none';
-            } else {
-                document.getElementById('create-section').style.display = 'none';
-                document.getElementById('archive-section').style.display = 'block';
-                document.getElementById('result-section').style.display = 'none';
-                loadHistory();
-            }
-        }
-
-        // 시험지 생성 핵심 로직
-        async function generateExam() {
-            const apiKey = document.getElementById('apiKey').value;
-            const prompt = document.getElementById('promptInput').value;
-            const context = document.getElementById('contextInput').value;
-            const examType = document.getElementById('examType').value;
-            const difficulty = document.getElementById('difficulty').value;
-
-            if (!apiKey || !prompt) {
-                alert("API 키와 핵심 지시사항을 입력해주세요.");
-                return;
-            }
-
-            // API 키 저장 (보안을 위해 로컬 스토리지에만 저장)
-            localStorage.setItem('geminiApiKey', apiKey);
-
-            document.getElementById('loading').style.display = 'block';
-            document.getElementById('result-section').style.display = 'none';
-
-            // 고도화된 시스템 프롬프트 (엔지니어링)
-            const finalPrompt = `
-당신은 대한민국 1타 강사이자 수능/내신 최고 출제 위원입니다. 
-아래의 조건과 제공된 텍스트를 완벽하게 분석하여 최고 품질의 시험지를 생성하세요.
-
-[출제 설정]
-- 문제 유형 비율: ${examType}
-- 난이도 수준: ${difficulty}
-
-[핵심 지시사항]: ${prompt}
-[참고 텍스트/데이터]: ${context}
-
-[필수 엄수 포맷 및 규칙]
-1. 최상단에 적절한 <시험지 제목>을 작성하세요.
-2. [문제지 파트]와 [정답 및 상세 해설 파트]를 명확한 구분선(---)으로 나누어 작성하세요.
-3. 객관식 문항은 1번부터 5번까지 선지를 구성하며, 오답 선지는 단순한 틀린 말이 아니라 학생이 헷갈릴 수 있는 '매력적이고 논리적인 오답'으로 설계하세요.
-4. 서술형 문항은 채점 기준(부분 점수 배점 포함)을 해설 파트에 반드시 명시하세요.
-5. 수학 기호, 수식, 방정식이 포함된 경우 예외 없이 완벽한 LaTeX 문법 (인라인은 $수식$, 독립 단락은 $$수식$$)을 적용하세요.
-6. 학생을 존중하되 학술적이고 명확한 어조로 완벽한 한국어로 출력하세요.
-            `;
-
-            try {
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${apiKey}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: finalPrompt }] }],
-                        generationConfig: { temperature: 0.7 } // 창의성과 논리성의 밸런스
-                    })
-                });
-
-                const data = await response.json();
-                if (data.error) throw new Error(data.error.message);
-
-                const aiText = data.candidates[0].content.parts[0].text;
-                
-                // 결과 표시
-                const resultContent = document.getElementById('result-content');
-                resultContent.innerHTML = marked.parse(aiText);
-                document.getElementById('result-section').style.display = 'block';
-
-                // 수식 렌더링
-                if (window.MathJax) MathJax.typesetPromise([resultContent]);
-
-                // 히스토리 저장
-                saveHistory(prompt, aiText);
-
-            } catch (error) {
-                alert("오류 발생: " + error.message);
-            } finally {
-                document.getElementById('loading').style.display = 'none';
-            }
-        }
-
-        // 로컬 스토리지에 기록 저장
-        function saveHistory(title, markdownContent) {
-            let history = JSON.parse(localStorage.getItem('examHistory') || '[]');
-            const newItem = {
-                id: Date.now(),
-                date: new Date().toLocaleDateString('ko-KR') + " " + new Date().toLocaleTimeString('ko-KR'),
-                title: title.substring(0, 30) + (title.length > 30 ? "..." : ""),
-                content: markdownContent
-            };
-            history.unshift(newItem); // 최신 항목을 앞에 추가
-            if (history.length > 10) history.pop(); // 최대 10개만 유지
-            localStorage.setItem('examHistory', JSON.stringify(history));
-        }
-
-        // 보관함 목록 불러오기
-        function loadHistory() {
-            const listContainer = document.getElementById('history-list');
-            let history = JSON.parse(localStorage.getItem('examHistory') || '[]');
-            
-            if (history.length === 0) {
-                listContainer.innerHTML = "<p style='color:#64748b;'>아직 생성된 시험지가 없습니다.</p>";
-                return;
-            }
-
-            listContainer.innerHTML = history.map(item => `
-                <div class="history-item" onclick="viewHistory(${item.id})">
-                    <h3 style="margin:0 0 5px 0; color:#1e293b;"><i class="fa-regular fa-file-lines"></i> ${item.title}</h3>
-                    <small style="color:#64748b;">생성일시: ${item.date}</small>
-                </div>
-            `).join('');
-        }
-
-        // 보관함 항목 보기
-        function viewHistory(id) {
-            let history = JSON.parse(localStorage.getItem('examHistory') || '[]');
-            const item = history.find(h => h.id === id);
-            if (item) {
-                const resultContent = document.getElementById('result-content');
-                resultContent.innerHTML = marked.parse(item.content);
-                if (window.MathJax) MathJax.typesetPromise([resultContent]);
-                
-                document.getElementById('archive-section').style.display = 'none';
-                document.getElementById('result-section').style.display = 'block';
-            }
-        }
-    </script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Exam Lab Pro V3</title>
-    
-    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-
-    <style>
-        :root {
-            --primary: #2563eb;
-            --primary-hover: #1d4ed8;
-            --bg: #f8fafc;
-            --card-bg: #ffffff;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --border: #e2e8f0;
-        }
-        
-        body { font-family: 'Pretendard', sans-serif; background-color: var(--bg); color: var(--text-main); margin: 0; padding: 40px 20px; line-height: 1.6; }
-        .container { max-width: 900px; margin: 0 auto; }
-        
-        .header { text-align: center; margin-bottom: 40px; }
-        .header h1 { font-weight: 800; font-size: 2.2rem; margin-bottom: 10px; }
-        .tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
-        .tab-btn { background: none; border: none; font-size: 1.1rem; font-weight: 600; color: var(--text-muted); padding: 10px 20px; cursor: pointer; border-bottom: 3px solid transparent; }
-        .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
-        
-        .card { background: var(--card-bg); padding: 35px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid var(--border); margin-bottom: 25px; }
-        
-        .form-group { margin-bottom: 25px; }
-        label { font-weight: 700; display: block; margin-bottom: 10px; color: var(--text-main); }
-        input[type="password"], input[type="text"], textarea, select, input[type="file"] { 
-            width: 100%; padding: 14px; border: 1.5px solid var(--border); border-radius: 10px; 
-            font-size: 1rem; font-family: inherit; box-sizing: border-box; background-color: #fcfcfc;
-        }
-        input:focus, textarea:focus, select:focus { outline: none; border-color: var(--primary); background-color: #fff; }
-        
-        .flex-row { display: flex; gap: 15px; }
-        .flex-row .form-group { flex: 1; }
-
-        button.action-btn { 
-            background-color: var(--primary); color: white; border: none; padding: 16px 24px; 
-            border-radius: 12px; cursor: pointer; font-size: 1.1rem; font-weight: 700; width: 100%; 
-            display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.2s;
-        }
-        button.action-btn:hover { background-color: var(--primary-hover); transform: translateY(-2px); }
-        button.secondary-btn { background-color: #10b981; margin-top: 15px; }
-        
-        #imagePreview { max-width: 100%; max-height: 300px; border-radius: 10px; margin-top: 15px; display: none; object-fit: contain; background: #f1f5f9; padding: 10px; border: 1px dashed #cbd5e1; }
-
-        #loading { display: none; text-align: center; font-weight: 600; color: var(--primary); padding: 20px; }
-        .spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(37,99,235,0.3); border-radius: 50%; border-top-color: var(--primary); animation: spin 1s infinite; margin-right: 10px; vertical-align: middle; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        #result-section, #archive-section { display: none; }
-        .exam-paper { padding: 40px; background: white; border-radius: 12px; border-top: 6px solid var(--primary); box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        
-        @media print {
-            body { background: white; padding: 0; }
-            .no-print { display: none !important; }
-            .exam-paper { border: none; box-shadow: none; padding: 0; }
-        }
-    </style>
-</head>
-<body>
-
-    <div class="container">
-        <div class="header no-print">
-            <h1><i class="fa-solid fa-camera"></i> AI Exam Lab Pro (Vision)</h1>
-            <p style="color: var(--text-muted);">텍스트와 이미지를 동시 분석하는 멀티모달 시험지 생성기</p>
-        </div>
-
-        <div class="tabs no-print">
-            <button class="tab-btn active" onclick="switchTab('create')">새 시험지 만들기</button>
-            <button class="tab-btn" onclick="switchTab('archive')">보관함 (기록)</button>
-        </div>
-
-        <div id="create-section" class="no-print">
             <div class="card">
-                <div class="form-group">
-                    <label><i class="fa-solid fa-key"></i> Gemini API 키</label>
-                    <input type="password" id="apiKey" placeholder="API 키 (안전하게 자동 저장됩니다)">
-                </div>
-
-                <div class="flex-row">
+                <div class="grid-2">
                     <div class="form-group">
-                        <label><i class="fa-solid fa-layer-group"></i> 출제 유형</label>
-                        <select id="examType">
-                            <option value="기출 변형 (이미지 원본과 유사한 구조, 다른 수치/조건)">기출 변형 (이미지/텍스트 원본 바탕)</option>
-                            <option value="객관식 위주 (수능형)">수능형 객관식 위주</option>
-                            <option value="서술형 위주 (내신형)">내신형 서술형/논술형 위주</option>
+                        <label>과목 및 유형</label>
+                        <select id="genType">
+                            <option value="수능형 기출 변형">수능형 기출 변형</option>
+                            <option value="내신형 서술형 포함">내신형 서술형/논술형</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label><i class="fa-solid fa-chart-simple"></i> 난이도 설정</label>
-                        <select id="difficulty">
-                            <option value="최상 (킬러 문항 포함, 심층 추론)">최상 (킬러 문항 포함)</option>
-                            <option value="상 (응용 및 복합 개념)" selected>상 (응용 및 복합 개념)</option>
-                            <option value="중 (기본 개념 및 표준 적용)">중 (기본 개념 확인)</option>
+                        <label>목표 난이도</label>
+                        <select id="genDiff">
+                            <option value="최상 (킬러문항)">최상 (킬러문항 및 복합 추론)</option>
+                            <option value="상 (응용력)">상 (개념 응용 및 심화)</option>
+                            <option value="중 (기본개념)" selected>중 (기본 개념 확인)</option>
                         </select>
                     </div>
                 </div>
-                
+
                 <div class="form-group">
-                    <label><i class="fa-solid fa-pen-nib"></i> 핵심 지시사항</label>
-                    <textarea id="promptInput" rows="2" placeholder="예: 첨부한 기출문제 이미지의 개념을 활용하여 수치를 바꾼 변형 문제 2개를 만들어줘."></textarea>
-                </div>
-                
-                <div class="form-group">
-                    <label><i class="fa-regular fa-image"></i> 기출문제/도표 이미지 업로드 (선택)</label>
-                    <input type="file" id="imageInput" accept="image/*" onchange="previewImage(event)">
-                    <img id="imagePreview" alt="업로드된 이미지 미리보기">
+                    <label>상세 지시사항 (Prompt)</label>
+                    <textarea id="genPrompt" rows="3" placeholder="예: 공통수학1의 다항식 연산 기출 변형이나, 공통수학2의 도형의 방정식 응용 문제를 출제해 줘. 혹은 아래 첨부한 국어 문학 지문의 상징적 의미 추론 문제를 내줘."></textarea>
                 </div>
 
                 <div class="form-group">
-                    <label><i class="fa-solid fa-file-lines"></i> 추가 참고 텍스트 (선택)</label>
-                    <textarea id="contextInput" rows="3" placeholder="이미지에 대한 추가 설명이나 지문 텍스트가 있다면 입력하세요."></textarea>
-                </div>
-
-                <button class="action-btn" onclick="generateExam()">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i> 멀티모달 시험지 출제하기
-                </button>
-                <div id="loading"><div class="spinner"></div>AI가 이미지와 텍스트를 정밀 분석하여 문제를 설계 중입니다...</div>
-            </div>
-        </div>
-
-        <div id="result-section">
-            <div class="exam-paper" id="result-content"></div>
-            <button class="action-btn secondary-btn no-print" onclick="window.print()">
-                <i class="fa-solid fa-print"></i> PDF로 깔끔하게 저장 및 인쇄
-            </button>
-        </div>
-
-        <div id="archive-section" class="no-print card">
-            <h2><i class="fa-solid fa-box-archive"></i> 최근 생성된 시험지</h2>
-            <div id="history-list">기록이 없습니다.</div>
-        </div>
-    </div>
-
-    <script>
-        window.onload = function() {
-            const savedKey = localStorage.getItem('geminiApiKey');
-            if (savedKey) document.getElementById('apiKey').value = savedKey;
-            loadHistory();
-        };
-
-        function switchTab(tab) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            document.getElementById('create-section').style.display = tab === 'create' ? 'block' : 'none';
-            document.getElementById('archive-section').style.display = tab === 'archive' ? 'block' : 'none';
-            document.getElementById('result-section').style.display = 'none';
-            if(tab === 'archive') loadHistory();
-        }
-
-        // 이미지 미리보기 로직
-        function previewImage(event) {
-            const file = event.target.files[0];
-            const preview = document.getElementById('imagePreview');
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    preview.src = e.target.result;
-                    preview.style.display = 'block';
-                }
-                reader.readAsDataURL(file);
-            } else {
-                preview.style.display = 'none';
-                preview.src = '';
-            }
-        }
-
-        // 파일을 Base64로 변환하는 비동기 함수
-        function fileToBase64(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = () => resolve(reader.result.split(',')[1]); // Base64 데이터만 추출
-                reader.onerror = error => reject(error);
-            });
-        }
-
-        async function generateExam() {
-            const apiKey = document.getElementById('apiKey').value;
-            const prompt = document.getElementById('promptInput').value;
-            const context = document.getElementById('contextInput').value;
-            const examType = document.getElementById('examType').value;
-            const difficulty = document.getElementById('difficulty').value;
-            const imageFile = document.getElementById('imageInput').files[0];
-
-            if (!apiKey || !prompt) {
-                alert("API 키와 핵심 지시사항을 입력해주세요.");
-                return;
-            }
-
-            localStorage.setItem('geminiApiKey', apiKey);
-            document.getElementById('loading').style.display = 'block';
-            document.getElementById('result-section').style.display = 'none';
-
-            const finalPrompt = `
-당신은 대한민국 1타 강사이자 수능/내신 최고 출제 위원입니다. 
-제공된 이미지(있을 경우)와 텍스트를 완벽하게 분석하여 최고 품질의 시험지를 생성하세요.
-
-[출제 설정]
-- 문제 유형 비율: ${examType}
-- 난이도 수준: ${difficulty}
-- 핵심 지시사항: ${prompt}
-- 참고 텍스트: ${context}
-
-[필수 엄수 규칙]
-1. 첨부된 이미지가 있다면, 이미지 속의 수식, 도표, 텍스트를 정확히 인식하여 그 원리를 활용한 변형 문제를 출제하세요.
-2. [문제지 파트]와 [정답 및 상세 해설 파트]를 명확한 구분선(---)으로 나누어 작성하세요.
-3. 매력적인 오답 선지를 구성하고 해설에 그 이유를 명시하세요.
-4. 수학 기호나 수식이 포함된 경우 예외 없이 완벽한 LaTeX 문법(인라인 $수식$, 단락 $$수식$$)을 적용하세요.
-            `;
-
-            // API에 보낼 데이터를 담을 배열
-            let requestParts = [{ text: finalPrompt }];
-
-            try {
-                // 이미지가 업로드되었다면 이미지 데이터를 배열에 추가
-                if (imageFile) {
-                    const base64Data = await fileToBase64(imageFile);
-                    requestParts.push({
-                        inlineData: {
-                            data: base64Data,
-                            mimeType: imageFile.type
-                        }
-                    });
-                }
-
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${apiKey}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: requestParts }],
-                        generationConfig: { temperature: 0.7 }
-                    })
-                });
-
-                const data = await response.json();
-                if (data.error) throw new Error(data.error.message);
-
-                const aiText = data.candidates[0].content.parts[0].text;
-                
-                const resultContent = document.getElementById('result-content');
-                resultContent.innerHTML = marked.parse(aiText);
-                document.getElementById('result-section').style.display = 'block';
-
-                if (window.MathJax) MathJax.typesetPromise([resultContent]);
-
-                saveHistory(prompt, aiText);
-
-            } catch (error) {
-                alert("오류 발생: " + error.message);
-            } finally {
-                document.getElementById('loading').style.display = 'none';
-            }
-        }
-
-        function saveHistory(title, markdownContent) {
-            let history = JSON.parse(localStorage.getItem('examHistory') || '[]');
-            const newItem = {
-                id: Date.now(),
-                date: new Date().toLocaleDateString('ko-KR') + " " + new Date().toLocaleTimeString('ko-KR'),
-                title: title.substring(0, 30) + (title.length > 30 ? "..." : ""),
-                content: markdownContent
-            };
-            history.unshift(newItem);
-            if (history.length > 10) history.pop();
-            localStorage.setItem('examHistory', JSON.stringify(history));
-        }
-
-        function loadHistory() {
-            const listContainer = document.getElementById('history-list');
-            let history = JSON.parse(localStorage.getItem('examHistory') || '[]');
-            
-            if (history.length === 0) {
-                listContainer.innerHTML = "<p style='color:#64748b;'>아직 생성된 시험지가 없습니다.</p>";
-                return;
-            }
-
-            listContainer.innerHTML = history.map(item => `
-                <div class="history-item" onclick="viewHistory(${item.id})" style="padding:15px; border:1px solid #e2e8f0; border-radius:8px; margin-bottom:10px; cursor:pointer;">
-                    <h3 style="margin:0 0 5px 0; font-size:1.1rem;"><i class="fa-regular fa-file-lines"></i> ${item.title}</h3>
-                    <small style="color:#64748b;">${item.date}</small>
-                </div>
-            `).join('');
-        }
-
-        function viewHistory(id) {
-            let history = JSON.parse(localStorage.getItem('examHistory') || '[]');
-            const item = history.find(h => h.id === id);
-            if (item) {
-                const resultContent = document.getElementById('result-content');
-                resultContent.innerHTML = marked.parse(item.content);
-                if (window.MathJax) MathJax.typesetPromise([resultContent]);
-                
-                document.getElementById('archive-section').style.display = 'none';
-                document.getElementById('result-section').style.display = 'block';
-            }
-        }
-    </script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Exam Lab Pro V4</title>
-    
-    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-
-    <style>
-        :root {
-            --primary: #2563eb; --primary-hover: #1d4ed8;
-            --bg: #f8fafc; --card-bg: #ffffff;
-            --text-main: #0f172a; --text-muted: #64748b;
-            --border: #e2e8f0;
-        }
-        
-        body { font-family: 'Pretendard', sans-serif; background-color: var(--bg); color: var(--text-main); margin: 0; padding: 40px 20px; line-height: 1.6; }
-        .container { max-width: 900px; margin: 0 auto; }
-        
-        .header { text-align: center; margin-bottom: 40px; }
-        .header h1 { font-weight: 800; font-size: 2.2rem; margin-bottom: 10px; }
-        
-        .tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
-        .tab-btn { background: none; border: none; font-size: 1.1rem; font-weight: 600; color: var(--text-muted); padding: 10px 20px; cursor: pointer; border-bottom: 3px solid transparent; }
-        .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
-        
-        .card { background: var(--card-bg); padding: 35px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid var(--border); margin-bottom: 25px; }
-        
-        .form-group { margin-bottom: 25px; }
-        label { font-weight: 700; display: block; margin-bottom: 10px; color: var(--text-main); }
-        input[type="password"], textarea, select { 
-            width: 100%; padding: 14px; border: 1.5px solid var(--border); border-radius: 10px; 
-            font-size: 1rem; font-family: inherit; box-sizing: border-box; background-color: #fcfcfc;
-        }
-        input:focus, textarea:focus, select:focus { outline: none; border-color: var(--primary); background-color: #fff; }
-        
-        .flex-row { display: flex; gap: 15px; }
-        .flex-row .form-group { flex: 1; }
-
-        /* 파일 업로드 디자인 요소 */
-        .file-upload-box {
-            border: 2px dashed var(--primary); border-radius: 12px; padding: 25px; text-align: center;
-            background-color: #eff6ff; cursor: pointer; transition: 0.2s; position: relative;
-        }
-        .file-upload-box:hover { background-color: #dbeafe; }
-        .file-upload-box i { font-size: 2rem; color: var(--primary); margin-bottom: 10px; }
-        .file-upload-box input[type="file"] {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;
-        }
-        #filePreviewArea { display: none; margin-top: 15px; text-align: center; }
-        #imagePreview { max-width: 100%; max-height: 250px; border-radius: 8px; border: 1px solid #cbd5e1; display: none; margin: 0 auto; }
-        #docPreview { font-weight: 600; color: var(--primary); padding: 10px; background: #e0f2fe; border-radius: 8px; display: none; }
-
-        button.action-btn { 
-            background-color: var(--primary); color: white; border: none; padding: 16px 24px; 
-            border-radius: 12px; cursor: pointer; font-size: 1.1rem; font-weight: 700; width: 100%; 
-            display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.2s;
-        }
-        button.action-btn:hover { background-color: var(--primary-hover); transform: translateY(-2px); }
-        button.secondary-btn { background-color: #10b981; margin-top: 15px; }
-        
-        #loading { display: none; text-align: center; font-weight: 600; color: var(--primary); padding: 20px; }
-        .spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(37,99,235,0.3); border-radius: 50%; border-top-color: var(--primary); animation: spin 1s infinite; margin-right: 10px; vertical-align: middle; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        #result-section, #archive-section { display: none; }
-        .exam-paper { padding: 40px; background: white; border-radius: 12px; border-top: 6px solid var(--primary); box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        
-        @media print {
-            body { background: white; padding: 0; }
-            .no-print { display: none !important; }
-            .exam-paper { border: none; box-shadow: none; padding: 0; }
-        }
-    </style>
-</head>
-<body>
-
-    <div class="container">
-        <div class="header no-print">
-            <h1><i class="fa-solid fa-microchip"></i> AI Exam Lab Pro (V4)</h1>
-            <p style="color: var(--text-muted);">이미지, PDF, 텍스트 파일을 분석하여 문제를 출제합니다.</p>
-        </div>
-
-        <div class="tabs no-print">
-            <button class="tab-btn active" onclick="switchTab('create')">새 시험지 만들기</button>
-            <button class="tab-btn" onclick="switchTab('archive')">보관함 (기록)</button>
-        </div>
-
-        <div id="create-section" class="no-print">
-            <div class="card">
-                <div class="form-group">
-                    <label><i class="fa-solid fa-key"></i> Gemini API 키</label>
-                    <input type="password" id="apiKey" placeholder="API 키를 입력하세요 (자동 저장됨)">
-                </div>
-
-                <div class="flex-row">
-                    <div class="form-group">
-                        <label><i class="fa-solid fa-layer-group"></i> 출제 유형</label>
-                        <select id="examType">
-                            <option value="첨부파일 원본 바탕 기출 변형">기출 변형 (첨부파일 기반 응용)</option>
-                            <option value="수능형 객관식 위주">수능형 객관식 위주</option>
-                            <option value="내신형 서술형/논술형 위주">내신형 서술형/논술형 위주</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label><i class="fa-solid fa-chart-simple"></i> 난이도 설정</label>
-                        <select id="difficulty">
-                            <option value="최상 (킬러 문항 포함, 심층 추론)">최상 (킬러 문항 포함)</option>
-                            <option value="상 (응용 및 복합 개념)" selected>상 (응용 및 복합 개념)</option>
-                            <option value="중 (기본 개념 확인)">중 (기본 개념 확인)</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label><i class="fa-solid fa-pen-nib"></i> 출제 지시사항</label>
-                    <textarea id="promptInput" rows="2" placeholder="예: 첨부한 PDF 파일의 2단원 내용을 바탕으로, 난이도 상의 객관식 3문제를 만들어줘."></textarea>
-                </div>
-                
-                <!-- 파일 업로드 영역 -->
-                <div class="form-group">
-                    <label><i class="fa-solid fa-file-arrow-up"></i> 참고 자료 업로드 (이미지, PDF, TXT)</label>
-                    <div class="file-upload-box">
+                    <label>범위 텍스트 또는 파일 (PDF, 이미지 지원)</label>
+                    <div class="upload-zone">
                         <i class="fa-solid fa-cloud-arrow-up"></i>
-                        <p>여기를 클릭하거나 파일을 끌어다 놓으세요.<br><small>(지원 포맷: JPG, PNG, PDF, TXT)</small></p>
-                        <input type="file" id="fileInput" accept="image/*, .pdf, .txt" onchange="previewFile(event)">
+                        <p>기준이 될 문제나 지문 파일을 드래그하거나 클릭하세요.<br><small>(텍스트를 아래 칸에 직접 입력해도 됩니다)</small></p>
+                        <input type="file" id="genFile" accept="image/*,.pdf,.txt" onchange="handleFile('genFile', 'genPreview')">
                     </div>
-                    
-                    <div id="filePreviewArea">
-                        <img id="imagePreview" alt="미리보기">
-                        <div id="docPreview"></div>
-                    </div>
+                    <div id="genPreview"></div>
+                    <textarea id="genText" rows="3" placeholder="파일을 올리지 않고 여기에 지문이나 공식을 직접 복사-붙여넣기 해도 됩니다." style="margin-top: 10px;"></textarea>
                 </div>
 
-                <button class="action-btn" onclick="generateExam()">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i> 자료 분석 및 출제 시작
-                </button>
-                <div id="loading"><div class="spinner"></div>AI가 첨부된 파일을 정밀 분석하여 문제를 설계 중입니다...</div>
+                <button class="btn-primary" onclick="executeAI('generate')"><i class="fa-solid fa-wand-magic-sparkles"></i> 시험지 출제 알고리즘 가동</button>
+                <div id="genLoader" class="loader"><div class="spinner"></div>AI가 교육과정을 분석하여 문항을 설계 중입니다...</div>
             </div>
-        </div>
 
-        <div id="result-section">
-            <div class="exam-paper" id="result-content"></div>
-            <button class="action-btn secondary-btn no-print" onclick="window.print()">
-                <i class="fa-solid fa-print"></i> PDF로 깔끔하게 저장 및 인쇄
-            </button>
-        </div>
+            <div id="genResult" class="result-box"></div>
+            <button id="genPrintBtn" class="btn-primary btn-success no-print" style="display:none;" onclick="window.print()"><i class="fa-solid fa-print"></i> 출제된 시험지 PDF 저장</button>
+        </section>
 
-        <div id="archive-section" class="no-print card">
-            <h2><i class="fa-solid fa-box-archive"></i> 최근 생성된 시험지</h2>
-            <div id="history-list">기록이 없습니다.</div>
-        </div>
-    </div>
+        <!-- 2. 채점 및 오답률 분석 메뉴 -->
+        <section id="page-grading" class="page-section">
+            <h2 class="page-title"><i class="fa-solid fa-chart-line"></i> 스마트 채점 & 예상 오답률 분석</h2>
+            
+            <div class="card">
+                <p style="margin-bottom: 20px; color: var(--text-muted); font-size: 0.95rem;">학생이 푼 답안을 입력하거나 사진으로 찍어 올리면, AI가 채점 후 예상 오답률과 취약점을 분석합니다.</p>
+                
+                <div class="form-group">
+                    <label>원본 문제 (텍스트 또는 사진)</label>
+                    <div class="upload-zone" style="padding: 20px;">
+                        <input type="file" id="gradeQuestFile" accept="image/*,.pdf" onchange="handleFile('gradeQuestFile', 'gradeQuestPreview')">
+                        <i class="fa-regular fa-file-image" style="font-size: 1.5rem;"></i> 원본 문제 업로드
+                    </div>
+                    <div id="gradeQuestPreview"></div>
+                    <textarea id="gradeQuestText" rows="2" placeholder="또는 문제 텍스트 직접 입력" style="margin-top: 10px;"></textarea>
+                </div>
+
+                <div class="form-group" style="border-top: 1px dashed var(--border); padding-top: 20px;">
+                    <label>학생의 답안 (텍스트 또는 풀이과정 사진)</label>
+                    <div class="upload-zone" style="padding: 20px;">
+                        <input type="file" id="gradeAnsFile" accept="image/*,.pdf" onchange="handleFile('gradeAnsFile', 'gradeAnsPreview')">
+                        <i class="fa-solid fa-pen-clip" style="font-size: 1.5rem;"></i> 학생 답안 업로드
+                    </div>
+                    <div id="gradeAnsPreview"></div>
+                    <textarea id="gradeAnsText" rows="3" placeholder="또는 학생이 쓴 답안/풀이과정 텍스트 직접 입력" style="margin-top: 10px;"></textarea>
+                </div>
+
+                <button class="btn-primary" style="background-color: var(--text-dark);" onclick="executeAI('grading')">
+                    <i class="fa-solid fa-magnifying-glass-chart"></i> 정밀 채점 및 통계 분석 시작
+                </button>
+                <div id="gradeLoader" class="loader"><div class="spinner"></div>AI가 논리적 오류를 추적하고 예상 오답률을 계산 중입니다...</div>
+            </div>
+
+            <div id="gradeResult" class="result-box"></div>
+        </section>
+
+        <!-- 3. 보관함 메뉴 -->
+        <section id="page-archive" class="page-section">
+            <h2 class="page-title"><i class="fa-solid fa-database"></i> 학습 데이터 보관함</h2>
+            <div class="card" id="historyList">
+                기록을 불러오는 중...
+            </div>
+        </section>
+
+    </main>
 
     <script>
-        window.onload = function() {
+        // 초기화 및 네비게이션
+        window.onload = () => {
             const savedKey = localStorage.getItem('geminiApiKey');
-            if (savedKey) document.getElementById('apiKey').value = savedKey;
+            if (savedKey) document.getElementById('sysApiKey').value = savedKey;
             loadHistory();
         };
 
-        function switchTab(tab) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            document.getElementById('create-section').style.display = tab === 'create' ? 'block' : 'none';
-            document.getElementById('archive-section').style.display = tab === 'archive' ? 'block' : 'none';
-            document.getElementById('result-section').style.display = 'none';
-            if(tab === 'archive') loadHistory();
+        function saveApiKey() {
+            localStorage.setItem('geminiApiKey', document.getElementById('sysApiKey').value);
         }
 
-        // 파일 미리보기 로직 (이미지와 문서 분기 처리)
-        function previewFile(event) {
-            const file = event.target.files[0];
-            const previewArea = document.getElementById('filePreviewArea');
-            const imagePreview = document.getElementById('imagePreview');
-            const docPreview = document.getElementById('docPreview');
+        function navTo(pageId) {
+            document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            
+            document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
+            document.getElementById('page-' + pageId).classList.add('active');
+            
+            if(pageId === 'archive') loadHistory();
+        }
 
+        // 파일 처리 유틸리티
+        function handleFile(inputId, previewId) {
+            const file = document.getElementById(inputId).files[0];
+            const preview = document.getElementById(previewId);
             if (file) {
-                previewArea.style.display = 'block';
-                // 이미지 파일인 경우
-                if (file.type.startsWith('image/')) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        imagePreview.src = e.target.result;
-                        imagePreview.style.display = 'block';
-                        docPreview.style.display = 'none';
-                    }
-                    reader.readAsDataURL(file);
-                } 
-                // PDF나 TXT 등 문서 파일인 경우
-                else {
-                    imagePreview.style.display = 'none';
-                    docPreview.innerHTML = `<i class="fa-solid fa-file-pdf"></i> ${file.name} (첨부 완료)`;
-                    docPreview.style.display = 'inline-block';
-                }
-            } else {
-                previewArea.style.display = 'none';
+                preview.style.display = 'block';
+                preview.innerHTML = `<i class="fa-solid fa-check-circle"></i> 첨부완료: ${file.name}`;
             }
         }
 
-        // 파일을 Base64로 변환
         function fileToBase64(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
-                reader.onload = () => resolve(reader.result.split(',')[1]); 
+                reader.onload = () => resolve({ data: reader.result.split(',')[1], mimeType: file.type });
                 reader.onerror = error => reject(error);
             });
         }
 
-        async function generateExam() {
-            const apiKey = document.getElementById('apiKey').value;
-            const prompt = document.getElementById('promptInput').value;
-            const examType = document.getElementById('examType').value;
-            const difficulty = document.getElementById('difficulty').value;
-            const uploadFile = document.getElementById('fileInput').files[0];
+        // 통합 AI 실행 엔진 (출제 & 채점 공통 로직)
+        async function executeAI(mode) {
+            const apiKey = document.getElementById('sysApiKey').value;
+            if (!apiKey) return alert("좌측 하단 메뉴에서 API 키를 먼저 입력해주세요.");
 
-            if (!apiKey || (!prompt && !uploadFile)) {
-                alert("API 키를 입력하고, 지시사항을 적거나 파일을 업로드해주세요.");
-                return;
-            }
+            const loader = document.getElementById(mode === 'generate' ? 'genLoader' : 'gradeLoader');
+            const resultBox = document.getElementById(mode === 'generate' ? 'genResult' : 'gradeResult');
+            const printBtn = document.getElementById('genPrintBtn');
+            
+            loader.style.display = 'block';
+            resultBox.style.display = 'none';
+            if (printBtn) printBtn.style.display = 'none';
 
-            localStorage.setItem('geminiApiKey', apiKey);
-            document.getElementById('loading').style.display = 'block';
-            document.getElementById('result-section').style.display = 'none';
-
-            const finalPrompt = `
-당신은 대한민국 1타 강사이자 수능/내신 최고 출제 위원입니다. 
-제공된 첨부파일과 지시사항을 완벽하게 분석하여 최고 품질의 시험지를 생성하세요.
-
-[출제 설정]
-- 문제 유형: ${examType}
-- 난이도: ${difficulty}
-- 핵심 지시사항: ${prompt || "첨부파일의 내용을 분석하여 주요 개념을 묻는 문제를 출제하세요."}
-
-[필수 엄수 규칙]
-1. 첨부된 파일(PDF, 텍스트, 이미지)이 있다면 그 내용을 바탕으로 문제를 구성하세요. 
-2. [문제지 파트]와 [정답 및 상세 해설 파트]를 명확한 구분선(---)으로 나누어 마크다운으로 작성하세요.
-3. 매력적인 오답 선지를 구성하고 해설에 그 이유를 명시하세요.
-4. 수학 기호나 수식이 포함된 경우 예외 없이 완벽한 LaTeX 문법(인라인 $수식$, 단락 $$수식$$)을 적용하세요.
-            `;
-
-            let requestParts = [{ text: finalPrompt }];
+            let finalPrompt = "";
+            let filesToProcess = [];
 
             try {
-                // 첨부파일이 있을 경우 API에 데이터 추가
-                if (uploadFile) {
-                    const base64Data = await fileToBase64(uploadFile);
-                    requestParts.push({
-                        inlineData: {
-                            data: base64Data,
-                            mimeType: uploadFile.type // application/pdf, image/jpeg 등 자동 인식
-                        }
-                    });
+                // 1. 시험지 출제 모드 데이터 취합
+                if (mode === 'generate') {
+                    const prompt = document.getElementById('genPrompt').value;
+                    const text = document.getElementById('genText').value;
+                    const file = document.getElementById('genFile').files[0];
+                    const type = document.getElementById('genType').value;
+                    const diff = document.getElementById('genDiff').value;
+
+                    if (!prompt && !text && !file) throw new Error("지시사항이나 참고 자료를 하나 이상 입력해주세요.");
+                    
+                    if (file) filesToProcess.push(await fileToBase64(file));
+
+                    finalPrompt = `
+당신은 대한민국 1타 강사이자 완벽한 출제 위원입니다.
+[설정] 유형: ${type}, 난이도: ${diff}
+[지시사항]: ${prompt}
+[참고텍스트]: ${text}
+
+[엄수 규칙]
+1. [문제지]와 [해설지]를 '---' 로 완벽히 분리하세요.
+2. 수식은 반드시 LaTeX 문법(인라인 $수식$, 독립 $$수식$$)을 엄수하세요.
+3. 난이도에 맞는 매력적인 오답 선지와 채점 기준표를 반드시 포함하세요.`;
+                } 
+                
+                // 2. 채점 및 오답률 분석 모드 데이터 취합
+                else if (mode === 'grading') {
+                    const qFile = document.getElementById('gradeQuestFile').files[0];
+                    const qText = document.getElementById('gradeQuestText').value;
+                    const aFile = document.getElementById('gradeAnsFile').files[0];
+                    const aText = document.getElementById('gradeAnsText').value;
+
+                    if (qFile) filesToProcess.push(await fileToBase64(qFile));
+                    if (aFile) filesToProcess.push(await fileToBase64(aFile));
+
+                    finalPrompt = `
+당신은 날카롭고 분석적인 교육 공학자이자 채점관입니다.
+제공된 원본 문제와 학생의 답안(또는 풀이)을 비교 분석하세요.
+[원본 문제]: ${qText}
+[학생 답안]: ${aText}
+
+[엄수 규칙]
+1. 최상단에 <span class="stat-badge">예상 전국 오답률: OO%</span> 와 같이 해당 문제의 객관적인 난이도에 따른 예상 오답률을 배지로 표기하세요.
+2. 학생의 답안이 정답인지 오답인지 명확히 판별하고, 점수를 매기세요.
+3. 논리적 전개 과정에서 학생이 놓친 부분(취약 개념)이 무엇인지 정확히 짚어주세요.
+4. 수식은 모두 LaTeX($수식$)로 표기하여 가독성을 높이세요.`;
                 }
+
+                // API 통신
+                let requestParts = [{ text: finalPrompt }];
+                filesToProcess.forEach(f => requestParts.push({ inlineData: { data: f.data, mimeType: f.mimeType } }));
 
                 const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${apiKey}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: requestParts }],
-                        generationConfig: { temperature: 0.7 }
-                    })
+                    body: JSON.stringify({ contents: [{ parts: requestParts }], generationConfig: { temperature: 0.7 } })
                 });
 
                 const data = await response.json();
@@ -1142,65 +330,60 @@
 
                 const aiText = data.candidates[0].content.parts[0].text;
                 
-                const resultContent = document.getElementById('result-content');
-                resultContent.innerHTML = marked.parse(aiText);
-                document.getElementById('result-section').style.display = 'block';
+                // 결과 렌더링
+                resultBox.innerHTML = marked.parse(aiText);
+                resultBox.style.display = 'block';
+                if (window.MathJax) MathJax.typesetPromise([resultBox]);
+                if (printBtn && mode === 'generate') printBtn.style.display = 'flex';
 
-                if (window.MathJax) MathJax.typesetPromise([resultContent]);
-
-                saveHistory(prompt || uploadFile.name, aiText);
+                // 기록 저장
+                let title = mode === 'generate' ? '[출제] ' + (document.getElementById('genPrompt').value || '맞춤형 시험지') : '[채점] ' + (document.getElementById('gradeQuestText').value || '학생 답안 분석');
+                saveHistory(title, aiText);
 
             } catch (error) {
-                alert("오류 발생 (파일이 너무 크거나 API 설정 문제일 수 있습니다): " + error.message);
+                alert(error.message);
             } finally {
-                document.getElementById('loading').style.display = 'none';
+                loader.style.display = 'none';
             }
         }
 
-        // 히스토리 저장 및 불러오기 로직 (이전과 동일)
-        function saveHistory(title, markdownContent) {
-            let history = JSON.parse(localStorage.getItem('examHistory') || '[]');
-            const newItem = {
-                id: Date.now(),
-                date: new Date().toLocaleDateString('ko-KR') + " " + new Date().toLocaleTimeString('ko-KR'),
-                title: title.substring(0, 30) + (title.length > 30 ? "..." : ""),
-                content: markdownContent
-            };
-            history.unshift(newItem);
-            if (history.length > 10) history.pop();
-            localStorage.setItem('examHistory', JSON.stringify(history));
+        // 보관함 로직
+        function saveHistory(title, content) {
+            let history = JSON.parse(localStorage.getItem('studyArchive') || '[]');
+            history.unshift({ id: Date.now(), date: new Date().toLocaleString('ko-KR'), title: title.substring(0, 30) + "...", content: content });
+            if (history.length > 15) history.pop();
+            localStorage.setItem('studyArchive', JSON.stringify(history));
         }
 
         function loadHistory() {
-            const listContainer = document.getElementById('history-list');
-            let history = JSON.parse(localStorage.getItem('examHistory') || '[]');
+            const list = document.getElementById('historyList');
+            let history = JSON.parse(localStorage.getItem('studyArchive') || '[]');
             
             if (history.length === 0) {
-                listContainer.innerHTML = "<p style='color:#64748b;'>아직 생성된 시험지가 없습니다.</p>";
+                list.innerHTML = "<div style='color:var(--text-muted); text-align:center; padding: 20px;'>보관된 학습 데이터가 없습니다.</div>";
                 return;
             }
 
-            listContainer.innerHTML = history.map(item => `
-                <div class="history-item" onclick="viewHistory(${item.id})" style="padding:15px; border:1px solid #e2e8f0; border-radius:8px; margin-bottom:10px; cursor:pointer;">
-                    <h3 style="margin:0 0 5px 0; font-size:1.1rem;"><i class="fa-regular fa-file-lines"></i> ${item.title}</h3>
-                    <small style="color:#64748b;">${item.date}</small>
+            list.innerHTML = history.map(item => `
+                <div style="padding:15px; border:1px solid var(--border); border-radius:8px; margin-bottom:10px; cursor:pointer; background:#f8fafc;" onclick="viewHistory(${item.id})">
+                    <div style="font-weight:bold; color:var(--primary); margin-bottom:5px;">${item.title}</div>
+                    <small style="color:var(--text-muted);">${item.date}</small>
                 </div>
             `).join('');
         }
 
         function viewHistory(id) {
-            let history = JSON.parse(localStorage.getItem('examHistory') || '[]');
+            let history = JSON.parse(localStorage.getItem('studyArchive') || '[]');
             const item = history.find(h => h.id === id);
             if (item) {
-                const resultContent = document.getElementById('result-content');
-                resultContent.innerHTML = marked.parse(item.content);
-                if (window.MathJax) MathJax.typesetPromise([resultContent]);
-                
-                document.getElementById('archive-section').style.display = 'none';
-                document.getElementById('result-section').style.display = 'block';
+                navTo('generate'); // 화면 전환
+                const resultBox = document.getElementById('genResult');
+                resultBox.innerHTML = marked.parse(item.content);
+                resultBox.style.display = 'block';
+                if (window.MathJax) MathJax.typesetPromise([resultBox]);
+                document.getElementById('genPrintBtn').style.display = 'flex';
             }
         }
     </script>
 </body>
 </html>
-
