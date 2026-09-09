@@ -1,144 +1,80 @@
 import streamlit as st
 import requests
 from bs4 import BeautifulSoup
-import os
-from dotenv import load_dotenv
+import google.generativeai as genai
 
-# Load environment variables
-load_dotenv()
+# 웹사이트 기본 설정 (전체 화면 넓게 쓰기, 제목 설정)
+st.set_page_config(page_title="AI 맞춤형 시험지 생성기", page_icon="📝", layout="wide")
 
-# Page config
-st.set_page_config(
-    page_title="Exam Paper Generator",
-    page_icon="📝",
-    layout="wide"
-)
+st.title("📝 AI 맞춤형 시험지 생성기 (v2.0)")
+st.write("시험 범위 텍스트나 참고할 웹사이트 링크를 분석하여, 원하는 유형의 문제를 완벽한 한국어로 자동 출제합니다.")
 
-# 1. 웹사이트 제목 설정
-st.title("📝 나만의 자동 시험지 생성기 (v1.0)")
-st.write("시험 범위 텍스트나 참고할 링크를 입력하면 문제를 만들어줍니다.")
-
-# Sidebar for API configuration
+# 사이드바: AI를 사용하기 위한 API 키 입력란
 with st.sidebar:
-    st.header("⚙️ 설정")
-    api_provider = st.selectbox(
-        "AI 모델 선택",
-        ["OpenAI (GPT-4)", "Claude (Anthropic)", "로컬 테스트 모드"]
-    )
-    
-    if api_provider != "로컬 테스트 모드":
-        api_key = st.text_input("API Key 입력", type="password")
+    st.header("⚙️ 기본 설정")
+    st.write("문제를 생성하려면 Google Gemini API 키가 필요합니다.")
+    api_key = st.text_input("API 키를 입력하세요", type="password")
+    st.markdown("[무료 API 키 발급받기](https://aistudio.google.com/)")
 
-# 2. 프롬프트(텍스트) 입력창 만들기
-st.subheader("1. 시험 범위 및 프롬프트 입력")
-user_prompt = st.text_area(
-    "어떤 문제를 만들고 싶나요?", 
-    placeholder="예: 아래 링크의 내용에서 객관식 3문제, 서술형 1문제를 출제해 줘.",
-    height=150
+st.markdown("---")
+
+# 1. 프롬프트 입력창 (어떤 문제를 원하는지 상세히 적는 곳)
+st.subheader("1. 출제 지시사항 (프롬프트)")
+prompt = st.text_area(
+    "어떤 과목, 어떤 유형의 문제를 만들고 싶으신가요?", 
+    placeholder="예: 공통수학1 다항식의 연산 개념을 묻는 객관식 3문제와 서술형 1문제를 만들어줘. 혹은, 아래 링크의 국어 문학 지문을 분석해서 수능형 문제 2개를 출제해 줘.",
+    height=100
 )
 
-# 3. 링크(URL) 입력창 만들기
-st.subheader("2. 참고할 웹사이트 링크 입력")
-user_link = st.text_input(
-    "URL을 입력하세요", 
-    placeholder="https://example.com"
+# 2. 링크 입력창
+st.subheader("2. 참고 자료 링크 (선택사항)")
+url = st.text_input(
+    "문제를 출제할 때 참고할 웹사이트 주소가 있다면 입력하세요 (위키백과, 뉴스 기사, 블로그 등)", 
+    placeholder="https://..."
 )
 
-# 4. 추가 옵션
-st.subheader("3. 문제 생성 옵션")
-col1, col2, col3 = st.columns(3)
-with col1:
-    num_questions = st.number_input("총 문제 개수", min_value=1, max_value=20, value=5)
-with col2:
-    difficulty = st.selectbox("난이도", ["쉬움", "중간", "어려움"])
-with col3:
-    question_type = st.multiselect(
-        "문제 유형",
-        ["객관식", "서술형", "단답형", "참/거짓"],
-        default=["객관식", "서술형"]
-    )
-
-# 5. 실행 버튼 만들기
-if st.button("🚀 시험지 생성하기", use_container_width=True):
-    # 버튼을 눌렀을 때 실행될 동작
-    if user_prompt or user_link:
-        st.success("입력 정보가 성공적으로 전달되었습니다!")
-        
-        # 입력받은 내용 화면에 보여주기
-        st.write("### 📌 입력된 데이터 확인")
-        st.write(f"- **프롬프트:** {user_prompt}")
-        if user_link:
-            st.markdown(f"- **링크:** [{user_link}]({user_link})")
-        st.write(f"- **문제 개수:** {num_questions}")
-        st.write(f"- **난이도:** {difficulty}")
-        st.write(f"- **문제 유형:** {', '.join(question_type)}")
-        
-        # 웹사이트 내용 추출 시도
-        if user_link:
-            try:
-                st.info("🔄 웹사이트에서 내용을 가져오는 중...")
-                headers = {
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-                }
-                response = requests.get(user_link, headers=headers, timeout=10)
-                response.encoding = 'utf-8'
-                
-                if response.status_code == 200:
-                    soup = BeautifulSoup(response.text, 'html.parser')
-                    # Remove script and style elements
-                    for script in soup(["script", "style"]):
-                        script.decompose()
-                    text = soup.get_text()
-                    lines = (line.strip() for line in text.splitlines())
-                    chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
-                    text = ' '.join(chunk for chunk in chunks if chunk)
-                    
-                    with st.expander("📄 추출된 웹사이트 내용"):
-                        st.text(text[:1000] + "..." if len(text) > 1000 else text)
-                else:
-                    st.error(f"웹사이트 접근 실패 (상태 코드: {response.status_code})")
-            except Exception as e:
-                st.error(f"❌ 웹사이트 접근 오류: {str(e)}")
-        
-        # AI 처리 시뮬레이션
-        st.subheader("🤖 생성된 시험지")
-        
-        if api_provider == "로컬 테스트 모드":
-            # 테스트 모드: 샘플 문제 생성
-            st.info("테스트 모드로 샘플 문제를 생성합니다.")
-            
-            sample_questions = [
-                {
-                    "number": 1,
-                    "type": "객관식",
-                    "question": "이 문제는 테스트 문제입니다. 실제 AI 모델을 연동하면 자동으로 생성됩니다.",
-                    "options": ["선택지 1", "선택지 2", "선택지 3", "선택지 4"],
-                    "answer": "선택지 1"
-                },
-                {
-                    "number": 2,
-                    "type": "서술형",
-                    "question": "다음을 설명하시오.",
-                    "answer": "(모델 연동 후 자동 생성됨)"
-                }
-            ]
-            
-            for q in sample_questions[:num_questions]:
-                with st.container(border=True):
-                    st.write(f"**문제 {q['number']} [{q['type']}]**")
-                    st.write(q['question'])
-                    
-                    if q['type'] == "객관식":
-                        for i, option in enumerate(q['options'], 1):
-                            st.write(f"  {i}. {option}")
-                    elif q['type'] == "서술형":
-                        st.write(f"*답:* {q['answer']}")
-        else:
-            st.warning("🔑 API Key를 입력하고 다시 시도해주세요.")
-            st.info("현재는 로컬 테스트 모드만 지원합니다. 곧 OpenAI와 Claude 연동이 추가될 예정입니다.")
+# 3. 문제 생성 버튼 및 실행 로직
+if st.button("🚀 시험지 생성 시작 (클릭)"):
+    # 필수 입력값 확인
+    if not api_key:
+        st.error("👈 왼쪽 사이드바에서 API 키를 먼저 입력해 주세요!")
+    elif not prompt:
+        st.warning("어떤 문제를 출제할지 지시사항(프롬프트)을 입력해 주세요.")
     else:
-        st.warning("⚠️ 프롬프트나 링크를 하나 이상 입력해 주세요.")
+        # 진행 중 애니메이션 표시
+        with st.spinner("AI가 자료를 분석하고 완벽한 한글 시험지를 출제하고 있습니다... 잠시만 기다려주세요 ⏳"):
+            try:
+                # API 키 설정
+                genai.configure(api_key=api_key)
+                model = genai.GenerativeModel('gemini-1.5-pro') # 최신 고성능 모델 사용
 
-# 6. Footer
-st.divider()
-st.caption("📚 나만의 자동 시험지 생성기 v1.0 | OpenAI & Claude 연동 예정")
+                context_text = ""
+                # URL이 입력되었다면 해당 사이트의 텍스트를 읽어옴
+                if url:
+                    headers = {'User-Agent': 'Mozilla/5.0'}
+                    response = requests.get(url, headers=headers)
+                    soup = BeautifulSoup(response.text, 'html.parser')
+                    # 쓸데없는 태그를 제외하고 본문 텍스트만 추출 (최대 5000자 제한)
+                    context_text = soup.get_text(separator=' ', strip=True)[:5000] 
+
+                # AI에게 전달할 최종 명령서 작성
+                full_prompt = f"당신은 최고의 시험 출제 위원입니다. 다음 지시사항에 따라 문제를 출제해 주세요.\n\n[지시사항]\n{prompt}\n"
+                
+                if context_text:
+                    full_prompt += f"\n[참고 자료 텍스트]\n{context_text}\n"
+                
+                full_prompt += "\n[조건]\n1. 반드시 자연스럽고 완벽한 한국어로 작성할 것.\n2. 문제, 정답, 그리고 상세한 해설을 명확하게 구분해서 출력할 ��.\n3. 보기 좋게 마크다운(Markdown) 형식을 사용하여 정리할 것."
+
+                # AI에게 질문 던지고 답변 받기
+                response = model.generate_content(full_prompt)
+                
+                # 결과 출력
+                st.success("✅ 맞춤형 시험지 생성이 완료되었습니다!")
+                st.markdown("---")
+                
+                # 생성된 문제를 화면에 깔끔하게 표시
+                st.markdown(response.text)
+                
+            except Exception as e:
+                # 에러 발생 시 처리
+                st.error(f"문제를 생성하는 도중 오류가 발생했습니다. 링크나 API 키를 다시 확인해 주세요.\n\n상세 오류: {e}")
