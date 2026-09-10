@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>단권화 스터디 다이어리 V9 - AI Tutor Edition</title>
+    <title>단권화 스터디 다이어리 V10 - OMR Edition</title>
     
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -90,6 +90,18 @@
 
         .feedback-section { margin-top: 20px; padding: 25px; border-radius: var(--radius-box); box-shadow: var(--shadow-fluffy); }
 
+        /* 🔥 시각적 OMR 카드를 위한 디자인 CSS 추가 */
+        .omr-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; background: #FAFAFA; padding: 20px; border-radius: 16px; border: 2px solid var(--border-soft); margin-top: 10px; }
+        .omr-row { display: flex; align-items: center; justify-content: space-between; padding: 5px 10px; }
+        .omr-qnum { font-weight: 800; font-size: 1.1rem; color: var(--accent-blue); width: 40px; }
+        .omr-bubbles { display: flex; gap: 8px; }
+        .omr-bubble { width: 32px; height: 32px; border-radius: 50%; border: 2px solid #CBD5E1; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1rem; color: #94A3B8; font-weight: 700; transition: all 0.2s; background: white; }
+        .omr-bubble:hover { border-color: var(--accent-blue); color: var(--accent-blue); transform: scale(1.1); }
+        .omr-bubble.selected { background-color: var(--accent-blue); border-color: var(--accent-blue); color: white; box-shadow: 0 4px 10px rgba(162, 210, 255, 0.4); }
+        .omr-controls { display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px; }
+        .btn-small { background: white; border: 2px solid var(--border-soft); padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: 600; color: var(--text-sub); transition: 0.2s; }
+        .btn-small:hover { border-color: var(--text-main); color: var(--text-main); }
+
         @media (max-width: 1024px) {
             .mobile-header { display: flex; }
             .sidebar { position: fixed; left: -280px; top: 0; height: 100%; box-shadow: 10px 0 30px rgba(0,0,0,0.1); }
@@ -97,6 +109,7 @@
             .main-content { padding: 20px; }
             .grid-2 { grid-template-columns: 1fr; }
             .document-view { padding: 30px 20px; }
+            .omr-container { grid-template-columns: 1fr; } /* 모바일에서는 OMR 1줄로 */
         }
     </style>
 </head>
@@ -174,7 +187,7 @@
                 <div id="genResult" class="document-view"></div>
             </section>
 
-            <!-- 2. 코넬 개념 요약 (출제 예측 기능 추가) -->
+            <!-- 2. 코넬 개념 요약 -->
             <section id="page-concept" class="page-section">
                 <div class="page-header">
                     <div class="page-header-icon" style="background: var(--accent-mint); color: #059669;"><i class="fa-solid fa-shapes"></i></div>
@@ -209,13 +222,13 @@
                 <div id="conceptResult" class="document-view"></div>
             </section>
 
-            <!-- 3. 정밀 채점 (OMR 입력란 강화) -->
+            <!-- 3. 정밀 채점 (그래픽 OMR 탑재) -->
             <section id="page-grading" class="page-section">
                 <div class="page-header">
                     <div class="page-header-icon" style="background: var(--accent-blue);"><i class="fa-solid fa-marker"></i></div>
                     <div>
                         <h2 class="page-title">OMR 및 오답 역추적 채점</h2>
-                        <p class="page-desc">시험지를 올리고 나의 마킹을 입력하면 약점 분석 리포트를 제공합니다.</p>
+                        <p class="page-desc">시험지를 올리고 나의 마킹을 톡톡 찍어 입력하면 약점 분석 리포트를 제공합니다.</p>
                     </div>
                 </div>
                 <div class="panel">
@@ -224,12 +237,21 @@
                         <div class="upload-zone" style="border-color: var(--accent-blue);"><input type="file" id="gradeQuestFile" accept="image/*,.pdf" onchange="handleFile('gradeQuestFile', 'gradeQuestPreview')"><div class="upload-text">문제지 첨부</div></div>
                         <div id="gradeQuestPreview" class="preview-area"></div>
                     </div>
-                    <!-- 텍스트 기반 OMR 입력 란 -->
+                    
+                    <!-- 🔥 화려한 그래픽 OMR 입력 란 -->
                     <div class="form-group">
-                        <label><i class="fa-solid fa-list-ol"></i> 나의 OMR 마킹 (정답 입력)</label>
-                        <input type="text" id="omrAnswers" placeholder="예: 1번부터 차례대로 3, 1, 4, 5, 2 (쉼표로 구분하여 입력)">
-                        <p style="font-size: 0.85rem; color: var(--text-sub); margin-top: 5px;">* 시각적인 OMR 클릭 UI는 현재 개발 중이며 텍스트 입력으로 우선 지원합니다.</p>
+                        <label><i class="fa-solid fa-list-ol"></i> 나의 OMR 마킹 (터치하여 정답 입력)</label>
+                        <div id="visualOMR" class="omr-container">
+                            <!-- 자바스크립트가 여기에 OMR 카드를 쫙 깔아줍니다 -->
+                        </div>
+                        <div class="omr-controls">
+                            <button class="btn-small" onclick="clearOMR()"><i class="fa-solid fa-rotate-right"></i> 마킹 초기화</button>
+                        </div>
+                        
+                        <!-- AI에게 보낼 숨겨진 텍스트 박스 (눈으로는 읽기 전용으로 보입니다) -->
+                        <input type="text" id="omrAnswers" readonly placeholder="마킹을 하시면 이곳에 자동으로 기록됩니다." style="margin-top: 15px; background: #E2E8F0; color: #475569; font-weight: bold;">
                     </div>
+
                     <div class="form-group">
                         <label><i class="fa-solid fa-tags"></i> 태그 (선택)</label>
                         <input type="text" id="gradeTags" placeholder="예: 모의고사, 국어">
@@ -269,6 +291,7 @@
                 <div id="unifiedResult" class="document-view"></div>
             </section>
 
+            <!-- 피드백 창 -->
             <div class="feedback-section" id="tutorFeedbackSection" style="display: none; background-color: #f9f9f9; border-left: 4px solid #4a90e2;">
                 <h3 style="margin-bottom: 15px; color: #4a90e2;"><i class="fa-solid fa-chalkboard-user"></i> AI 튜터 상세 피드백</h3>
                 <p id="tutorFeedbackResult" style="line-height: 1.6;"></p>
@@ -295,10 +318,61 @@
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
         function closeSidebarOutside() { if(window.innerWidth <= 1024) document.getElementById('sidebar').classList.remove('open'); }
 
+        // 🔥 페이지가 열릴 때 OMR 카드를 그리는 뇌(함수) 실행
         window.onload = () => {
             const savedKey = localStorage.getItem('geminiApiKey');
             if (savedKey) document.getElementById('sysApiKey').value = savedKey;
+            renderOMR(); // OMR 카드 렌더링
         };
+
+        // --- OMR 카드 작동 로직 시작 ---
+        let userAnswers = {}; // 사용자가 마킹한 정답을 저장할 공간
+
+        function renderOMR() {
+            const container = document.getElementById('visualOMR');
+            if(!container) return;
+            let html = '';
+            // 총 20문제, 5지선다 생성
+            for(let i=1; i<=20; i++) {
+                html += `<div class="omr-row"><div class="omr-qnum">${i}.</div><div class="omr-bubbles">`;
+                for(let j=1; j<=5; j++) {
+                    html += `<div class="omr-bubble" onclick="selectOMR(${i}, ${j})" id="omr-q${i}-c${j}">${j}</div>`;
+                }
+                html += `</div></div>`;
+            }
+            container.innerHTML = html;
+        }
+
+        function selectOMR(questionNum, choice) {
+            userAnswers[questionNum] = choice;
+            // 1. 해당 문제의 모든 동그라미 색깔 빼기
+            for(let j=1; j<=5; j++) {
+                document.getElementById(`omr-q${questionNum}-c${j}`).classList.remove('selected');
+            }
+            // 2. 방금 클릭한 동그라미만 색칠하기
+            document.getElementById(`omr-q${questionNum}-c${choice}`).classList.add('selected');
+            updateOMRText(); // 텍스트 박스 업데이트
+        }
+
+        function clearOMR() {
+            userAnswers = {};
+            for(let i=1; i<=20; i++) {
+                for(let j=1; j<=5; j++) {
+                    document.getElementById(`omr-q${i}-c${j}`).classList.remove('selected');
+                }
+            }
+            updateOMRText();
+        }
+
+        function updateOMRText() {
+            let ansArr = [];
+            // 1번부터 차례대로 마킹된 것만 문자로 엮어줍니다
+            for(let i=1; i<=20; i++) {
+                if(userAnswers[i]) ansArr.push(`${i}번:${userAnswers[i]}`);
+            }
+            document.getElementById('omrAnswers').value = ansArr.join(', ');
+        }
+        // --- OMR 카드 작동 로직 끝 ---
 
         function saveApiKey() { localStorage.setItem('geminiApiKey', document.getElementById('sysApiKey').value); }
 
@@ -346,7 +420,6 @@
             let requestParts = [{ text: prompt }];
             files.forEach(f => requestParts.push({ inlineData: { data: f.data, mimeType: f.mimeType } }));
             
-            // 🔥 성공하신 gemini-3.6-flash 통신망 적용
             const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`, {
                 method: 'POST', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ contents: [{ parts: requestParts }], generationConfig: { temperature: 0.6 } })
@@ -400,7 +473,6 @@
                     
                     tags = rawTags.split(',').map(t => t.trim()).filter(t => t);
                     title = `[코넬노트] ${tags[0] || '핵심 요약'}`;
-                    // 🔥 출제 예측 기능 프롬프트 추가
                     prompt = `제공된 데이터를 완벽한 '코넬 노트' 형식으로 변환하세요.\n[원본 데이터]: ${inputPrompt}\n\n[조건]\n1. 좌측 '핵심 키워드/질문', 우측 '상세 내용', 하단 '전체 요약' 표(Table) 마크다운 구성.\n2. 텍스트에 숨겨진 철학적/이론적 함의를 깊이 파고들어 서술할 것.\n3. 마지막 항목으로 [🚨 AI 출제 예측] 섹션을 만들어, 이 내용에서 시험에 나올 확률이 높은 변형 포인트 2가지를 제시할 것.`;
                 }
                 else if (mode === 'grading') {
@@ -408,13 +480,12 @@
                     const omrInput = document.getElementById('omrAnswers').value;
                     const rawTags = document.getElementById('gradeTags').value;
                     if (!qFile) throw new Error("객관식 문제지 이미지를 올려주세요.");
-                    if (!omrInput) throw new Error("나의 OMR 마킹(정답)을 텍스트로 입력해주세요.");
+                    if (!omrInput) throw new Error("OMR 카드를 클릭하여 마킹을 완료해주세요.");
                     if (qFile) filesToProcess.push(await fileToBase64(qFile));
                     
                     tags = rawTags.split(',').map(t => t.trim()).filter(t => t);
                     title = `[가채점] ${tags[0] || '오답 분석'}`;
-                    // 🔥 OMR 기반 가채점 및 약점 분석 프롬프트
-                    prompt = `첨부된 객관식 시험지 이미지와 학생이 제출한 마킹 답안을 바탕으로 가채점 및 분석을 진행하세요.\n[학생 제출 답안]: ${omrInput}\n\n[조건]\n1. 첨부된 시험지의 실제 정답을 도출하여 학생의 답안과 비교하여 채점 결과를 보여줄 것.\n2. 틀린 문제에 대해서는 학생이 왜 그 오답을 매력적으로 느꼈는지(오답률 높은 이유) 분석할 것.\n3. 최종적으로 학생의 약점 개념을 파악하고, 이를 보완할 수 있는 구체적인 학습 가이드(행동 영역)를 제시할 것.`;
+                    prompt = `첨부된 객관식 시험지 이미지와 학생이 제출한 마킹 답안을 바탕으로 가채점 및 분석을 진행하세요.\n[학생 마킹 답안]: ${omrInput}\n\n[조건]\n1. 첨부된 시험지의 실제 정답을 도출하여 학생의 답안과 비교, 채점 결과를 보여줄 것.\n2. 틀린 문제에 대해서는 학생이 왜 그 오답을 매력적으로 느꼈는지(오답률 높은 이유) 분석할 것.\n3. 최종적으로 학생의 약점 개념을 파악하고, 이를 보완할 수 있는 구체적인 학습 가이드(행동 영역)를 제시할 것.`;
                 }
 
                 const aiText = await callGeminiAPI(apiKey, prompt, filesToProcess);
@@ -502,7 +573,6 @@
                 if(item) mergedContent += `\n\n### [${item.title}]\n${item.content}`;
             });
 
-            // 🔥 단권화 킬러 문항 예측 프롬프트 적용
             const prompt = `학습 기록을 병합하여 단권화 마스터 노트를 작성하세요.\n\n${mergedContent}\n\n[조건]\n1. 내용의 유기적 연결을 중시하여 재구성할 것.\n2. 통합된 개념을 바탕으로 [🔥 최종 킬러 문항 출제 예측 리포트]를 작성하여 학습자가 집중해야 할 논리적 함정을 경고해 줄 것.`;
             try {
                 const aiText = await callGeminiAPI(apiKey, prompt, []);
