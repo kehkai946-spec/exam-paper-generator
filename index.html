@@ -468,5 +468,92 @@
             finally { loader.style.display = 'none'; }
         }
     </script>
+        // --------------------------------- 
+    // [신규 추가 모듈 4] AI 튜터 학습 피드백 엔진
+    // ---------------------------------
+    const TutorFeedbackEngine = {
+        evaluateAnswer: function(correctSolution, studentSolution, conceptTag) {
+            // 학생 답과 정답 비교 (공백 제거 후 비교)
+            if (correctSolution.trim() === studentSolution.trim()) {
+                return `<span style="color: green; font-weight: bold;">[정답]</span> 완벽합니다! <b>${conceptTag}</b> 개념을 정확히 이해하고 공식을 잘 적용했네요.`;
+            } else {
+                return `<span style="color: red; font-weight: bold;">[오답]</span> 제출한 답: ${studentSolution}<br>
+                        <b>💡 튜터의 분석:</b> 단순한 계산 실수인지, 아니면 근의 공식이나 부호 적용 단계에서 오류가 났는지 과정을 다시 한번 확인해보세요.`;
+            }
+        }
+    };
+
+    // --------------------------------- 
+    // [신규 추가 모듈 5] AI 모델 진화를 위한 품질 피드백 시스템
+    // ---------------------------------
+    const QualityFeedbackManager = {
+        feedbackDB: [], // 유저 피드백 데이터가 임시로 쌓이는 배열
+        
+        saveUserFeedback: function(problemId, rating, comment) {
+            const feedbackData = { 
+                problem_id: problemId, 
+                rating: rating, 
+                comment: comment 
+            };
+            this.feedbackDB.push(feedbackData); // 데이터 저장 로직
+            console.log("현재 누적된 피드백 DB:", this.feedbackDB); // 개발자 도구(F12)에서 확인 가능
+            
+            return "소중한 피드백이 반영되어 다음 변형 문제는 더 정교하게 출제됩니다!";
+        }
+    };
+
+    // --------------------------------- 
+    // [기능 연결] 피드백 화면 띄우기 & 평가 제출 함수
+    // ---------------------------------
+    
+    // 학생이 답을 제출하고 채점할 때 호출하는 함수 (기존 답안 제출 로직에 연결해서 사용)
+    function processStudentAnswer(correctAnswer, studentAnswer, tag) {
+        // 1. 튜터 피드백 결과 가져오기
+        const feedbackMsg = TutorFeedbackEngine.evaluateAnswer(correctAnswer, studentAnswer, tag);
+        
+        // 2. 튜터 피드백 화면에 띄우기
+        const tutorSection = document.getElementById("tutorFeedbackSection");
+        tutorSection.style.display = "block";
+        document.getElementById("tutorFeedbackResult").innerHTML = feedbackMsg;
+
+        // 3. 채점이 끝났으니 문제 품질 평가 창도 같이 열어주기
+        document.getElementById("qualityFeedbackSection").style.display = "block";
+    }
+
+    // 학생(유저)이 품질 평가 제출 버튼을 눌렀을 때 실행되는 함수
+    function submitQualityFeedback() {
+        const rating = document.getElementById("userRating").value;
+        const comment = document.getElementById("userComment").value;
+        
+        // 피드백 저장 및 결과 메시지 받기
+        const resultMsg = QualityFeedbackManager.saveUserFeedback("prob_001_variant", rating, comment);
+        
+        // 화면에 완료 메시지 띄우기
+        document.getElementById("qualityFeedbackResult").innerText = resultMsg;
+    }
+
 </body>
 </html>
+    <!-- [신규 추가 모듈 4] AI 튜터 피드백 화면 -->
+    <div class="section" id="tutorFeedbackSection" style="display: none; background-color: #f9f9f9; border-left: 4px solid #4a90e2;">
+        <h3>👩‍🏫 AI 튜터 상세 피드백</h3>
+        <p id="tutorFeedbackResult"></p>
+    </div>
+
+    <!-- [신규 추가 모듈 5] AI 모델 품질 평가 화면 (시스템용) -->
+    <div class="section" id="qualityFeedbackSection" style="display: none; background-color: #fff9e6; border-left: 4px solid #f0ad4e;">
+        <h3>⭐ AI 변형 문제 품질 평가</h3>
+        <p style="font-size: 14px; color: #666;">이 문제의 변형 퀄리티는 어땠나요? 피드백을 남겨주시면 AI가 더 똑똑해집니다.</p>
+        
+        <select id="userRating" style="padding: 8px; margin-bottom: 10px; width: 100%;">
+            <option value="5">⭐⭐⭐⭐⭐ 매우 훌륭함</option>
+            <option value="4">⭐⭐⭐⭐ 좋은 편임</option>
+            <option value="3">⭐⭐⭐ 보통 (풀 만함)</option>
+            <option value="2">⭐⭐ 억지스러운 조건이 있음</option>
+            <option value="1">⭐ 오류가 있거나 너무 이상함</option>
+        </select>
+        
+        <input type="text" id="userComment" placeholder="추가 코멘트를 남겨주세요 (예: 도형의 방정식 기호가 깨져요)">
+        <button onclick="submitQualityFeedback()" style="background-color: #f0ad4e;">평가 제출하기</button>
+        <p id="qualityFeedbackResult" style="color: #d9534f; margin-top: 10px; font-weight: bold;"></p>
+    </div>
