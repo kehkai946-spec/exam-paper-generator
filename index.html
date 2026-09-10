@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>단권화 스터디 다이어리 V10 - OMR Edition</title>
+    <title>단권화 스터디 다이어리 V11 - Perfect AI Tutor</title>
     
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -90,7 +90,7 @@
 
         .feedback-section { margin-top: 20px; padding: 25px; border-radius: var(--radius-box); box-shadow: var(--shadow-fluffy); }
 
-        /* 🔥 시각적 OMR 카드를 위한 디자인 CSS 추가 */
+        /* 그래픽 OMR CSS 유지 */
         .omr-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; background: #FAFAFA; padding: 20px; border-radius: 16px; border: 2px solid var(--border-soft); margin-top: 10px; }
         .omr-row { display: flex; align-items: center; justify-content: space-between; padding: 5px 10px; }
         .omr-qnum { font-weight: 800; font-size: 1.1rem; color: var(--accent-blue); width: 40px; }
@@ -109,7 +109,7 @@
             .main-content { padding: 20px; }
             .grid-2 { grid-template-columns: 1fr; }
             .document-view { padding: 30px 20px; }
-            .omr-container { grid-template-columns: 1fr; } /* 모바일에서는 OMR 1줄로 */
+            .omr-container { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -126,8 +126,8 @@
             
             <div class="menu-group">
                 <div class="menu-label">✏️ Create</div>
-                <div class="menu-item active" onclick="navTo('generate')"><i class="fa-solid fa-wand-magic-sparkles"></i> 정밀 문제 출제</div>
-                <div class="menu-item" onclick="navTo('concept')"><i class="fa-solid fa-shapes"></i> 코넬 개념 요약</div>
+                <!-- 🔥 불필요한 출제기 삭제, 코넬 노트를 1번으로 올림 -->
+                <div class="menu-item active" onclick="navTo('concept')"><i class="fa-solid fa-shapes"></i> 코넬 정리 & AI 심층 분석</div>
                 <div class="menu-item" onclick="navTo('grading')"><i class="fa-solid fa-marker"></i> OMR & 오답 분석</div>
             </div>
 
@@ -145,55 +145,13 @@
 
         <main class="main-content" onclick="closeSidebarOutside()">
             
-            <!-- 1. 시험지 출제 -->
-            <section id="page-generate" class="page-section active">
-                <div class="page-header">
-                    <div class="page-header-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
-                    <div>
-                        <h2 class="page-title">정밀 맞춤 문제 출제</h2>
-                        <p class="page-desc">단순 출제가 아닌 선지의 심리적, 논리적 근거까지 파고듭니다.</p>
-                    </div>
-                </div>
-                <div class="panel">
-                    <div class="grid-2">
-                        <div class="form-group">
-                            <label><i class="fa-solid fa-ranking-star"></i> 선지 구성 방식</label>
-                            <select id="genOptions">
-                                <option value="오답의 심리적/논리적 근거 명시형">오답의 심리적/논리적 근거 명시형</option>
-                                <option value="단순 계산/내용 일치형">단순 지식/계산 확인형</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label><i class="fa-solid fa-tags"></i> 태그 (과목/단원)</label>
-                            <input type="text" id="genTags" placeholder="예: 공통수학1, 복소수">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label><i class="fa-solid fa-pen-nib"></i> 출제 텍스트 및 지시사항</label>
-                        <textarea id="genPrompt" rows="4" placeholder="출제할 지문 텍스트나 공식을 직접 입력하고, 원하는 문제 유형을 적어주세요."></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label><i class="fa-solid fa-file-image"></i> 참고 자료 첨부 (선택)</label>
-                        <div class="upload-zone">
-                            <i class="fa-solid fa-cloud-arrow-up"></i>
-                            <div class="upload-text">사진이나 PDF 첨부 (20MB 이하 권장)</div>
-                            <input type="file" id="genFile" accept="image/*,.pdf,.txt" onchange="handleFile('genFile', 'genPreview')">
-                        </div>
-                        <div id="genPreview" class="preview-area"></div>
-                    </div>
-                    <button class="btn-primary" onclick="executeAI('generate')"><i class="fa-solid fa-paper-plane"></i> 정밀 문항 생성하기</button>
-                    <div id="genLoader" class="loader"><div class="spinner"></div>출제자의 의도를 분석하며 선지를 구성 중입니다...</div>
-                </div>
-                <div id="genResult" class="document-view"></div>
-            </section>
-
-            <!-- 2. 코넬 개념 요약 -->
-            <section id="page-concept" class="page-section">
+            <!-- 1. 코넬 개념 요약 & AI 심층 분석 (기본 화면) -->
+            <section id="page-concept" class="page-section active">
                 <div class="page-header">
                     <div class="page-header-icon" style="background: var(--accent-mint); color: #059669;"><i class="fa-solid fa-shapes"></i></div>
                     <div>
-                        <h2 class="page-title">코넬 노트 (Cornell Note) 생성기</h2>
-                        <p class="page-desc">복잡한 텍스트를 구조화하고 출제 확률이 높은 포인트를 예측합니다.</p>
+                        <h2 class="page-title">코넬 정리노트 & AI 심층 분석</h2>
+                        <p class="page-desc">복잡한 텍스트를 구조화하고, AI가 족집게처럼 출제율과 핵심 포인트를 분석합니다.</p>
                     </div>
                 </div>
                 <div class="panel">
@@ -202,7 +160,7 @@
                         <input type="text" id="conceptTags" placeholder="예: 국어, 문학분석">
                     </div>
                     <div class="form-group">
-                        <label><i class="fa-solid fa-align-left"></i> 요약할 개념 텍스트 원본 (필수)</label>
+                        <label><i class="fa-solid fa-align-left"></i> 요약 및 분석할 텍스트 원본 (필수)</label>
                         <textarea id="conceptPrompt" rows="6" placeholder="여기에 요약하고 싶은 긴 글, 교과서 본문 등을 복사해서 붙여넣으세요."></textarea>
                     </div>
                     <div class="form-group">
@@ -215,20 +173,20 @@
                         <div id="conceptPreview" class="preview-area" style="background: var(--accent-mint); color: #064E3B;"></div>
                     </div>
                     <button class="btn-primary" style="background: linear-gradient(135deg, #34D399, #10B981);" onclick="executeAI('concept')">
-                        <i class="fa-solid fa-table-list"></i> 코넬 노트 구조화 시작
+                        <i class="fa-solid fa-table-list"></i> 완벽 정리 및 AI 족집게 분석 시작
                     </button>
-                    <div id="conceptLoader" class="loader" style="color:#10B981"><div class="spinner" style="border-top-color:#10B981"></div>핵심 키워드와 출제 포인트를 분석 중입니다...</div>
+                    <div id="conceptLoader" class="loader" style="color:#10B981"><div class="spinner" style="border-top-color:#10B981"></div>자료를 분석하여 하이라이트 및 출제율을 계산 중입니다...</div>
                 </div>
                 <div id="conceptResult" class="document-view"></div>
             </section>
 
-            <!-- 3. 정밀 채점 (그래픽 OMR 탑재) -->
+            <!-- 2. 정밀 채점 & OMR -->
             <section id="page-grading" class="page-section">
                 <div class="page-header">
                     <div class="page-header-icon" style="background: var(--accent-blue);"><i class="fa-solid fa-marker"></i></div>
                     <div>
                         <h2 class="page-title">OMR 및 오답 역추적 채점</h2>
-                        <p class="page-desc">시험지를 올리고 나의 마킹을 톡톡 찍어 입력하면 약점 분석 리포트를 제공합니다.</p>
+                        <p class="page-desc">시험지를 올리고 OMR에 마킹하면, AI 선생님이 채점 및 약점 극복 하이라이트를 제공합니다.</p>
                     </div>
                 </div>
                 <div class="panel">
@@ -238,31 +196,26 @@
                         <div id="gradeQuestPreview" class="preview-area"></div>
                     </div>
                     
-                    <!-- 🔥 화려한 그래픽 OMR 입력 란 -->
                     <div class="form-group">
                         <label><i class="fa-solid fa-list-ol"></i> 나의 OMR 마킹 (터치하여 정답 입력)</label>
-                        <div id="visualOMR" class="omr-container">
-                            <!-- 자바스크립트가 여기에 OMR 카드를 쫙 깔아줍니다 -->
-                        </div>
+                        <div id="visualOMR" class="omr-container"></div>
                         <div class="omr-controls">
                             <button class="btn-small" onclick="clearOMR()"><i class="fa-solid fa-rotate-right"></i> 마킹 초기화</button>
                         </div>
-                        
-                        <!-- AI에게 보낼 숨겨진 텍스트 박스 (눈으로는 읽기 전용으로 보입니다) -->
-                        <input type="text" id="omrAnswers" readonly placeholder="마킹을 하시면 이곳에 자동으로 기록됩니다." style="margin-top: 15px; background: #E2E8F0; color: #475569; font-weight: bold;">
+                        <input type="text" id="omrAnswers" readonly placeholder="마킹을 하시면 이곳에 자동으로 기록됩니다." style="margin-top: 15px; background: #E2E8F0; color: #475569; font-weight: bold; border:none;">
                     </div>
 
                     <div class="form-group">
                         <label><i class="fa-solid fa-tags"></i> 태그 (선택)</label>
                         <input type="text" id="gradeTags" placeholder="예: 모의고사, 국어">
                     </div>
-                    <button class="btn-primary" style="background: linear-gradient(135deg, var(--accent-blue), #60A5FA);" onclick="executeAI('grading')">가채점 및 약점 분석 시작</button>
-                    <div id="gradeLoader" class="loader" style="color:var(--accent-blue)"><div class="spinner" style="border-top-color:var(--accent-blue)"></div>시험지 분석 및 오답 원인을 역추적 중입니다...</div>
+                    <button class="btn-primary" style="background: linear-gradient(135deg, var(--accent-blue), #60A5FA);" onclick="executeAI('grading')">가채점 및 약점 하이라이트 시작</button>
+                    <div id="gradeLoader" class="loader" style="color:var(--accent-blue)"><div class="spinner" style="border-top-color:var(--accent-blue)"></div>채점 및 약점 분석 리포트를 생성 중입니다...</div>
                 </div>
                 <div id="gradeResult" class="document-view"></div>
             </section>
 
-            <!-- 4. 보관함 & 5. 단권화 -->
+            <!-- 3. 보관함 & 4. 단권화 -->
             <section id="page-archive" class="page-section">
                 <div class="page-header">
                     <div class="page-header-icon" style="background: #D4A373;"><i class="fa-solid fa-box-archive"></i></div>
@@ -279,38 +232,23 @@
                 <div class="page-header">
                     <div class="page-header-icon" style="background: linear-gradient(135deg, #FFD166, #FF9F1C);"><i class="fa-solid fa-crown"></i></div>
                     <div>
-                        <h2 class="page-title">마스터 단권화 노트 (킬러 문항 예측 포함)</h2>
+                        <h2 class="page-title">마스터 단권화 노트 (AI 출제율 예측)</h2>
                     </div>
                 </div>
                 <div class="panel">
                     <p style="margin-bottom:15px; font-weight:700; color:var(--text-sub);">📝 병합할 노트를 선택해주세요</p>
                     <div id="unifiedSelectionList" style="max-height:300px; overflow-y:auto; margin-bottom: 25px; padding-right: 10px;"></div>
-                    <button class="btn-primary" style="background: linear-gradient(135deg, #FFD166, #FF9F1C);" onclick="executeUnifiedNote()">단권화 및 출제 예측하기</button>
-                    <div id="unifiedLoader" class="loader" style="color:#FF9F1C"><div class="spinner" style="border-top-color:#FF9F1C"></div>노트 병합 및 킬러 문항 예측 중...</div>
+                    <button class="btn-primary" style="background: linear-gradient(135deg, #FFD166, #FF9F1C);" onclick="executeUnifiedNote()">단권화 및 AI 출제 예측하기</button>
+                    <div id="unifiedLoader" class="loader" style="color:#FF9F1C"><div class="spinner" style="border-top-color:#FF9F1C"></div>노트 병합 및 핵심 포인트 추출 중...</div>
                 </div>
                 <div id="unifiedResult" class="document-view"></div>
             </section>
 
-            <!-- 피드백 창 -->
             <div class="feedback-section" id="tutorFeedbackSection" style="display: none; background-color: #f9f9f9; border-left: 4px solid #4a90e2;">
-                <h3 style="margin-bottom: 15px; color: #4a90e2;"><i class="fa-solid fa-chalkboard-user"></i> AI 튜터 상세 피드백</h3>
+                <h3 style="margin-bottom: 15px; color: #4a90e2;"><i class="fa-solid fa-chalkboard-user"></i> AI 튜터 코멘트</h3>
                 <p id="tutorFeedbackResult" style="line-height: 1.6;"></p>
             </div>
-            <div class="feedback-section" id="qualityFeedbackSection" style="display: none; background-color: #fff9e6; border-left: 4px solid #f0ad4e;">
-                <h3 style="margin-bottom: 10px; color: #d97706;"><i class="fa-solid fa-star"></i> AI 변형 문제 품질 평가</h3>
-                <p style="font-size: 0.95rem; color: #666; margin-bottom: 15px;">이 문제의 변형 퀄리티는 어땠나요? 피드백을 남겨주시면 AI가 더 똑똑해집니다.</p>
-                <select id="userRating" style="padding: 12px; margin-bottom: 15px; width: 100%; border-radius: 8px; border: 1px solid #ccc; font-size: 1rem;">
-                    <option value="5">⭐⭐⭐⭐⭐ 매우 훌륭함</option>
-                    <option value="4">⭐⭐⭐⭐ 좋은 편임</option>
-                    <option value="3">⭐⭐⭐ 보통 (풀 만함)</option>
-                    <option value="2">⭐⭐ 억지스러운 조건이 있음</option>
-                    <option value="1">⭐ 오류가 있거나 너무 이상함</option>
-                </select>
-                <input type="text" id="userComment" placeholder="추가 코멘트를 남겨주세요 (예: 수식이 깨져요)" style="width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #ccc; font-size: 1rem;">
-                <button onclick="submitQualityFeedback()" style="background-color: #f0ad4e; color: white; padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; font-size: 1rem;">평가 제출하기</button>
-                <p id="qualityFeedbackResult" style="color: #d9534f; margin-top: 15px; font-weight: bold; text-align: center;"></p>
-            </div>
-
+            
         </main>
     </div>
 
@@ -318,21 +256,17 @@
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
         function closeSidebarOutside() { if(window.innerWidth <= 1024) document.getElementById('sidebar').classList.remove('open'); }
 
-        // 🔥 페이지가 열릴 때 OMR 카드를 그리는 뇌(함수) 실행
         window.onload = () => {
             const savedKey = localStorage.getItem('geminiApiKey');
             if (savedKey) document.getElementById('sysApiKey').value = savedKey;
-            renderOMR(); // OMR 카드 렌더링
+            renderOMR();
         };
 
-        // --- OMR 카드 작동 로직 시작 ---
-        let userAnswers = {}; // 사용자가 마킹한 정답을 저장할 공간
-
+        let userAnswers = {}; 
         function renderOMR() {
             const container = document.getElementById('visualOMR');
             if(!container) return;
             let html = '';
-            // 총 20문제, 5지선다 생성
             for(let i=1; i<=20; i++) {
                 html += `<div class="omr-row"><div class="omr-qnum">${i}.</div><div class="omr-bubbles">`;
                 for(let j=1; j<=5; j++) {
@@ -345,13 +279,11 @@
 
         function selectOMR(questionNum, choice) {
             userAnswers[questionNum] = choice;
-            // 1. 해당 문제의 모든 동그라미 색깔 빼기
             for(let j=1; j<=5; j++) {
                 document.getElementById(`omr-q${questionNum}-c${j}`).classList.remove('selected');
             }
-            // 2. 방금 클릭한 동그라미만 색칠하기
             document.getElementById(`omr-q${questionNum}-c${choice}`).classList.add('selected');
-            updateOMRText(); // 텍스트 박스 업데이트
+            updateOMRText();
         }
 
         function clearOMR() {
@@ -366,13 +298,11 @@
 
         function updateOMRText() {
             let ansArr = [];
-            // 1번부터 차례대로 마킹된 것만 문자로 엮어줍니다
             for(let i=1; i<=20; i++) {
                 if(userAnswers[i]) ansArr.push(`${i}번:${userAnswers[i]}`);
             }
             document.getElementById('omrAnswers').value = ansArr.join(', ');
         }
-        // --- OMR 카드 작동 로직 끝 ---
 
         function saveApiKey() { localStorage.setItem('geminiApiKey', document.getElementById('sysApiKey').value); }
 
@@ -384,8 +314,6 @@
             closeSidebarOutside();
             
             document.getElementById('tutorFeedbackSection').style.display = 'none';
-            document.getElementById('qualityFeedbackSection').style.display = 'none';
-            document.getElementById('qualityFeedbackResult').innerText = "";
             
             if(pageId === 'archive') loadHistory();
             if(pageId === 'unified') loadUnifiedSelection();
@@ -422,7 +350,7 @@
             
             const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`, {
                 method: 'POST', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ contents: [{ parts: requestParts }], generationConfig: { temperature: 0.6 } })
+                body: JSON.stringify({ contents: [{ parts: requestParts }], generationConfig: { temperature: 0.7 } })
             });
             
             if (!response.ok) {
@@ -447,24 +375,11 @@
             resultBox.innerHTML = ""; 
             
             document.getElementById('tutorFeedbackSection').style.display = 'none';
-            document.getElementById('qualityFeedbackSection').style.display = 'none';
 
             let prompt = "", title = "", filesToProcess = [], tags = [];
 
             try {
-                if (mode === 'generate') {
-                    const inputPrompt = document.getElementById('genPrompt').value;
-                    const file = document.getElementById('genFile').files[0];
-                    const rawTags = document.getElementById('genTags').value;
-                    const option = document.getElementById('genOptions').value;
-                    if (!inputPrompt && !file) throw new Error("텍스트를 적거나 파일을 올려주세요.");
-                    if (file) filesToProcess.push(await fileToBase64(file));
-                    
-                    tags = rawTags.split(',').map(t => t.trim()).filter(t => t);
-                    title = `[출제] ${tags[0] || '맞춤 문제'}`;
-                    prompt = `당신은 예리한 수능 출제 위원입니다. 다음 내용을 바탕으로 문제를 설계하세요.\n[선지 구성 방식]: ${option}\n[요청사항]: ${inputPrompt}\n\n[조건]\n1. 해설 작성 시 정답뿐만 아니라 '오답 선지가 논리적/심리적으로 매력적인 이유'를 구체적으로 명시할 것.`;
-                } 
-                else if (mode === 'concept') {
+                if (mode === 'concept') {
                     const inputPrompt = document.getElementById('conceptPrompt').value;
                     const file = document.getElementById('conceptFile').files[0];
                     const rawTags = document.getElementById('conceptTags').value;
@@ -472,8 +387,9 @@
                     if (file) filesToProcess.push(await fileToBase64(file));
                     
                     tags = rawTags.split(',').map(t => t.trim()).filter(t => t);
-                    title = `[코넬노트] ${tags[0] || '핵심 요약'}`;
-                    prompt = `제공된 데이터를 완벽한 '코넬 노트' 형식으로 변환하세요.\n[원본 데이터]: ${inputPrompt}\n\n[조건]\n1. 좌측 '핵심 키워드/질문', 우측 '상세 내용', 하단 '전체 요약' 표(Table) 마크다운 구성.\n2. 텍스트에 숨겨진 철학적/이론적 함의를 깊이 파고들어 서술할 것.\n3. 마지막 항목으로 [🚨 AI 출제 예측] 섹션을 만들어, 이 내용에서 시험에 나올 확률이 높은 변형 포인트 2가지를 제시할 것.`;
+                    title = `[정리노트] ${tags[0] || '핵심 요약'}`;
+                    // 🔥 정리노트, 출제율, 하이라이트 프롬프트 완벽 적용
+                    prompt = `제공된 데이터를 완벽한 '코넬 노트' 및 'AI 심층 분석 리포트' 형식으로 변환하세요.\n[원본 데이터]: ${inputPrompt}\n\n[조건]\n1. 좌측 '핵심 키워드/질문', 우측 '상세 내용', 하단 '전체 요약(정리노트)' 표(Table) 마크다운 구성.\n2. [🚨 출제율 및 핵심 포인트] 섹션을 추가하여, 시험 출제 확률(%)과 출제 포인트를 명시할 것.\n3. [👩‍🏫 AI 선생님의 심층 분석 및 하이라이트] 섹션을 추가하여, 가장 중요한 부분을 강조하고 족집게 학습 조언을 제공할 것.`;
                 }
                 else if (mode === 'grading') {
                     const qFile = document.getElementById('gradeQuestFile').files[0];
@@ -484,8 +400,9 @@
                     if (qFile) filesToProcess.push(await fileToBase64(qFile));
                     
                     tags = rawTags.split(',').map(t => t.trim()).filter(t => t);
-                    title = `[가채점] ${tags[0] || '오답 분석'}`;
-                    prompt = `첨부된 객관식 시험지 이미지와 학생이 제출한 마킹 답안을 바탕으로 가채점 및 분석을 진행하세요.\n[학생 마킹 답안]: ${omrInput}\n\n[조건]\n1. 첨부된 시험지의 실제 정답을 도출하여 학생의 답안과 비교, 채점 결과를 보여줄 것.\n2. 틀린 문제에 대해서는 학생이 왜 그 오답을 매력적으로 느꼈는지(오답률 높은 이유) 분석할 것.\n3. 최종적으로 학생의 약점 개념을 파악하고, 이를 보완할 수 있는 구체적인 학습 가이드(행동 영역)를 제시할 것.`;
+                    title = `[채점/오답분석] ${tags[0] || '모의고사'}`;
+                    // 🔥 OMR 채점, 약점 분석, 다음 시험 예측 프롬프트 적용
+                    prompt = `첨부된 객관식 시험지 이미지와 학생이 제출한 마킹 답안을 바탕으로 가채점 및 분석을 진행하세요.\n[학생 마킹 답안]: ${omrInput}\n\n[조건]\n1. 실제 정답과 학생 답안을 비교하여 채점 결과(O/X)와 총점을 보여줄 것.\n2. 틀린 문제의 오답 원인(논리적 함정, 오답률 높은 이유)을 심층 분석할 것.\n3. [👩‍🏫 AI 선생님의 약점 보완 하이라이트] 섹션을 통해 학생의 취약 개념과 보완 방법을 강조할 것.\n4. [🚨 유사 변형 출제 포인트]를 예측해 줄 것.`;
                 }
 
                 const aiText = await callGeminiAPI(apiKey, prompt, filesToProcess);
@@ -495,10 +412,9 @@
                 if (window.MathJax) MathJax.typesetPromise([resultBox]);
                 saveHistory(title, tags, aiText);
 
-                document.getElementById('qualityFeedbackSection').style.display = 'block';
-                if (mode === 'generate' || mode === 'grading') {
+                if (mode === 'grading' || mode === 'concept') {
                     document.getElementById('tutorFeedbackSection').style.display = 'block';
-                    document.getElementById('tutorFeedbackResult').innerHTML = "<b>[AI 튜터 인사이트]</b><br>오답 패턴 분석 결과, 특정 개념의 혼동이 감지됩니다. 제공된 약점 보완 가이드를 바탕으로 코넬 노트 탭에서 해당 개념을 다시 요약해 보세요.";
+                    document.getElementById('tutorFeedbackResult').innerHTML = "<b>[AI 튜터 한마디]</b><br>자료 분석이 완료되었습니다. 제공된 하이라이트와 출제율(%)을 바탕으로 중요도가 높은 부분부터 우선적으로 복습을 진행하세요!";
                 }
 
             } catch (error) { 
@@ -510,7 +426,6 @@
             }
         }
 
-        // 보관함 로직
         function saveHistory(title, tags, content) {
             let history = JSON.parse(localStorage.getItem('cozyArchive') || '[]');
             history.unshift({ id: Date.now(), date: new Date().toLocaleDateString('ko-KR'), title: title, tags: tags, content: content });
@@ -534,15 +449,15 @@
             const item = history.find(h => h.id === id);
             if (item) {
                 document.querySelectorAll('.menu-item, .page-section').forEach(el => el.classList.remove('active'));
-                document.getElementById('page-generate').classList.add('active'); 
-                const resultBox = document.getElementById('genResult');
+                // 🔥 삭제된 출제기 대신 코넬노트 탭을 통해 보관함 렌더링
+                document.getElementById('page-concept').classList.add('active'); 
+                const resultBox = document.getElementById('conceptResult');
                 resultBox.innerHTML = marked.parse(item.content);
                 resultBox.style.display = 'block';
                 if (window.MathJax) MathJax.typesetPromise([resultBox]);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
                 
                 document.getElementById('tutorFeedbackSection').style.display = 'none';
-                document.getElementById('qualityFeedbackSection').style.display = 'none';
             }
         }
 
@@ -573,7 +488,8 @@
                 if(item) mergedContent += `\n\n### [${item.title}]\n${item.content}`;
             });
 
-            const prompt = `학습 기록을 병합하여 단권화 마스터 노트를 작성하세요.\n\n${mergedContent}\n\n[조건]\n1. 내용의 유기적 연결을 중시하여 재구성할 것.\n2. 통합된 개념을 바탕으로 [🔥 최종 킬러 문항 출제 예측 리포트]를 작성하여 학습자가 집중해야 할 논리적 함정을 경고해 줄 것.`;
+            // 🔥 단권화 + 핵심 포인트 + 출제율 예측
+            const prompt = `학습 기록을 병합하여 마스터 단권화 노트를 작성하세요.\n\n${mergedContent}\n\n[조건]\n1. 내용의 유기적 연결을 중시하여 재구성할 것.\n2. [👩‍🏫 AI 선생님의 단권화 하이라이트]를 통해 가장 중요한 핵심 개념들을 강조할 것.\n3. 통합된 개념을 바탕으로 [🔥 최종 킬러 문항 출제 예측 및 출제율(%) 리포트]를 작성할 것.`;
             try {
                 const aiText = await callGeminiAPI(apiKey, prompt, []);
                 resultBox.innerHTML = marked.parse(aiText);
@@ -584,10 +500,6 @@
                 resultBox.style.display = 'block';
             } 
             finally { loader.style.display = 'none'; }
-        }
-
-        function submitQualityFeedback() {
-            document.getElementById('qualityFeedbackResult').innerText = "✅ 소중한 피드백이 전송되었습니다!";
         }
     </script>
 </body>
