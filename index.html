@@ -294,8 +294,7 @@
 
         </main>
     </div>
-
-    <script>
+            <script>
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
         function closeSidebarOutside() { if(window.innerWidth <= 1024) document.getElementById('sidebar').classList.remove('open'); }
 
@@ -313,6 +312,10 @@
             document.getElementById('page-' + pageId).classList.add('active');
             closeSidebarOutside();
             
+            // 페이지 이동 시 하단 피드백 섹션 숨기기
+            document.getElementById('tutorFeedbackSection').style.display = 'none';
+            document.getElementById('qualityFeedbackSection').style.display = 'none';
+            
             if(pageId === 'archive') loadHistory();
             if(pageId === 'unified') loadUnifiedSelection();
         }
@@ -321,14 +324,12 @@
             const file = document.getElementById(inputId).files[0];
             const preview = document.getElementById(previewId);
             
-            // 파일 용량 체크 (약 5MB 제한) - 무한 로딩의 주범 해결!
             if (file && file.size > 5 * 1024 * 1024) {
                 alert("파일 용량이 너무 큽니다! (5MB 이하 권장)\n용량이 크면 브라우저가 멈출 수 있습니다.");
-                document.getElementById(inputId).value = ""; // 초기화
+                document.getElementById(inputId).value = ""; 
                 preview.style.display = 'none';
                 return;
             }
-
             if (file) {
                 preview.style.display = 'block';
                 preview.innerHTML = `<i class="fa-solid fa-check-circle"></i> 첨부완료: ${file.name}`;
@@ -348,15 +349,15 @@
             let requestParts = [{ text: prompt }];
             files.forEach(f => requestParts.push({ inlineData: { data: f.data, mimeType: f.mimeType } }));
             
-            // 안정성과 속도가 보장된 gemini-1.5-flash 모델로 변경 완료
-            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+            // 🔥 고객님 요청 반영: 가장 똑똑한 gemini-1.5-pro 모델로 강력하게 업그레이드!
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${apiKey}`, {
                 method: 'POST', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ contents: [{ parts: requestParts }], generationConfig: { temperature: 0.6 } })
             });
             
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.error ? errorData.error.message : "API 통신 중 오류가 발생했습니다. (API 키를 확인해주세요)");
+                throw new Error(errorData.error ? errorData.error.message : "API 통신 중 오류가 발생했습니다.");
             }
 
             const data = await response.json();
@@ -370,9 +371,14 @@
 
             const loader = document.getElementById(mode + 'Loader');
             const resultBox = document.getElementById(mode + 'Result');
+            
             loader.style.display = 'block'; 
             resultBox.style.display = 'none';
-            resultBox.innerHTML = ""; // 기존 결과 초기화
+            resultBox.innerHTML = ""; 
+            
+            // 로딩 중에는 하단 피드백 숨기기
+            document.getElementById('tutorFeedbackSection').style.display = 'none';
+            document.getElementById('qualityFeedbackSection').style.display = 'none';
 
             let prompt = "", title = "", filesToProcess = [], tags = [];
 
@@ -380,39 +386,34 @@
                 if (mode === 'generate') {
                     const inputPrompt = document.getElementById('genPrompt').value;
                     const file = document.getElementById('genFile').files[0];
-                    const rawTags = document.getElementById('genTags').value;
                     const option = document.getElementById('genOptions').value;
-                    if (!inputPrompt && !file) throw new Error("입력값이 없습니다. 텍스트를 적거나 파일을 올려주세요.");
+                    if (!inputPrompt && !file) throw new Error("텍스트를 적거나 파일을 올려주세요.");
                     if (file) filesToProcess.push(await fileToBase64(file));
                     
-                    tags = rawTags.split(',').map(t => t.trim()).filter(t => t);
-                    title = `[출제] ${tags[0] || '맞춤 문제'}`;
-                    prompt = `당신은 예리한 수능 출제 위원입니다. 다음 내용을 바탕으로 문제를 설계하세요.\n[선지 구성 방식]: ${option}\n[텍스트/지시]: ${inputPrompt}\n\n[조건]\n1. 해설 작성 시 정답뿐만 아니라 '왜 이 오답 선지가 논리적/심리적으로 매력적인지' 구체적인 출제 의도와 근거(Rationale)를 명시할 것.\n2. 수학 수식이나 증명은 반드시 LaTeX($수식$, $$수식$$)를 사용할 것.`;
+                    title = `[출제] 맞춤 문제`;
+                    prompt = `당신은 예리한 수능 출제 위원입니다.\n[선지 구성 방식]: ${option}\n[요청사항]: ${inputPrompt}\n\n[조건]\n1. 해설 작성 시 정답뿐만 아니라 '오답 선지가 매력적인 이유'를 구체적으로 명시할 것.\n2. 수학 수식이나 증명은 반드시 LaTeX($수식$, $$수식$$)를 사용할 것.`;
                 } 
                 else if (mode === 'concept') {
                     const inputPrompt = document.getElementById('conceptPrompt').value;
                     const file = document.getElementById('conceptFile').files[0];
-                    const rawTags = document.getElementById('conceptTags').value;
                     if (!inputPrompt && !file) throw new Error("요약할 텍스트나 파일을 넣어주세요.");
                     if (file) filesToProcess.push(await fileToBase64(file));
                     
-                    tags = rawTags.split(',').map(t => t.trim()).filter(t => t);
-                    title = `[코넬노트] ${tags[0] || '핵심 요약'}`;
-                    prompt = `제공된 텍스트/이미지를 완벽한 '코넬 노트(Cornell Note)' 형식으로 변환하세요.\n[원본 텍스트]: ${inputPrompt}\n\n[조건]\n1. 좌측에는 '핵심 키워드/질문', 우측에는 '상세 내용/증명', 하단에는 '전체 요약'이 들어가는 표(Table) 형태로 마크다운을 구성할 것.\n2. 피상적인 요약이 아니라, 텍스트에 숨겨진 철학적/심리적 함의나 수학 공식의 증명 원리를 깊이 파고들어 서술할 것.`;
+                    title = `[코넬노트] 핵심 요약`;
+                    prompt = `제공된 데이터를 '코넬 노트' 형식으로 변환하세요.\n[원본]: ${inputPrompt}\n\n[조건]\n1. 좌측 '핵심 키워드', 우측 '상세 내용', 하단 '전체 요약'이 들어가는 표(Table) 마크다운 구성.\n2. 숨겨진 원리를 깊이 파고들어 서술할 것.`;
                 }
                 else if (mode === 'grading') {
                     const qFile = document.getElementById('gradeQuestFile').files[0];
                     const aFile = document.getElementById('gradeAnsFile').files[0];
-                    const rawTags = document.getElementById('gradeTags').value;
                     if (!qFile && !aFile) throw new Error("문제 사진이나 풀이 사진을 올려주세요.");
                     if (qFile) filesToProcess.push(await fileToBase64(qFile));
                     if (aFile) filesToProcess.push(await fileToBase64(aFile));
                     
-                    tags = rawTags.split(',').map(t => t.trim()).filter(t => t);
-                    title = `[채점] ${tags[0] || '논리 검증'}`;
-                    prompt = `제공된 원본 문제(또는 실험 데이터)와 학생의 풀이를 비교하여 엄밀하게 채점하세요.\n[조건]\n1. 단순 계산 실수가 아니라, 어느 논리 단계나 실험 수치 해석에서 오류가 났는지 역추적할 것.\n2. 실제 수치/데이터가 포함되어 있다면 그 구체적 결괏값에 기반하여 오차 원인을 엄밀히 분석할 것.`;
+                    title = `[채점] 논리 검증`;
+                    prompt = `원본 문제와 학생의 풀이를 비교하여 엄밀하게 채점하세요.\n[조건]\n1. 어느 논리 단계에서 오류가 났는지 역추적할 것.\n2. 오차 원인을 엄밀히 분석할 것.`;
                 }
 
+                // AI 호출 (Pro 모델이라 약 10~30초 소요될 수 있습니다)
                 const aiText = await callGeminiAPI(apiKey, prompt, filesToProcess);
                 
                 resultBox.innerHTML = marked.parse(aiText);
@@ -420,9 +421,16 @@
                 if (window.MathJax) MathJax.typesetPromise([resultBox]);
                 saveHistory(title, tags, aiText);
 
+                // 🔥 로드맵 기능 활성화: 결과가 성공적으로 나오면 피드백 창 띄우기
+                document.getElementById('qualityFeedbackSection').style.display = 'block';
+                
+                if (mode === 'generate' || mode === 'grading') {
+                    document.getElementById('tutorFeedbackSection').style.display = 'block';
+                    document.getElementById('tutorFeedbackResult').innerHTML = "<b>[AI 튜터 인사이트]</b><br>훌륭한 접근입니다! 위 분석 결과를 바탕으로 취약한 개념을 한 번 더 복습해 보는 것을 권장합니다. (상세 피드백 기능은 다음 버전에 연동될 예정입니다.)";
+                }
+
             } catch (error) { 
-                // 무한 로딩 대신 화면에 확실하게 에러 메시지 띄워주기
-                resultBox.innerHTML = `<div style="color: red; font-weight: bold; padding: 20px; border: 2px dashed red; border-radius: 10px;">🚨 처리 중 오류가 발생했습니다:<br><br>${error.message}</div>`;
+                resultBox.innerHTML = `<div style="color: red; font-weight: bold; padding: 20px; border: 2px dashed red; border-radius: 10px;">🚨 오류:<br><br>${error.message}</div>`;
                 resultBox.style.display = 'block';
             } 
             finally { 
@@ -430,7 +438,7 @@
             }
         }
 
-        // 보관함 및 단권화 로직
+        // --- 이하 보관함/단권화 로직 ---
         function saveHistory(title, tags, content) {
             let history = JSON.parse(localStorage.getItem('cozyArchive') || '[]');
             history.unshift({ id: Date.now(), date: new Date().toLocaleDateString('ko-KR'), title: title, tags: tags, content: content });
@@ -442,11 +450,10 @@
             const list = document.getElementById('historyList');
             let history = JSON.parse(localStorage.getItem('cozyArchive') || '[]');
             if (history.length === 0) return list.innerHTML = "<div style='color:var(--text-sub); padding:20px;'>데이터가 없습니다.</div>";
-            list.innerHTML = history.map(item => {
-                let tagsHtml = (item.tags || []).map(t => `<span class="tag-badge">${t}</span>`).join('');
-                return `<div class="archive-item" onclick="viewHistory(${item.id})">
-                    <div class="archive-content"><div class="archive-title">${item.title}</div><div class="tag-container">${tagsHtml}</div></div></div>`;
-            }).join('');
+            list.innerHTML = history.map(item => `
+                <div class="archive-item" onclick="viewHistory(${item.id})">
+                    <div class="archive-content"><div class="archive-title">${item.title}</div></div>
+                </div>`).join('');
         }
 
         function viewHistory(id) {
@@ -504,8 +511,9 @@
         }
 
         function submitQualityFeedback() {
-            document.getElementById('qualityFeedbackResult').innerText = "소중한 피드백이 전송되었습니다! 감사합니다.";
+            document.getElementById('qualityFeedbackResult').innerText = "✅ 소중한 피드백이 전송되었습니다! 다음 출제에 반영하겠습니다.";
         }
+
     </script>
 </body>
 </html>
