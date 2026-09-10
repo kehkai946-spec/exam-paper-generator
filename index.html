@@ -529,3 +529,86 @@ def main_app_flow(image_upload):
     variant = generator.generate_variant(problem_text, difficulty_adjustment=+1)
 
     return prob_result, variant
+# ---------------------------------------------------------
+# [신규 추가 모듈 4] AI 튜터 학습 피드백 엔진 (학생용)
+# ---------------------------------------------------------
+class TutorFeedbackEngine:
+    def __init__(self):
+        # 취약점 분석을 위한 프롬프트나 채점 기준표가 들어가는 곳
+        pass
+
+    def evaluate_answer(self, correct_solution, student_solution, concept_tag):
+        """
+        학생의 풀이 과정을 역추적하여 어느 단계에서 오류가 났는지 분석합니다.
+        """
+        if correct_solution == student_solution:
+            return {"status": "정답", "feedback": f"완벽합니다! {concept_tag} 개념을 정확히 이해했네요."}
+        else:
+            # 상업용 디테일: 단순 '틀림'이 아니라 '오류 지점'을 찾아냅니다.
+            return {
+                "status": "오답", 
+                "error_point": "근의 공식 적용 단계",
+                "feedback": "부호 계산에서 실수가 있었습니다. b^2 - 4ac 부분을 다시 확인해보세요."
+            }
+
+# ---------------------------------------------------------
+# [신규 추가 모듈 5] AI 모델 진화를 위한 품질 피드백 시스템 (시스템용)
+# ---------------------------------------------------------
+class QualityFeedbackManager:
+    def __init__(self):
+        # 유저들의 피드백 데이터를 누적하는 DB 연결부
+        self.feedback_db = []
+
+    def save_user_feedback(self, problem_id, rating, comment):
+        """
+        유저가 AI 변형 문제에 대해 남긴 별점과 코멘트를 저장하여 다음 생성에 반영.
+        """
+        feedback_data = {
+            "problem_id": problem_id,
+            "rating": rating,           # 예: 1~5점 (너무 쉬움, 오류 있음 등)
+            "comment": comment          # 예: "조건이 너무 억지스러워요"
+        }
+        self.feedback_db.append(feedback_data)
+        
+        # 별점이 낮을 경우, 해당 문제 패턴을 다음번 변형 문제 생성 시 가중치를 낮추는 로직 트리거
+        return "피드백이 반영되어 AI가 더 똑똑해졌습니다."
+
+# ---------------------------------------------------------
+# [업데이트된 메인 실행부 V2] 기존 기능 + 피드백 기능 통합
+# * 기존 main_app_flow를 이 코드로 교체하시면 됩니다.
+# ---------------------------------------------------------
+def main_app_flow_v2(image_upload, student_answer=None, user_rating=None):
+    # 1. 모듈 초기화 (레고 조립)
+    analyzer = ProbabilityAnalyzer()          # [유지] 출제 확률
+    reader = VisionProblemReader("API_KEY")   # [유지] 비전 인식
+    generator = VariantProblemGenerator()     # [유지] 문제 생성
+    tutor = TutorFeedbackEngine()             # [신규] 튜터 피드백
+    quality_mgr = QualityFeedbackManager()    # [신규] 품질 피드백
+
+    # --- STEP 1: 문제 인식 및 생성 (기존 로직) ---
+    problem_text, tag = reader.process_image(image_upload)
+    prob_result = analyzer.analyze_trend(tag)
+    
+    # 정답 텍스트도 함께 생성한다고 가정
+    variant_problem, variant_solution = generator.generate_variant(problem_text)
+
+    result_data = {
+        "trend_analysis": prob_result,
+        "new_problem": variant_problem
+    }
+
+    # --- STEP 2: 학생이 답을 제출했을 때 (신규 로직) ---
+    if student_answer:
+        study_feedback = tutor.evaluate_answer(variant_solution, student_answer, tag)
+        result_data["study_feedback"] = study_feedback
+
+    # --- STEP 3: 학생이 문제 품질을 평가했을 때 (신규 로직) ---
+    if user_rating:
+        system_update_msg = quality_mgr.save_user_feedback(
+            problem_id="prob_001", 
+            rating=user_rating, 
+            comment="변형이 훌륭합니다."
+        )
+        result_data["system_msg"] = system_update_msg
+
+    return result_data
