@@ -2,215 +2,251 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Smart Study Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AI Smart Study Dashboard V5</title>
     
-    <!-- 폰트 및 아이콘 -->
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- 필수 라이브러리: 마크다운 및 수식 렌더링 -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
     <style>
         :root {
-            --primary: #1e3a8a; /* 학원 느낌의 신뢰감 있는 네이비 */
-            --primary-hover: #1e40af;
-            --secondary: #3b82f6;
-            --bg-color: #f1f5f9;
-            --sidebar-bg: #ffffff;
-            --text-dark: #0f172a;
-            --text-muted: #64748b;
-            --border: #e2e8f0;
+            --primary: #1e3a8a; --primary-hover: #1e40af; --secondary: #3b82f6;
+            --bg-color: #f1f5f9; --sidebar-bg: #ffffff;
+            --text-dark: #0f172a; --text-muted: #64748b; --border: #e2e8f0;
         }
         
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Pretendard', sans-serif; background-color: var(--bg-color); color: var(--text-dark); display: flex; height: 100vh; overflow: hidden; }
         
-        /* 사이드바 (학원 관리 메뉴 스타일) */
-        .sidebar { width: 260px; background: var(--sidebar-bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 20px 0; }
-        .sidebar-header { padding: 0 20px 20px; border-bottom: 1px solid var(--border); margin-bottom: 20px; text-align: center; }
+        /* iOS Safari 최적화: 100dvh 사용, body 스크롤 허용 */
+        body { font-family: 'Pretendard', sans-serif; background-color: var(--bg-color); color: var(--text-dark); display: flex; flex-direction: column; min-height: 100dvh; overflow-x: hidden; }
+        
+        /* 모바일/패드용 상단 네비게이션 바 */
+        .mobile-header { display: none; background: var(--sidebar-bg); padding: 15px 20px; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+        .mobile-header h1 { font-size: 1.2rem; color: var(--primary); font-weight: 800; }
+        .menu-toggle { background: none; border: none; font-size: 1.5rem; color: var(--text-dark); cursor: pointer; }
+
+        .app-container { display: flex; flex: 1; position: relative; }
+
+        /* 사이드바 (반응형) */
+        .sidebar { width: 280px; background: var(--sidebar-bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 25px 0; transition: transform 0.3s ease; z-index: 50; }
+        .sidebar-header { padding: 0 25px 25px; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
         .sidebar-header h1 { font-size: 1.4rem; color: var(--primary); font-weight: 800; }
         
-        .menu-item { padding: 15px 25px; cursor: pointer; display: flex; align-items: center; gap: 12px; font-weight: 600; color: var(--text-muted); transition: 0.2s; border-left: 4px solid transparent; }
+        .menu-item { padding: 16px 25px; cursor: pointer; display: flex; align-items: center; gap: 15px; font-weight: 600; color: var(--text-muted); transition: 0.2s; border-left: 4px solid transparent; font-size: 1.05rem; }
         .menu-item:hover { background: #f8fafc; color: var(--primary); }
         .menu-item.active { background: #eff6ff; color: var(--primary); border-left-color: var(--primary); }
         .menu-item i { font-size: 1.2rem; width: 24px; text-align: center; }
         
-        .api-key-section { margin-top: auto; padding: 20px; border-top: 1px solid var(--border); }
-        .api-key-section label { font-size: 0.85rem; font-weight: bold; color: var(--text-muted); margin-bottom: 8px; display: block; }
-        .api-key-section input { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.9rem; }
+        .api-key-section { margin-top: auto; padding: 25px; border-top: 1px solid var(--border); }
+        .api-key-section label { font-size: 0.85rem; font-weight: bold; color: var(--text-muted); margin-bottom: 10px; display: block; }
+        .api-key-section input { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 0.95rem; }
 
-        /* 메인 콘텐츠 영역 */
-        .main-content { flex: 1; padding: 40px; overflow-y: auto; }
-        .page-section { display: none; max-width: 900px; margin: 0 auto; animation: fadeIn 0.3s ease; }
+        /* 메인 콘텐츠 */
+        .main-content { flex: 1; padding: 30px; max-width: 1000px; margin: 0 auto; width: 100%; }
+        .page-section { display: none; animation: fadeIn 0.3s ease; }
         .page-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .page-title { font-size: 1.8rem; font-weight: 800; margin-bottom: 25px; color: var(--text-dark); display: flex; align-items: center; gap: 10px; }
         
-        /* 폼 및 카드 디자인 */
-        .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid var(--border); margin-bottom: 20px; }
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; font-weight: 700; margin-bottom: 8px; font-size: 0.95rem; }
-        input[type="text"], textarea, select { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 1rem; background: #f8fafc; }
+        .card { background: white; padding: 35px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid var(--border); margin-bottom: 25px; }
+        .form-group { margin-bottom: 25px; }
+        .form-group label { display: block; font-weight: 700; margin-bottom: 10px; font-size: 1rem; }
+        input[type="text"], textarea, select { width: 100%; padding: 14px; border: 1px solid var(--border); border-radius: 10px; font-family: inherit; font-size: 1rem; background: #f8fafc; box-sizing: border-box; }
         input:focus, textarea:focus, select:focus { outline: none; border-color: var(--secondary); background: white; }
         
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 
-        /* 파일 업로드 존 */
-        .upload-zone { border: 2px dashed var(--secondary); background: #eff6ff; padding: 30px; text-align: center; border-radius: 12px; cursor: pointer; position: relative; transition: 0.2s; }
+        /* 파일 업로드 존 (터치 최적화) */
+        .upload-zone { border: 2px dashed var(--secondary); background: #eff6ff; padding: 40px 20px; text-align: center; border-radius: 12px; cursor: pointer; position: relative; transition: 0.2s; }
         .upload-zone:hover { background: #dbeafe; }
         .upload-zone input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
-        .upload-zone i { font-size: 2.5rem; color: var(--secondary); margin-bottom: 10px; }
-        #previewArea { display: none; margin-top: 15px; font-weight: 600; color: var(--primary); }
+        .upload-zone i { font-size: 2.5rem; color: var(--secondary); margin-bottom: 12px; }
+        .preview-area { display: none; margin-top: 15px; font-weight: 600; color: var(--primary); background: #e0f2fe; padding: 10px; border-radius: 8px; text-align: center; }
 
         /* 버튼 및 로딩 */
-        .btn-primary { background: var(--primary); color: white; border: none; padding: 16px 20px; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; width: 100%; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .btn-primary:hover { background: var(--primary-hover); }
-        .btn-success { background: #10b981; margin-top: 15px; }
+        .btn-primary { background: var(--primary); color: white; border: none; padding: 18px 20px; border-radius: 10px; font-size: 1.1rem; font-weight: bold; cursor: pointer; width: 100%; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); }
+        .btn-success { background: #10b981; margin-top: 20px; }
         
         .loader { display: none; text-align: center; padding: 30px; font-weight: bold; color: var(--secondary); }
         .spinner { display: inline-block; width: 24px; height: 24px; border: 3px solid rgba(59,130,246,0.3); border-radius: 50%; border-top-color: var(--secondary); animation: spin 1s linear infinite; margin-right: 10px; vertical-align: middle; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* 결과 표시 영역 */
-        .result-box { background: white; padding: 40px; border-radius: 12px; border-top: 5px solid var(--primary); box-shadow: 0 4px 15px rgba(0,0,0,0.05); line-height: 1.8; margin-top: 20px; display: none; }
-        .result-box h2 { color: var(--primary); margin-top: 30px; border-bottom: 2px solid var(--border); padding-bottom: 10px; }
-        
-        /* 통계 배지 (오답률 등) */
-        .stat-badge { display: inline-block; padding: 5px 12px; background: #fee2e2; color: #dc2626; border-radius: 20px; font-weight: bold; font-size: 0.9rem; margin-bottom: 15px; }
+        /* 결과 박스 (아이패드 읽기 최적화) */
+        .result-box { background: white; padding: 45px 35px; border-radius: 16px; border-top: 6px solid var(--primary); box-shadow: 0 4px 20px rgba(0,0,0,0.05); line-height: 1.9; margin-top: 25px; display: none; font-size: 1.05rem; overflow-x: auto; }
+        .result-box h2 { color: var(--primary); margin-top: 35px; border-bottom: 2px solid var(--border); padding-bottom: 10px; margin-bottom: 20px; }
+        .result-box h3 { margin-top: 25px; color: #1e293b; }
+        .stat-badge { display: inline-block; padding: 6px 14px; background: #fee2e2; color: #dc2626; border-radius: 20px; font-weight: bold; font-size: 0.95rem; margin-bottom: 15px; }
+        .concept-badge { display: inline-block; padding: 6px 14px; background: #dcfce7; color: #166534; border-radius: 20px; font-weight: bold; font-size: 0.95rem; margin-bottom: 15px; }
+
+        /* 반응형(미디어 쿼리): 아이패드 및 모바일 */
+        @media (max-width: 1024px) {
+            .mobile-header { display: flex; }
+            .sidebar-header { display: none; }
+            .sidebar { position: absolute; left: -280px; top: 0; height: 100%; box-shadow: 4px 0 15px rgba(0,0,0,0.1); }
+            .sidebar.open { transform: translateX(280px); }
+            .main-content { padding: 20px; }
+            .grid-2 { grid-template-columns: 1fr; gap: 15px; }
+        }
 
         @media print {
-            .sidebar, .no-print, .card { display: none !important; }
-            body, .main-content { background: white; padding: 0; height: auto; overflow: visible; }
+            .mobile-header, .sidebar, .no-print, .card { display: none !important; }
+            body { background: white; }
+            .main-content { padding: 0; max-width: 100%; }
             .result-box { display: block; border: none; box-shadow: none; padding: 0; }
         }
     </style>
 </head>
 <body>
 
-    <!-- 좌측 사이드바 메뉴 -->
-    <nav class="sidebar no-print">
-        <div class="sidebar-header">
-            <h1><i class="fa-solid fa-graduation-cap"></i> Smart Study Lab</h1>
-        </div>
-        
-        <div class="menu-item active" onclick="navTo('generate')">
-            <i class="fa-solid fa-pen-to-square"></i> 맞춤형 시험지 출제
-        </div>
-        <div class="menu-item" onclick="navTo('grading')">
-            <i class="fa-solid fa-clipboard-check"></i> 채점 및 오답률 분석
-        </div>
-        <div class="menu-item" onclick="navTo('archive')">
-            <i class="fa-solid fa-box-archive"></i> 학습 데이터 보관함
-        </div>
+    <!-- 모바일/아이패드 세로모드용 헤더 -->
+    <header class="mobile-header no-print">
+        <h1><i class="fa-solid fa-graduation-cap"></i> Smart Study Lab</h1>
+        <button class="menu-toggle" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+    </header>
 
-        <div class="api-key-section">
-            <label><i class="fa-solid fa-key"></i> 시스템 API 키 (Gemini)</label>
-            <input type="password" id="sysApiKey" placeholder="API Key 입력" onchange="saveApiKey()">
-        </div>
-    </nav>
-
-    <!-- 메인 화면 -->
-    <main class="main-content">
-        
-        <!-- 1. 시험지 출제 메뉴 -->
-        <section id="page-generate" class="page-section active">
-            <h2 class="page-title"><i class="fa-solid fa-pen-to-square"></i> 맞춤형 시험지 출제소</h2>
+    <div class="app-container">
+        <!-- 좌측 사이드바 -->
+        <nav class="sidebar no-print" id="sidebar">
+            <div class="sidebar-header">
+                <h1><i class="fa-solid fa-graduation-cap"></i> Smart Study Lab</h1>
+            </div>
             
-            <div class="card">
-                <div class="grid-2">
-                    <div class="form-group">
-                        <label>과목 및 유형</label>
-                        <select id="genType">
-                            <option value="수능형 기출 변형">수능형 기출 변형</option>
-                            <option value="내신형 서술형 포함">내신형 서술형/논술형</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>목표 난이도</label>
-                        <select id="genDiff">
-                            <option value="최상 (킬러문항)">최상 (킬러문항 및 복합 추론)</option>
-                            <option value="상 (응용력)">상 (개념 응용 및 심화)</option>
-                            <option value="중 (기본개념)" selected>중 (기본 개념 확인)</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>상세 지시사항 (Prompt)</label>
-                    <textarea id="genPrompt" rows="3" placeholder="예: 공통수학1의 다항식 연산 기출 변형이나, 공통수학2의 도형의 방정식 응용 문제를 출제해 줘. 혹은 아래 첨부한 국어 문학 지문의 상징적 의미 추론 문제를 내줘."></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label>범위 텍스트 또는 파일 (PDF, 이미지 지원)</label>
-                    <div class="upload-zone">
-                        <i class="fa-solid fa-cloud-arrow-up"></i>
-                        <p>기준이 될 문제나 지문 파일을 드래그하거나 클릭하세요.<br><small>(텍스트를 아래 칸에 직접 입력해도 됩니다)</small></p>
-                        <input type="file" id="genFile" accept="image/*,.pdf,.txt" onchange="handleFile('genFile', 'genPreview')">
-                    </div>
-                    <div id="genPreview"></div>
-                    <textarea id="genText" rows="3" placeholder="파일을 올리지 않고 여기에 지문이나 공식을 직접 복사-붙여넣기 해도 됩니다." style="margin-top: 10px;"></textarea>
-                </div>
-
-                <button class="btn-primary" onclick="executeAI('generate')"><i class="fa-solid fa-wand-magic-sparkles"></i> 시험지 출제 알고리즘 가동</button>
-                <div id="genLoader" class="loader"><div class="spinner"></div>AI가 교육과정을 분석하여 문항을 설계 중입니다...</div>
+            <div class="menu-item active" onclick="navTo('generate')">
+                <i class="fa-solid fa-pen-to-square"></i> 맞춤형 시험지 출제
+            </div>
+            <div class="menu-item" onclick="navTo('grading')">
+                <i class="fa-solid fa-clipboard-check"></i> 정밀 채점 및 오답 분석
+            </div>
+            <!-- [신규 기능] 개념 요약 모드 -->
+            <div class="menu-item" onclick="navTo('concept')">
+                <i class="fa-solid fa-book-open"></i> 핵심 개념 구조화 노트
+            </div>
+            <div class="menu-item" onclick="navTo('archive')">
+                <i class="fa-solid fa-box-archive"></i> 학습 데이터 보관함
             </div>
 
-            <div id="genResult" class="result-box"></div>
-            <button id="genPrintBtn" class="btn-primary btn-success no-print" style="display:none;" onclick="window.print()"><i class="fa-solid fa-print"></i> 출제된 시험지 PDF 저장</button>
-        </section>
+            <div class="api-key-section">
+                <label><i class="fa-solid fa-key"></i> 시스템 API 키 (Gemini)</label>
+                <input type="password" id="sysApiKey" placeholder="API Key 입력" onchange="saveApiKey()">
+            </div>
+        </nav>
 
-        <!-- 2. 채점 및 오답률 분석 메뉴 -->
-        <section id="page-grading" class="page-section">
-            <h2 class="page-title"><i class="fa-solid fa-chart-line"></i> 스마트 채점 & 예상 오답률 분석</h2>
+        <!-- 메인 콘텐츠 -->
+        <main class="main-content" onclick="closeSidebarOutside()">
             
-            <div class="card">
-                <p style="margin-bottom: 20px; color: var(--text-muted); font-size: 0.95rem;">학생이 푼 답안을 입력하거나 사진으로 찍어 올리면, AI가 채점 후 예상 오답률과 취약점을 분석합니다.</p>
-                
-                <div class="form-group">
-                    <label>원본 문제 (텍스트 또는 사진)</label>
-                    <div class="upload-zone" style="padding: 20px;">
-                        <input type="file" id="gradeQuestFile" accept="image/*,.pdf" onchange="handleFile('gradeQuestFile', 'gradeQuestPreview')">
-                        <i class="fa-regular fa-file-image" style="font-size: 1.5rem;"></i> 원본 문제 업로드
+            <!-- 1. 시험지 출제 메뉴 -->
+            <section id="page-generate" class="page-section active">
+                <h2 class="page-title"><i class="fa-solid fa-pen-to-square"></i> 맞춤형 시험지 출제소</h2>
+                <div class="card">
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label>과목 및 유형</label>
+                            <select id="genType">
+                                <option value="수능형 기출 변형">수능형 기출 변형</option>
+                                <option value="내신형 서술형 포함">내신형 서술형/논술형</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>목표 난이도</label>
+                            <select id="genDiff">
+                                <option value="최상 (킬러문항 및 복합 추론)">최상 (킬러문항 및 복합 추론)</option>
+                                <option value="상 (개념 응용 및 심화)" selected>상 (개념 응용 및 심화)</option>
+                            </select>
+                        </div>
                     </div>
-                    <div id="gradeQuestPreview"></div>
-                    <textarea id="gradeQuestText" rows="2" placeholder="또는 문제 텍스트 직접 입력" style="margin-top: 10px;"></textarea>
-                </div>
-
-                <div class="form-group" style="border-top: 1px dashed var(--border); padding-top: 20px;">
-                    <label>학생의 답안 (텍스트 또는 풀이과정 사진)</label>
-                    <div class="upload-zone" style="padding: 20px;">
-                        <input type="file" id="gradeAnsFile" accept="image/*,.pdf" onchange="handleFile('gradeAnsFile', 'gradeAnsPreview')">
-                        <i class="fa-solid fa-pen-clip" style="font-size: 1.5rem;"></i> 학생 답안 업로드
+                    <div class="form-group">
+                        <label>상세 지시사항</label>
+                        <textarea id="genPrompt" rows="3" placeholder="예: 공통수학1의 다항식 연산 기출 변형 3문제를 출제해 줘."></textarea>
                     </div>
-                    <div id="gradeAnsPreview"></div>
-                    <textarea id="gradeAnsText" rows="3" placeholder="또는 학생이 쓴 답안/풀이과정 텍스트 직접 입력" style="margin-top: 10px;"></textarea>
+                    <div class="form-group">
+                        <label>기준 파일 (문제 캡처, 지문 PDF 등)</label>
+                        <div class="upload-zone">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                            <p>터치하여 사진이나 파일을 업로드하세요.</p>
+                            <input type="file" id="genFile" accept="image/*,.pdf,.txt" onchange="handleFile('genFile', 'genPreview')">
+                        </div>
+                        <div id="genPreview" class="preview-area"></div>
+                        <textarea id="genText" rows="2" placeholder="텍스트 직접 입력도 가능합니다." style="margin-top: 15px;"></textarea>
+                    </div>
+                    <button class="btn-primary" onclick="executeAI('generate')"><i class="fa-solid fa-wand-magic-sparkles"></i> 시험지 출제 알고리즘 가동</button>
+                    <div id="genLoader" class="loader"><div class="spinner"></div>AI가 교육과정을 분석하여 문항을 설계 중입니다...</div>
                 </div>
+                <div id="genResult" class="result-box"></div>
+                <button id="genPrintBtn" class="btn-primary btn-success no-print" style="display:none;" onclick="window.print()"><i class="fa-solid fa-print"></i> PDF 저장 및 인쇄</button>
+            </section>
 
-                <button class="btn-primary" style="background-color: var(--text-dark);" onclick="executeAI('grading')">
-                    <i class="fa-solid fa-magnifying-glass-chart"></i> 정밀 채점 및 통계 분석 시작
-                </button>
-                <div id="gradeLoader" class="loader"><div class="spinner"></div>AI가 논리적 오류를 추적하고 예상 오답률을 계산 중입니다...</div>
-            </div>
+            <!-- 2. 채점 및 오답률 분석 메뉴 -->
+            <section id="page-grading" class="page-section">
+                <h2 class="page-title"><i class="fa-solid fa-clipboard-check"></i> 정밀 채점 & 오답 역추적</h2>
+                <div class="card">
+                    <p style="margin-bottom: 25px; color: var(--text-muted); line-height: 1.5;">원본 문제와 학생의 풀이 과정을 올려주세요. AI가 단순 채점을 넘어 어느 사고 단계에서 논리적 오류가 발생했는지 분석합니다.</p>
+                    <div class="form-group">
+                        <label>1. 원본 문제 (캡처 사진)</label>
+                        <div class="upload-zone" style="padding: 25px 15px;">
+                            <input type="file" id="gradeQuestFile" accept="image/*,.pdf" onchange="handleFile('gradeQuestFile', 'gradeQuestPreview')">
+                            <i class="fa-regular fa-file-image"></i> 원본 문제 업로드
+                        </div>
+                        <div id="gradeQuestPreview" class="preview-area"></div>
+                    </div>
+                    <div class="form-group" style="border-top: 1px dashed var(--border); padding-top: 25px;">
+                        <label>2. 학생의 풀이 과정 (사진)</label>
+                        <div class="upload-zone" style="padding: 25px 15px;">
+                            <input type="file" id="gradeAnsFile" accept="image/*,.pdf" onchange="handleFile('gradeAnsFile', 'gradeAnsPreview')">
+                            <i class="fa-solid fa-pen-clip"></i> 풀이 답안 업로드
+                        </div>
+                        <div id="gradeAnsPreview" class="preview-area"></div>
+                    </div>
+                    <button class="btn-primary" style="background-color: var(--text-dark);" onclick="executeAI('grading')"><i class="fa-solid fa-magnifying-glass-chart"></i> 논리 분석 및 채점 시작</button>
+                    <div id="gradeLoader" class="loader"><div class="spinner"></div>학생의 사고 과정을 역추적하여 오류를 찾고 있습니다...</div>
+                </div>
+                <div id="gradeResult" class="result-box"></div>
+            </section>
 
-            <div id="gradeResult" class="result-box"></div>
-        </section>
+            <!-- 3. [신규] 핵심 개념 요약 노트 메뉴 -->
+            <section id="page-concept" class="page-section">
+                <h2 class="page-title"><i class="fa-solid fa-book-open"></i> 개념 구조화 노트 생성기</h2>
+                <div class="card">
+                    <p style="margin-bottom: 25px; color: var(--text-muted); line-height: 1.5;">어려운 수학 개념서나 복잡한 문학 지문을 업로드하세요. 코넬 노트(Cornell Note) 방식으로 핵심 공식, 상징, 암기 포인트를 완벽하게 정리해 줍니다.</p>
+                    <div class="form-group">
+                        <label>요약할 범위 지시</label>
+                        <textarea id="conceptPrompt" rows="2" placeholder="예: 복소수 단원의 핵심 개념을 증명 과정과 함께 요약해 줘."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>교재 사진 또는 정리본 PDF</label>
+                        <div class="upload-zone">
+                            <i class="fa-solid fa-book-bookmark"></i>
+                            <p>교재 사진이나 PDF 파일을 터치하여 업로드하세요.</p>
+                            <input type="file" id="conceptFile" accept="image/*,.pdf,.txt" onchange="handleFile('conceptFile', 'conceptPreview')">
+                        </div>
+                        <div id="conceptPreview" class="preview-area"></div>
+                        <textarea id="conceptText" rows="3" placeholder="텍스트 직접 입력" style="margin-top: 15px;"></textarea>
+                    </div>
+                    <button class="btn-primary" style="background-color: var(--secondary);" onclick="executeAI('concept')"><i class="fa-solid fa-sitemap"></i> 개념 구조화 노트 만들기</button>
+                    <div id="conceptLoader" class="loader"><div class="spinner"></div>핵심 개념과 공식을 추출하여 노트를 구성 중입니다...</div>
+                </div>
+                <div id="conceptResult" class="result-box"></div>
+                <button id="conceptPrintBtn" class="btn-primary btn-success no-print" style="display:none;" onclick="window.print()"><i class="fa-solid fa-print"></i> 요약 노트 PDF 저장</button>
+            </section>
 
-        <!-- 3. 보관함 메뉴 -->
-        <section id="page-archive" class="page-section">
-            <h2 class="page-title"><i class="fa-solid fa-database"></i> 학습 데이터 보관함</h2>
-            <div class="card" id="historyList">
-                기록을 불러오는 중...
-            </div>
-        </section>
-
-    </main>
+            <!-- 4. 보관함 메뉴 -->
+            <section id="page-archive" class="page-section">
+                <h2 class="page-title"><i class="fa-solid fa-database"></i> 학습 데이터 보관함</h2>
+                <div class="card" id="historyList">기록을 불러오는 중...</div>
+            </section>
+        </main>
+    </div>
 
     <script>
+        // 사이드바 토글 (모바일/아이패드)
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+        function closeSidebarOutside() { if(window.innerWidth <= 1024) document.getElementById('sidebar').classList.remove('open'); }
+
         // 초기화 및 네비게이션
         window.onload = () => {
             const savedKey = localStorage.getItem('geminiApiKey');
@@ -218,21 +254,17 @@
             loadHistory();
         };
 
-        function saveApiKey() {
-            localStorage.setItem('geminiApiKey', document.getElementById('sysApiKey').value);
-        }
+        function saveApiKey() { localStorage.setItem('geminiApiKey', document.getElementById('sysApiKey').value); }
 
         function navTo(pageId) {
             document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
             event.currentTarget.classList.add('active');
-            
             document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
             document.getElementById('page-' + pageId).classList.add('active');
-            
+            closeSidebarOutside();
             if(pageId === 'archive') loadHistory();
         }
 
-        // 파일 처리 유틸리티
         function handleFile(inputId, previewId) {
             const file = document.getElementById(inputId).files[0];
             const preview = document.getElementById(previewId);
@@ -251,14 +283,14 @@
             });
         }
 
-        // 통합 AI 실행 엔진 (출제 & 채점 공통 로직)
+        // 통합 AI 실행 엔진 (강화된 프롬프트 탑재)
         async function executeAI(mode) {
             const apiKey = document.getElementById('sysApiKey').value;
-            if (!apiKey) return alert("좌측 하단 메뉴에서 API 키를 먼저 입력해주세요.");
+            if (!apiKey) return alert("좌측 메뉴 하단에 API 키를 입력해주세요.");
 
-            const loader = document.getElementById(mode === 'generate' ? 'genLoader' : 'gradeLoader');
-            const resultBox = document.getElementById(mode === 'generate' ? 'genResult' : 'gradeResult');
-            const printBtn = document.getElementById('genPrintBtn');
+            const loader = document.getElementById(mode + 'Loader');
+            const resultBox = document.getElementById(mode + 'Result');
+            const printBtn = document.getElementById(mode + 'PrintBtn');
             
             loader.style.display = 'block';
             resultBox.style.display = 'none';
@@ -266,53 +298,67 @@
 
             let finalPrompt = "";
             let filesToProcess = [];
+            let historyTitle = "";
 
             try {
-                // 1. 시험지 출제 모드 데이터 취합
+                // 1. 출제 모드 (프롬프트 세분화)
                 if (mode === 'generate') {
                     const prompt = document.getElementById('genPrompt').value;
                     const text = document.getElementById('genText').value;
                     const file = document.getElementById('genFile').files[0];
-                    const type = document.getElementById('genType').value;
-                    const diff = document.getElementById('genDiff').value;
-
-                    if (!prompt && !text && !file) throw new Error("지시사항이나 참고 자료를 하나 이상 입력해주세요.");
-                    
+                    if (!prompt && !text && !file) throw new Error("지시사항이나 참고 자료를 입력해주세요.");
                     if (file) filesToProcess.push(await fileToBase64(file));
-
+                    
+                    historyTitle = '[출제] ' + (prompt || '맞춤형 시험지');
                     finalPrompt = `
-당신은 대한민국 1타 강사이자 완벽한 출제 위원입니다.
-[설정] 유형: ${type}, 난이도: ${diff}
+당신은 대한민국 1타 강사이자 완벽한 수능/내신 출제 위원입니다.
+[유형]: ${document.getElementById('genType').value}, [난이도]: ${document.getElementById('genDiff').value}
 [지시사항]: ${prompt}
 [참고텍스트]: ${text}
 
-[엄수 규칙]
-1. [문제지]와 [해설지]를 '---' 로 완벽히 분리하세요.
-2. 수식은 반드시 LaTeX 문법(인라인 $수식$, 독립 $$수식$$)을 엄수하세요.
-3. 난이도에 맞는 매력적인 오답 선지와 채점 기준표를 반드시 포함하세요.`;
+[초정밀 출제 규칙]
+1. [문제지] 파트와 [해설지] 파트를 '---' 로 완벽히 분리하세요.
+2. 수학 기호와 수식은 모두 LaTeX 문법(인라인 $수식$, 독립 단락 $$수식$$)을 반드시 적용하세요.
+3. 객관식 오답 선지를 만들 때, 단순히 틀린 답이 아니라 '학생들이 자주 하는 실수나 착각을 유도하는 매력적인 오답 설계 원리'를 해설에 명시하세요.
+4. 서술형 문제의 경우, 부분 점수 부여를 위한 명확한 '채점 기준표(Rubric)'를 표 형식으로 작성하세요.`;
                 } 
-                
-                // 2. 채점 및 오답률 분석 모드 데이터 취합
+                // 2. 채점 모드 (논리적 오류 역추적)
                 else if (mode === 'grading') {
                     const qFile = document.getElementById('gradeQuestFile').files[0];
-                    const qText = document.getElementById('gradeQuestText').value;
                     const aFile = document.getElementById('gradeAnsFile').files[0];
-                    const aText = document.getElementById('gradeAnsText').value;
-
+                    if (!qFile && !aFile) throw new Error("문제나 학생 답안 이미지를 업로드해주세요.");
                     if (qFile) filesToProcess.push(await fileToBase64(qFile));
                     if (aFile) filesToProcess.push(await fileToBase64(aFile));
-
+                    
+                    historyTitle = '[분석] 학생 풀이 정밀 채점';
                     finalPrompt = `
-당신은 날카롭고 분석적인 교육 공학자이자 채점관입니다.
-제공된 원본 문제와 학생의 답안(또는 풀이)을 비교 분석하세요.
-[원본 문제]: ${qText}
-[학생 답안]: ${aText}
+당신은 날카롭고 분석적인 교육 공학자이자 채점관입니다. 제공된 원본 문제와 학생의 풀이 답안을 분석하세요.
 
-[엄수 규칙]
-1. 최상단에 <span class="stat-badge">예상 전국 오답률: OO%</span> 와 같이 해당 문제의 객관적인 난이도에 따른 예상 오답률을 배지로 표기하세요.
-2. 학생의 답안이 정답인지 오답인지 명확히 판별하고, 점수를 매기세요.
-3. 논리적 전개 과정에서 학생이 놓친 부분(취약 개념)이 무엇인지 정확히 짚어주세요.
-4. 수식은 모두 LaTeX($수식$)로 표기하여 가독성을 높이세요.`;
+[초정밀 분석 규칙]
+1. 최상단에 <span class="stat-badge">예상 오답률: OO%</span> 배지를 표시하여 난이도를 객관화하세요.
+2. 학생의 답안이 정답인지 오답인지 판별하고 최종 점수를 매기세요.
+3. [오류 역추적]: 오답일 경우, 학생의 사고 과정이나 수식 전개 중 정확히 '어느 단계'에서 '어떤 논리적 오류(Logic Error)'가 발생했는지 짚어주세요.
+4. [맞춤형 처방]: 이 학생이 보완해야 할 후속 학습 개념(예: 다항식의 덧셈 실수, 복소수 성질 오해 등)을 추천해 주세요.
+5. 수식은 모두 LaTeX($수식$)로 표기하세요.`;
+                }
+                // 3. 개념 구조화 모드 [신규]
+                else if (mode === 'concept') {
+                    const prompt = document.getElementById('conceptPrompt').value;
+                    const text = document.getElementById('conceptText').value;
+                    const file = document.getElementById('conceptFile').files[0];
+                    if (!prompt && !text && !file) throw new Error("요약할 자료를 입력해주세요.");
+                    if (file) filesToProcess.push(await fileToBase64(file));
+                    
+                    historyTitle = '[요약] ' + (prompt || '개념 요약 노트');
+                    finalPrompt = `
+당신은 내용 구조화에 탁월한 수석 학습 컨설턴트입니다. 제공된 자료를 완벽한 코넬 노트(Cornell Note) 방식으로 요약하세요.
+
+[초정밀 요약 규칙]
+1. 최상단에 <span class="concept-badge">핵심 개념 정리 노트</span> 배지를 달아주세요.
+2. [핵심 키워드]: 자료를 관통하는 핵심 키워드 3~5개를 불릿 포인트로 제시하세요.
+3. [개념 및 증명 구조화]: 마크다운 헤더(##, ###)와 표(Table)를 적극 활용하여 내용을 체계적으로 분해하세요.
+4. 수학 공식이나 문학적 상징은 볼드체(**)와 LaTeX($수식$)로 강조하세요.
+5. 마지막에 이 개념들을 확실히 이해했는지 스스로 질문해 볼 수 있는 '확인 질문(Self-Check)' 2개를 출제해 주세요.`;
                 }
 
                 // API 통신
@@ -330,18 +376,15 @@
 
                 const aiText = data.candidates[0].content.parts[0].text;
                 
-                // 결과 렌더링
                 resultBox.innerHTML = marked.parse(aiText);
                 resultBox.style.display = 'block';
                 if (window.MathJax) MathJax.typesetPromise([resultBox]);
-                if (printBtn && mode === 'generate') printBtn.style.display = 'flex';
+                if (printBtn) printBtn.style.display = 'flex';
 
-                // 기록 저장
-                let title = mode === 'generate' ? '[출제] ' + (document.getElementById('genPrompt').value || '맞춤형 시험지') : '[채점] ' + (document.getElementById('gradeQuestText').value || '학생 답안 분석');
-                saveHistory(title, aiText);
+                saveHistory(historyTitle, aiText);
 
             } catch (error) {
-                alert(error.message);
+                alert("오류 발생: " + error.message);
             } finally {
                 loader.style.display = 'none';
             }
@@ -350,8 +393,8 @@
         // 보관함 로직
         function saveHistory(title, content) {
             let history = JSON.parse(localStorage.getItem('studyArchive') || '[]');
-            history.unshift({ id: Date.now(), date: new Date().toLocaleString('ko-KR'), title: title.substring(0, 30) + "...", content: content });
-            if (history.length > 15) history.pop();
+            history.unshift({ id: Date.now(), date: new Date().toLocaleString('ko-KR'), title: title.substring(0, 30) + (title.length > 30 ? "..." : ""), content: content });
+            if (history.length > 20) history.pop();
             localStorage.setItem('studyArchive', JSON.stringify(history));
         }
 
@@ -360,13 +403,13 @@
             let history = JSON.parse(localStorage.getItem('studyArchive') || '[]');
             
             if (history.length === 0) {
-                list.innerHTML = "<div style='color:var(--text-muted); text-align:center; padding: 20px;'>보관된 학습 데이터가 없습니다.</div>";
+                list.innerHTML = "<div style='color:var(--text-muted); text-align:center; padding: 30px;'>보관된 학습 데이터가 없습니다.</div>";
                 return;
             }
 
             list.innerHTML = history.map(item => `
-                <div style="padding:15px; border:1px solid var(--border); border-radius:8px; margin-bottom:10px; cursor:pointer; background:#f8fafc;" onclick="viewHistory(${item.id})">
-                    <div style="font-weight:bold; color:var(--primary); margin-bottom:5px;">${item.title}</div>
+                <div style="padding:20px; border:1px solid var(--border); border-radius:12px; margin-bottom:12px; cursor:pointer; background:#f8fafc; transition: 0.2s;" onclick="viewHistory(${item.id})" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--border)'">
+                    <div style="font-weight:bold; color:var(--primary); margin-bottom:8px; font-size: 1.1rem;">${item.title}</div>
                     <small style="color:var(--text-muted);">${item.date}</small>
                 </div>
             `).join('');
@@ -376,12 +419,13 @@
             let history = JSON.parse(localStorage.getItem('studyArchive') || '[]');
             const item = history.find(h => h.id === id);
             if (item) {
-                navTo('generate'); // 화면 전환
+                navTo('generate'); // 뷰어로 이동
                 const resultBox = document.getElementById('genResult');
                 resultBox.innerHTML = marked.parse(item.content);
                 resultBox.style.display = 'block';
                 if (window.MathJax) MathJax.typesetPromise([resultBox]);
                 document.getElementById('genPrintBtn').style.display = 'flex';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         }
     </script>
