@@ -3,27 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>단권화 스터디 다이어리 V11 - Perfect AI Tutor</title>
+    <title>단권화 스터디 다이어리 V12 - Ultimate Edition (PDF)</title>
     
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- 마크다운, 수식, 그리고 PDF 내보내기를 위한 라이브러리 -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
         :root {
             --bg-body: #FFF9F5; --bg-surface: #FFFFFF;
-            --text-main: #4A4A4A; --text-sub: #8B8B8B;
+            --text-main: #2D3748; --text-sub: #718096;
             --accent-primary: #FF8BA7; --accent-secondary: #FFC6C7; 
-            --accent-blue: #A2D2FF; --accent-mint: #BDE0FE;
-            --border-soft: #F0E6E6; --shadow-fluffy: 0 10px 30px rgba(255, 139, 167, 0.08);
+            --accent-blue: #A2D2FF; --accent-mint: #10B981;
+            --border-soft: #E2E8F0; --shadow-fluffy: 0 10px 30px rgba(255, 139, 167, 0.08);
             --radius-box: 24px; --radius-btn: 12px;
         }
         
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Pretendard', sans-serif; background-color: var(--bg-body); color: var(--text-main); display: flex; flex-direction: column; min-height: 100dvh; overflow-x: hidden; }
+        body { font-family: 'Pretendard', sans-serif; background-color: var(--bg-body); color: var(--text-main); display: flex; flex-direction: column; min-height: 100dvh; overflow-x: hidden; line-height: 1.6; }
         
         .mobile-header { display: none; background: var(--bg-surface); padding: 16px 24px; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--border-soft); position: sticky; top: 0; z-index: 100; }
         .mobile-header h1 { font-size: 1.2rem; font-weight: 800; color: var(--accent-primary); }
@@ -51,7 +53,8 @@
         .page-section.active { display: block; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        .page-header { margin-bottom: 30px; background: white; padding: 25px 30px; border-radius: var(--radius-box); box-shadow: var(--shadow-fluffy); border: 2px solid white; display: flex; align-items: center; gap: 15px; }
+        .page-header { margin-bottom: 30px; background: white; padding: 25px 30px; border-radius: var(--radius-box); box-shadow: var(--shadow-fluffy); border: 2px solid white; display: flex; align-items: center; justify-content: space-between; }
+        .page-header-left { display: flex; align-items: center; gap: 15px; }
         .page-header-icon { background: var(--accent-secondary); color: white; width: 50px; height: 50px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
         .page-title { font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin-bottom: 4px; }
         .page-desc { color: var(--text-sub); font-size: 0.95rem; font-weight: 500; }
@@ -62,8 +65,6 @@
         input[type="text"], textarea, select { width: 100%; padding: 15px 18px; border: 2px solid var(--border-soft); border-radius: var(--radius-btn); font-family: inherit; font-size: 1rem; background: #FAFAFA; transition: all 0.2s; resize: vertical; }
         input:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent-primary); background: #FFF; box-shadow: 0 0 0 4px rgba(255, 139, 167, 0.1); }
         
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-
         .upload-zone { border: 2px dashed var(--accent-blue); background: #F4F9FF; padding: 30px 20px; text-align: center; border-radius: var(--radius-btn); cursor: pointer; position: relative; transition: all 0.3s; }
         .upload-zone:hover { background: #E6F0FF; }
         .upload-zone input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
@@ -74,23 +75,36 @@
         .btn-primary { background: linear-gradient(135deg, var(--accent-primary), #FF7597); color: white; border: none; padding: 16px 25px; border-radius: var(--radius-btn); font-size: 1.1rem; font-weight: 700; cursor: pointer; width: 100%; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 8px 20px rgba(255, 139, 167, 0.3); }
         .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(255, 139, 167, 0.4); }
         
+        /* PDF 저장 버튼 디자인 */
+        .btn-pdf { background: #475569; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 0.95rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.3s; }
+        .btn-pdf:hover { background: #1E293B; }
+
         .loader { display: none; text-align: center; padding: 30px; font-size: 1rem; color: var(--accent-primary); font-weight: 700; }
         .spinner { display: inline-block; width: 24px; height: 24px; border: 3px solid var(--accent-secondary); border-radius: 50%; border-top-color: var(--accent-primary); animation: spin 0.8s ease-in-out infinite; margin-right: 10px; vertical-align: middle; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        .document-view { background: white; padding: 50px 40px; border-radius: var(--radius-box); border: 1px solid var(--border-soft); box-shadow: var(--shadow-fluffy); line-height: 1.8; margin-top: 30px; display: none; font-size: 1.05rem; }
-        .document-view h2, .document-view h3 { color: var(--accent-primary); margin: 30px 0 15px; font-weight: 800; border-bottom: 2px dashed var(--border-soft); padding-bottom: 10px; }
+        /* 🔥 문서 뷰어 & 코넬 노트 시각화 끝판왕 CSS */
+        .document-wrapper { display: none; position: relative; margin-top: 30px; }
+        .pdf-actions { display: flex; justify-content: flex-end; margin-bottom: 15px; }
+        .document-view { background: white; padding: 50px 60px; border-radius: var(--radius-box); border: 1px solid var(--border-soft); box-shadow: var(--shadow-fluffy); font-size: 1.05rem; color: #1E293B; }
         
-        .tag-badge { display: inline-block; padding: 6px 14px; background: #F0F4FF; color: #5A8CFF; border-radius: 20px; font-weight: 700; font-size: 0.85rem; margin-right: 8px; margin-bottom: 10px; border: 1px solid #D6E4FF; }
+        .document-view h2, .document-view h3 { color: var(--accent-primary); margin: 35px 0 15px; font-weight: 800; border-bottom: 2px dashed var(--border-soft); padding-bottom: 10px; }
+        .document-view p { margin-bottom: 15px; }
+        .document-view strong { color: var(--accent-primary); }
         
+        /* 완벽한 코넬 노트 마크다운 테이블 디자인 */
+        .document-view table { width: 100%; border-collapse: collapse; margin: 25px 0; border: 2px solid #CBD5E1; border-radius: 8px; overflow: hidden; }
+        .document-view th, .document-view td { border: 1px solid #E2E8F0; padding: 18px; text-align: left; vertical-align: top; }
+        .document-view th { background-color: var(--accent-mint); color: white; font-weight: 800; font-size: 1.1rem; text-align: center; }
+        .document-view tr:nth-child(even) { background-color: #F8FAFC; }
+        
+        /* 표의 첫 번째 열(핵심 키워드 Cues)을 코넬 노트처럼 좁게, 두 번째 열을 넓게 설정 */
+        .document-view td:first-child { width: 30%; font-weight: 700; color: #0F172A; background-color: #F1F5F9; border-right: 2px solid #CBD5E1; }
+        .document-view td:nth-child(2) { width: 70%; line-height: 1.8; }
+
         .archive-item { padding: 20px; border: 2px solid var(--border-soft); border-radius: var(--radius-box); margin-bottom: 15px; display: flex; align-items: flex-start; gap: 15px; background: white; transition: 0.3s; cursor: pointer; }
         .archive-item:hover { border-color: var(--accent-secondary); transform: translateX(5px); }
-        .archive-checkbox { margin-top: 5px; transform: scale(1.3); cursor: pointer; accent-color: var(--accent-primary); }
-        .archive-title { font-weight: 800; font-size: 1.05rem; margin-bottom: 8px; color: var(--text-main); }
-
-        .feedback-section { margin-top: 20px; padding: 25px; border-radius: var(--radius-box); box-shadow: var(--shadow-fluffy); }
-
-        /* 그래픽 OMR CSS 유지 */
+        
         .omr-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; background: #FAFAFA; padding: 20px; border-radius: 16px; border: 2px solid var(--border-soft); margin-top: 10px; }
         .omr-row { display: flex; align-items: center; justify-content: space-between; padding: 5px 10px; }
         .omr-qnum { font-weight: 800; font-size: 1.1rem; color: var(--accent-blue); width: 40px; }
@@ -100,14 +114,12 @@
         .omr-bubble.selected { background-color: var(--accent-blue); border-color: var(--accent-blue); color: white; box-shadow: 0 4px 10px rgba(162, 210, 255, 0.4); }
         .omr-controls { display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px; }
         .btn-small { background: white; border: 2px solid var(--border-soft); padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: 600; color: var(--text-sub); transition: 0.2s; }
-        .btn-small:hover { border-color: var(--text-main); color: var(--text-main); }
-
+        
         @media (max-width: 1024px) {
             .mobile-header { display: flex; }
             .sidebar { position: fixed; left: -280px; top: 0; height: 100%; box-shadow: 10px 0 30px rgba(0,0,0,0.1); }
             .sidebar.open { transform: translateX(280px); }
             .main-content { padding: 20px; }
-            .grid-2 { grid-template-columns: 1fr; }
             .document-view { padding: 30px 20px; }
             .omr-container { grid-template-columns: 1fr; }
         }
@@ -126,7 +138,6 @@
             
             <div class="menu-group">
                 <div class="menu-label">✏️ Create</div>
-                <!-- 🔥 불필요한 출제기 삭제, 코넬 노트를 1번으로 올림 -->
                 <div class="menu-item active" onclick="navTo('concept')"><i class="fa-solid fa-shapes"></i> 코넬 정리 & AI 심층 분석</div>
                 <div class="menu-item" onclick="navTo('grading')"><i class="fa-solid fa-marker"></i> OMR & 오답 분석</div>
             </div>
@@ -145,16 +156,18 @@
 
         <main class="main-content" onclick="closeSidebarOutside()">
             
-            <!-- 1. 코넬 개념 요약 & AI 심층 분석 (기본 화면) -->
+            <!-- 1. 코넬 개념 요약 & AI 심층 분석 -->
             <section id="page-concept" class="page-section active">
                 <div class="page-header">
-                    <div class="page-header-icon" style="background: var(--accent-mint); color: #059669;"><i class="fa-solid fa-shapes"></i></div>
-                    <div>
-                        <h2 class="page-title">코넬 정리노트 & AI 심층 분석</h2>
-                        <p class="page-desc">복잡한 텍스트를 구조화하고, AI가 족집게처럼 출제율과 핵심 포인트를 분석합니다.</p>
+                    <div class="page-header-left">
+                        <div class="page-header-icon" style="background: var(--accent-mint); color: #059669;"><i class="fa-solid fa-shapes"></i></div>
+                        <div>
+                            <h2 class="page-title">코넬 정리노트 & AI 심층 분석</h2>
+                            <p class="page-desc">복잡한 텍스트를 구조화하고, 출제율과 핵심 포인트를 분석합니다.</p>
+                        </div>
                     </div>
                 </div>
-                <div class="panel">
+                <div class="panel no-print">
                     <div class="form-group">
                         <label><i class="fa-solid fa-tags"></i> 태그 (과목/단원)</label>
                         <input type="text" id="conceptTags" placeholder="예: 국어, 문학분석">
@@ -175,21 +188,29 @@
                     <button class="btn-primary" style="background: linear-gradient(135deg, #34D399, #10B981);" onclick="executeAI('concept')">
                         <i class="fa-solid fa-table-list"></i> 완벽 정리 및 AI 족집게 분석 시작
                     </button>
-                    <div id="conceptLoader" class="loader" style="color:#10B981"><div class="spinner" style="border-top-color:#10B981"></div>자료를 분석하여 하이라이트 및 출제율을 계산 중입니다...</div>
+                    <div id="conceptLoader" class="loader" style="color:#10B981"><div class="spinner" style="border-top-color:#10B981"></div>자료를 심층 분석하여 코넬 노트를 작성 중입니다...</div>
                 </div>
-                <div id="conceptResult" class="document-view"></div>
+                <!-- 🔥 결과 출력 및 PDF 내보내기 영역 -->
+                <div id="conceptResultWrapper" class="document-wrapper">
+                    <div class="pdf-actions no-print">
+                        <button class="btn-pdf" onclick="downloadPDF('conceptResult')"><i class="fa-solid fa-file-pdf"></i> PDF로 내보내기</button>
+                    </div>
+                    <div id="conceptResult" class="document-view"></div>
+                </div>
             </section>
 
             <!-- 2. 정밀 채점 & OMR -->
             <section id="page-grading" class="page-section">
                 <div class="page-header">
-                    <div class="page-header-icon" style="background: var(--accent-blue);"><i class="fa-solid fa-marker"></i></div>
-                    <div>
-                        <h2 class="page-title">OMR 및 오답 역추적 채점</h2>
-                        <p class="page-desc">시험지를 올리고 OMR에 마킹하면, AI 선생님이 채점 및 약점 극복 하이라이트를 제공합니다.</p>
+                    <div class="page-header-left">
+                        <div class="page-header-icon" style="background: var(--accent-blue);"><i class="fa-solid fa-marker"></i></div>
+                        <div>
+                            <h2 class="page-title">OMR 및 오답 역추적 채점</h2>
+                            <p class="page-desc">시험지를 올리고 OMR에 마킹하면, 약점 극복 하이라이트를 제공합니다.</p>
+                        </div>
                     </div>
                 </div>
-                <div class="panel">
+                <div class="panel no-print">
                     <div class="form-group">
                         <label><i class="fa-solid fa-image"></i> 객관식 문제지 / 모의고사 (PDF 또는 사진)</label>
                         <div class="upload-zone" style="border-color: var(--accent-blue);"><input type="file" id="gradeQuestFile" accept="image/*,.pdf" onchange="handleFile('gradeQuestFile', 'gradeQuestPreview')"><div class="upload-text">문제지 첨부</div></div>
@@ -204,15 +225,15 @@
                         </div>
                         <input type="text" id="omrAnswers" readonly placeholder="마킹을 하시면 이곳에 자동으로 기록됩니다." style="margin-top: 15px; background: #E2E8F0; color: #475569; font-weight: bold; border:none;">
                     </div>
-
-                    <div class="form-group">
-                        <label><i class="fa-solid fa-tags"></i> 태그 (선택)</label>
-                        <input type="text" id="gradeTags" placeholder="예: 모의고사, 국어">
-                    </div>
                     <button class="btn-primary" style="background: linear-gradient(135deg, var(--accent-blue), #60A5FA);" onclick="executeAI('grading')">가채점 및 약점 하이라이트 시작</button>
                     <div id="gradeLoader" class="loader" style="color:var(--accent-blue)"><div class="spinner" style="border-top-color:var(--accent-blue)"></div>채점 및 약점 분석 리포트를 생성 중입니다...</div>
                 </div>
-                <div id="gradeResult" class="document-view"></div>
+                <div id="gradeResultWrapper" class="document-wrapper">
+                    <div class="pdf-actions no-print">
+                        <button class="btn-pdf" onclick="downloadPDF('gradeResult')"><i class="fa-solid fa-file-pdf"></i> PDF로 내보내기</button>
+                    </div>
+                    <div id="gradeResult" class="document-view"></div>
+                </div>
             </section>
 
             <!-- 3. 보관함 & 4. 단권화 -->
@@ -223,7 +244,7 @@
                         <h2 class="page-title">나만의 기록 보관함</h2>
                     </div>
                 </div>
-                <div class="panel" style="background: transparent; border: none; box-shadow: none; padding: 0;">
+                <div class="panel no-print" style="background: transparent; border: none; box-shadow: none; padding: 0;">
                     <div id="historyList">기록이 없습니다.</div>
                 </div>
             </section>
@@ -235,20 +256,20 @@
                         <h2 class="page-title">마스터 단권화 노트 (AI 출제율 예측)</h2>
                     </div>
                 </div>
-                <div class="panel">
+                <div class="panel no-print">
                     <p style="margin-bottom:15px; font-weight:700; color:var(--text-sub);">📝 병합할 노트를 선택해주세요</p>
                     <div id="unifiedSelectionList" style="max-height:300px; overflow-y:auto; margin-bottom: 25px; padding-right: 10px;"></div>
                     <button class="btn-primary" style="background: linear-gradient(135deg, #FFD166, #FF9F1C);" onclick="executeUnifiedNote()">단권화 및 AI 출제 예측하기</button>
                     <div id="unifiedLoader" class="loader" style="color:#FF9F1C"><div class="spinner" style="border-top-color:#FF9F1C"></div>노트 병합 및 핵심 포인트 추출 중...</div>
                 </div>
-                <div id="unifiedResult" class="document-view"></div>
+                <div id="unifiedResultWrapper" class="document-wrapper">
+                    <div class="pdf-actions no-print">
+                        <button class="btn-pdf" onclick="downloadPDF('unifiedResult')"><i class="fa-solid fa-file-pdf"></i> PDF로 내보내기</button>
+                    </div>
+                    <div id="unifiedResult" class="document-view"></div>
+                </div>
             </section>
 
-            <div class="feedback-section" id="tutorFeedbackSection" style="display: none; background-color: #f9f9f9; border-left: 4px solid #4a90e2;">
-                <h3 style="margin-bottom: 15px; color: #4a90e2;"><i class="fa-solid fa-chalkboard-user"></i> AI 튜터 코멘트</h3>
-                <p id="tutorFeedbackResult" style="line-height: 1.6;"></p>
-            </div>
-            
         </main>
     </div>
 
@@ -313,8 +334,6 @@
             document.getElementById('page-' + pageId).classList.add('active');
             closeSidebarOutside();
             
-            document.getElementById('tutorFeedbackSection').style.display = 'none';
-            
             if(pageId === 'archive') loadHistory();
             if(pageId === 'unified') loadUnifiedSelection();
         }
@@ -344,6 +363,19 @@
             });
         }
 
+        // 🔥 PDF 다운로드 핵심 기능
+        function downloadPDF(elementId) {
+            const element = document.getElementById(elementId);
+            const opt = {
+                margin:       10,
+                filename:     '스터디다이어리_분석노트.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save();
+        }
+
         async function callGeminiAPI(apiKey, prompt, files = []) {
             let requestParts = [{ text: prompt }];
             files.forEach(f => requestParts.push({ inlineData: { data: f.data, mimeType: f.mimeType } }));
@@ -368,13 +400,12 @@
             if (!apiKey) return alert("설정 메뉴에서 API Key를 입력해주세요!");
 
             const loader = document.getElementById(mode + 'Loader');
+            const resultWrapper = document.getElementById(mode + 'ResultWrapper');
             const resultBox = document.getElementById(mode + 'Result');
             
             loader.style.display = 'block'; 
-            resultBox.style.display = 'none';
+            resultWrapper.style.display = 'none';
             resultBox.innerHTML = ""; 
-            
-            document.getElementById('tutorFeedbackSection').style.display = 'none';
 
             let prompt = "", title = "", filesToProcess = [], tags = [];
 
@@ -388,38 +419,31 @@
                     
                     tags = rawTags.split(',').map(t => t.trim()).filter(t => t);
                     title = `[정리노트] ${tags[0] || '핵심 요약'}`;
-                    // 🔥 정리노트, 출제율, 하이라이트 프롬프트 완벽 적용
-                    prompt = `제공된 데이터를 완벽한 '코넬 노트' 및 'AI 심층 분석 리포트' 형식으로 변환하세요.\n[원본 데이터]: ${inputPrompt}\n\n[조건]\n1. 좌측 '핵심 키워드/질문', 우측 '상세 내용', 하단 '전체 요약(정리노트)' 표(Table) 마크다운 구성.\n2. [🚨 출제율 및 핵심 포인트] 섹션을 추가하여, 시험 출제 확률(%)과 출제 포인트를 명시할 것.\n3. [👩‍🏫 AI 선생님의 심층 분석 및 하이라이트] 섹션을 추가하여, 가장 중요한 부분을 강조하고 족집게 학습 조언을 제공할 것.`;
+                    
+                    // 🔥 표가 정확히 코넬 노트 디자인(2열)으로 생성되도록 강력하게 통제
+                    prompt = `제공된 데이터를 완벽한 '코넬 노트' 및 'AI 심층 분석 리포트' 형식으로 변환하세요.\n[원본 데이터]: ${inputPrompt}\n\n[조건]\n1. 좌측은 '핵심 키워드/질문', 우측은 '상세 내용 및 분석'으로 구성된 딱 2열짜리 마크다운 표(Table)를 생성하세요. 3열 이상 넘어가면 안 됩니다.\n2. 표 하단에는 [📝 전체 요약]을 3줄 이내로 작성하세요.\n3. [🚨 출제율 및 핵심 포인트] 섹션을 추가하여, 시험 출제 확률(예: 85%)과 출제 포인트를 명시할 것.\n4. [👩‍🏫 AI 선생님의 족집게 하이라이트] 섹션을 추가하여, 가장 중요한 부분을 강조하고 학습 조언을 제공할 것.`;
                 }
                 else if (mode === 'grading') {
                     const qFile = document.getElementById('gradeQuestFile').files[0];
                     const omrInput = document.getElementById('omrAnswers').value;
-                    const rawTags = document.getElementById('gradeTags').value;
                     if (!qFile) throw new Error("객관식 문제지 이미지를 올려주세요.");
                     if (!omrInput) throw new Error("OMR 카드를 클릭하여 마킹을 완료해주세요.");
                     if (qFile) filesToProcess.push(await fileToBase64(qFile));
                     
-                    tags = rawTags.split(',').map(t => t.trim()).filter(t => t);
-                    title = `[채점/오답분석] ${tags[0] || '모의고사'}`;
-                    // 🔥 OMR 채점, 약점 분석, 다음 시험 예측 프롬프트 적용
-                    prompt = `첨부된 객관식 시험지 이미지와 학생이 제출한 마킹 답안을 바탕으로 가채점 및 분석을 진행하세요.\n[학생 마킹 답안]: ${omrInput}\n\n[조건]\n1. 실제 정답과 학생 답안을 비교하여 채점 결과(O/X)와 총점을 보여줄 것.\n2. 틀린 문제의 오답 원인(논리적 함정, 오답률 높은 이유)을 심층 분석할 것.\n3. [👩‍🏫 AI 선생님의 약점 보완 하이라이트] 섹션을 통해 학생의 취약 개념과 보완 방법을 강조할 것.\n4. [🚨 유사 변형 출제 포인트]를 예측해 줄 것.`;
+                    title = `[채점/오답분석] 모의고사`;
+                    prompt = `첨부된 객관식 시험지 이미지와 학생이 제출한 마킹 답안을 바탕으로 가채점 및 분석을 진행하세요.\n[학생 마킹 답안]: ${omrInput}\n\n[조건]\n1. 실제 정답과 학생 답안을 비교하여 채점 결과(O/X)와 총점을 명시할 것.\n2. 틀린 문제의 오답 원인(논리적 함정, 오답률 높은 이유)을 심층 분석할 것.\n3. [👩‍🏫 AI 선생님의 약점 보완 하이라이트] 섹션을 통해 취약 개념과 보완 방법을 강조할 것.\n4. [🚨 유사 변형 출제 포인트 예측]을 통해 다음 시험을 대비하게 해줄 것.`;
                 }
 
                 const aiText = await callGeminiAPI(apiKey, prompt, filesToProcess);
                 
                 resultBox.innerHTML = marked.parse(aiText);
-                resultBox.style.display = 'block';
+                resultWrapper.style.display = 'block';
                 if (window.MathJax) MathJax.typesetPromise([resultBox]);
                 saveHistory(title, tags, aiText);
 
-                if (mode === 'grading' || mode === 'concept') {
-                    document.getElementById('tutorFeedbackSection').style.display = 'block';
-                    document.getElementById('tutorFeedbackResult').innerHTML = "<b>[AI 튜터 한마디]</b><br>자료 분석이 완료되었습니다. 제공된 하이라이트와 출제율(%)을 바탕으로 중요도가 높은 부분부터 우선적으로 복습을 진행하세요!";
-                }
-
             } catch (error) { 
                 resultBox.innerHTML = `<div style="color: red; font-weight: bold; padding: 20px; border: 2px dashed red; border-radius: 10px;">🚨 오류:<br><br>${error.message}</div>`;
-                resultBox.style.display = 'block';
+                resultWrapper.style.display = 'block';
             } 
             finally { 
                 loader.style.display = 'none'; 
@@ -449,15 +473,15 @@
             const item = history.find(h => h.id === id);
             if (item) {
                 document.querySelectorAll('.menu-item, .page-section').forEach(el => el.classList.remove('active'));
-                // 🔥 삭제된 출제기 대신 코넬노트 탭을 통해 보관함 렌더링
                 document.getElementById('page-concept').classList.add('active'); 
+                
                 const resultBox = document.getElementById('conceptResult');
+                const resultWrapper = document.getElementById('conceptResultWrapper');
+                
                 resultBox.innerHTML = marked.parse(item.content);
-                resultBox.style.display = 'block';
+                resultWrapper.style.display = 'block';
                 if (window.MathJax) MathJax.typesetPromise([resultBox]);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
-                
-                document.getElementById('tutorFeedbackSection').style.display = 'none';
             }
         }
 
@@ -478,8 +502,11 @@
             if (!apiKey || checkboxes.length === 0) return alert("API Key를 입력하고, 병합할 노트를 선택해주세요.");
 
             const loader = document.getElementById('unifiedLoader');
+            const resultWrapper = document.getElementById('unifiedResultWrapper');
             const resultBox = document.getElementById('unifiedResult');
-            loader.style.display = 'block'; resultBox.style.display = 'none';
+            
+            loader.style.display = 'block'; 
+            resultWrapper.style.display = 'none';
 
             let history = JSON.parse(localStorage.getItem('cozyArchive') || '[]');
             let mergedContent = "";
@@ -488,16 +515,15 @@
                 if(item) mergedContent += `\n\n### [${item.title}]\n${item.content}`;
             });
 
-            // 🔥 단권화 + 핵심 포인트 + 출제율 예측
             const prompt = `학습 기록을 병합하여 마스터 단권화 노트를 작성하세요.\n\n${mergedContent}\n\n[조건]\n1. 내용의 유기적 연결을 중시하여 재구성할 것.\n2. [👩‍🏫 AI 선생님의 단권화 하이라이트]를 통해 가장 중요한 핵심 개념들을 강조할 것.\n3. 통합된 개념을 바탕으로 [🔥 최종 킬러 문항 출제 예측 및 출제율(%) 리포트]를 작성할 것.`;
             try {
                 const aiText = await callGeminiAPI(apiKey, prompt, []);
                 resultBox.innerHTML = marked.parse(aiText);
-                resultBox.style.display = 'block';
+                resultWrapper.style.display = 'block';
                 if (window.MathJax) MathJax.typesetPromise([resultBox]);
             } catch (error) { 
                 resultBox.innerHTML = `<div style="color: red; padding: 20px; font-weight: bold; border: 2px dashed red;">🚨 오류: ${error.message}</div>`;
-                resultBox.style.display = 'block';
+                resultWrapper.style.display = 'block';
             } 
             finally { loader.style.display = 'none'; }
         }
