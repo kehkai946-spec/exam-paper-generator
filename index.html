@@ -470,3 +470,62 @@
     </script>
 </body>
 </html>
+# ---------------------------------------------------------
+# [기존 핵심 모듈] 출제 확률 분석기 (삭제 방지)
+# ---------------------------------------------------------
+class ProbabilityAnalyzer:
+    def __init__(self):
+        # 과거 기출문제 데이터를 기반으로 출제 확률을 계산하는 로직
+        self.history_data = {}
+
+    def analyze_trend(self, concept_tag):
+        # 예: "공통수학1 - 다항식의 연산" 태그 입력 시 출제 확률 반환
+        # (이 로직은 절대 삭제되지 않고 지속적으로 고도화됩니다)
+        probability = 85.5 # 임시 데이터
+        return f"이 개념의 이번 시험 출제 확률은 {probability}% 입니다."
+
+# ---------------------------------------------------------
+# [아이디어 1 실행] 기출문제 이미지 OCR/비전 분석 모듈 (신규 추가)
+# ---------------------------------------------------------
+class VisionProblemReader:
+    def __init__(self, api_key):
+        self.api_key = api_key
+
+    def process_image(self, image_file):
+        # 1. 이미지를 텍스트와 수식으로 변환 (OCR)
+        # 2. 도표나 그래프의 형태적 특징 추출 (Vision)
+        extracted_text = "추출된 문제 텍스트 및 수식"
+        concept_tag = "공통수학2 - 도형의 방정식" # AI가 판단한 단원 태그
+        return extracted_text, concept_tag
+
+# ---------------------------------------------------------
+# [아이디어 3 실행] AI 기반 유사 변형 문제 생성 모듈 (신규 추가)
+# ---------------------------------------------------------
+class VariantProblemGenerator:
+    def __init__(self):
+        pass
+
+    def generate_variant(self, original_text, difficulty_adjustment=0):
+        # 원본 문제를 바탕으로 숫자, 조건, 묻는 개념을 비틀어 새로운 문제 생성
+        new_problem = "변형된 새로운 문제 텍스트"
+        return new_problem
+
+# ---------------------------------------------------------
+# [메인 실행부] 레고 조립하듯 모듈들 연결 (앞으로 여기만 덧붙임)
+# ---------------------------------------------------------
+def main_app_flow(image_upload):
+    # 1. 시스템 초기화
+    analyzer = ProbabilityAnalyzer()
+    reader = VisionProblemReader(api_key="YOUR_API_KEY")
+    generator = VariantProblemGenerator()
+
+    # 2. 이미지 처리 및 태그 추출
+    problem_text, tag = reader.process_image(image_upload)
+
+    # 3. 출제 확률 분석 (기존 기능 연동)
+    prob_result = analyzer.analyze_trend(tag)
+
+    # 4. 변형 문제 생성
+    variant = generator.generate_variant(problem_text, difficulty_adjustment=+1)
+
+    return prob_result, variant
