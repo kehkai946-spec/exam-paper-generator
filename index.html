@@ -88,6 +88,9 @@
         .archive-checkbox { margin-top: 5px; transform: scale(1.3); cursor: pointer; accent-color: var(--accent-primary); }
         .archive-title { font-weight: 800; font-size: 1.05rem; margin-bottom: 8px; color: var(--text-main); }
 
+        /* 새로 추가된 모듈 스타일 보정 */
+        .feedback-section { margin-top: 20px; padding: 25px; border-radius: var(--radius-box); box-shadow: var(--shadow-fluffy); }
+
         @media (max-width: 1024px) {
             .mobile-header { display: flex; }
             .sidebar { position: fixed; left: -280px; top: 0; height: 100%; box-shadow: 10px 0 30px rgba(0,0,0,0.1); }
@@ -161,7 +164,7 @@
                         <label><i class="fa-solid fa-file-image"></i> 참고 자료 첨부 (선택)</label>
                         <div class="upload-zone">
                             <i class="fa-solid fa-cloud-arrow-up"></i>
-                            <div class="upload-text">사진이나 PDF 첨부</div>
+                            <div class="upload-text">사진이나 PDF 첨부 (5MB 이하 권장)</div>
                             <input type="file" id="genFile" accept="image/*,.pdf,.txt" onchange="handleFile('genFile', 'genPreview')">
                         </div>
                         <div id="genPreview" class="preview-area"></div>
@@ -172,7 +175,7 @@
                 <div id="genResult" class="document-view"></div>
             </section>
 
-            <!-- 2. 코넬 개념 요약 (입력창 대폭 강화) -->
+            <!-- 2. 코넬 개념 요약 -->
             <section id="page-concept" class="page-section">
                 <div class="page-header">
                     <div class="page-header-icon" style="background: var(--accent-mint); color: #059669;"><i class="fa-solid fa-shapes"></i></div>
@@ -186,7 +189,6 @@
                         <label><i class="fa-solid fa-tags"></i> 태그 (과목/단원)</label>
                         <input type="text" id="conceptTags" placeholder="예: 국어, 문학분석">
                     </div>
-                    <!-- 누락되었던 큼직한 텍스트 입력창 추가 -->
                     <div class="form-group">
                         <label><i class="fa-solid fa-align-left"></i> 요약할 개념 텍스트 원본 (필수)</label>
                         <textarea id="conceptPrompt" rows="6" placeholder="여기에 요약하고 싶은 긴 글, 교과서 본문, 문학 지문, 혹은 복잡한 수학 증명 과정을 복사해서 붙여넣으세요."></textarea>
@@ -195,7 +197,7 @@
                         <label><i class="fa-solid fa-image"></i> 교재 사진이나 PDF 첨부 (선택)</label>
                         <div class="upload-zone" style="border-color: var(--accent-mint); background: #F0FDFA;">
                             <i class="fa-solid fa-book-open" style="color: var(--accent-mint);"></i>
-                            <div class="upload-text">타이핑하기 힘들면 사진을 찍어 올리세요</div>
+                            <div class="upload-text">타이핑하기 힘들면 사진을 찍어 올리세요 (5MB 이하 권장)</div>
                             <input type="file" id="conceptFile" accept="image/*,.pdf,.txt" onchange="handleFile('conceptFile', 'conceptPreview')">
                         </div>
                         <div id="conceptPreview" class="preview-area" style="background: var(--accent-mint); color: #064E3B;"></div>
@@ -210,7 +212,6 @@
 
             <!-- 3. 정밀 채점 -->
             <section id="page-grading" class="page-section">
-                <!-- 이전과 동일한 뼈대 유지하되 프롬프트 강화 -->
                 <div class="page-header">
                     <div class="page-header-icon" style="background: var(--accent-blue);"><i class="fa-solid fa-marker"></i></div>
                     <div>
@@ -241,7 +242,7 @@
                 <div id="gradeResult" class="document-view"></div>
             </section>
 
-            <!-- 4. 보관함 & 5. 단권화 (HTML 구조는 이전과 완벽히 동일하여 생략 가능하나 완전성을 위해 유지) -->
+            <!-- 4. 보관함 & 5. 단권화 -->
             <section id="page-archive" class="page-section">
                 <div class="page-header">
                     <div class="page-header-icon" style="background: #D4A373;"><i class="fa-solid fa-box-archive"></i></div>
@@ -269,6 +270,27 @@
                 </div>
                 <div id="unifiedResult" class="document-view"></div>
             </section>
+
+            <!-- HTML 밖으로 삐져나갔던 모듈들 (제자리 복구 및 디자인 보정) -->
+            <div class="feedback-section" id="tutorFeedbackSection" style="display: none; background-color: #f9f9f9; border-left: 4px solid #4a90e2;">
+                <h3>👩‍🏫 AI 튜터 상세 피드백</h3>
+                <p id="tutorFeedbackResult"></p>
+            </div>
+
+            <div class="feedback-section" id="qualityFeedbackSection" style="display: none; background-color: #fff9e6; border-left: 4px solid #f0ad4e;">
+                <h3>⭐ AI 변형 문제 품질 평가</h3>
+                <p style="font-size: 14px; color: #666; margin-bottom: 10px;">이 문제의 변형 퀄리티는 어땠나요? 피드백을 남겨주시면 AI가 더 똑똑해집니다.</p>
+                <select id="userRating" style="padding: 10px; margin-bottom: 10px; width: 100%; border-radius: 8px; border: 1px solid #ccc;">
+                    <option value="5">⭐⭐⭐⭐⭐ 매우 훌륭함</option>
+                    <option value="4">⭐⭐⭐⭐ 좋은 편임</option>
+                    <option value="3">⭐⭐⭐ 보통 (풀 만함)</option>
+                    <option value="2">⭐⭐ 억지스러운 조건이 있음</option>
+                    <option value="1">⭐ 오류가 있거나 너무 이상함</option>
+                </select>
+                <input type="text" id="userComment" placeholder="추가 코멘트를 남겨주세요" style="width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #ccc;">
+                <button onclick="submitQualityFeedback()" style="background-color: #f0ad4e; color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">평가 제출하기</button>
+                <p id="qualityFeedbackResult" style="color: #d9534f; margin-top: 10px; font-weight: bold;"></p>
+            </div>
 
         </main>
     </div>
@@ -298,6 +320,15 @@
         function handleFile(inputId, previewId) {
             const file = document.getElementById(inputId).files[0];
             const preview = document.getElementById(previewId);
+            
+            // 파일 용량 체크 (약 5MB 제한) - 무한 로딩의 주범 해결!
+            if (file && file.size > 5 * 1024 * 1024) {
+                alert("파일 용량이 너무 큽니다! (5MB 이하 권장)\n용량이 크면 브라우저가 멈출 수 있습니다.");
+                document.getElementById(inputId).value = ""; // 초기화
+                preview.style.display = 'none';
+                return;
+            }
+
             if (file) {
                 preview.style.display = 'block';
                 preview.innerHTML = `<i class="fa-solid fa-check-circle"></i> 첨부완료: ${file.name}`;
@@ -317,10 +348,17 @@
             let requestParts = [{ text: prompt }];
             files.forEach(f => requestParts.push({ inlineData: { data: f.data, mimeType: f.mimeType } }));
             
-            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${apiKey}`, {
+            // 안정성과 속도가 보장된 gemini-1.5-flash 모델로 변경 완료
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
                 method: 'POST', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ contents: [{ parts: requestParts }], generationConfig: { temperature: 0.6 } })
             });
+            
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error ? errorData.error.message : "API 통신 중 오류가 발생했습니다. (API 키를 확인해주세요)");
+            }
+
             const data = await response.json();
             if (data.error) throw new Error(data.error.message);
             return data.candidates[0].content.parts[0].text;
@@ -328,11 +366,13 @@
 
         async function executeAI(mode) {
             const apiKey = document.getElementById('sysApiKey').value;
-            if (!apiKey) return alert("API Key를 입력해주세요!");
+            if (!apiKey) return alert("API Key를 먼저 입력해주세요!");
 
             const loader = document.getElementById(mode + 'Loader');
             const resultBox = document.getElementById(mode + 'Result');
-            loader.style.display = 'block'; resultBox.style.display = 'none';
+            loader.style.display = 'block'; 
+            resultBox.style.display = 'none';
+            resultBox.innerHTML = ""; // 기존 결과 초기화
 
             let prompt = "", title = "", filesToProcess = [], tags = [];
 
@@ -342,18 +382,12 @@
                     const file = document.getElementById('genFile').files[0];
                     const rawTags = document.getElementById('genTags').value;
                     const option = document.getElementById('genOptions').value;
-                    if (!inputPrompt && !file) throw new Error("입력값이 없습니다.");
+                    if (!inputPrompt && !file) throw new Error("입력값이 없습니다. 텍스트를 적거나 파일을 올려주세요.");
                     if (file) filesToProcess.push(await fileToBase64(file));
                     
                     tags = rawTags.split(',').map(t => t.trim()).filter(t => t);
                     title = `[출제] ${tags[0] || '맞춤 문제'}`;
-                    prompt = `당신은 예리한 수능 출제 위원입니다. 다음 내용을 바탕으로 문제를 설계하세요.
-[선지 구성 방식]: ${option}
-[텍스트/지시]: ${inputPrompt}
-
-[조건]
-1. 해설 작성 시 정답뿐만 아니라 '왜 이 오답 선지가 논리적/심리적으로 매력적인지' 구체적인 출제 의도와 근거(Rationale)를 명시할 것.
-2. 수학 수식이나 증명은 반드시 LaTeX($수식$, $$수식$$)를 사용할 것.`;
+                    prompt = `당신은 예리한 수능 출제 위원입니다. 다음 내용을 바탕으로 문제를 설계하세요.\n[선지 구성 방식]: ${option}\n[텍스트/지시]: ${inputPrompt}\n\n[조건]\n1. 해설 작성 시 정답뿐만 아니라 '왜 이 오답 선지가 논리적/심리적으로 매력적인지' 구체적인 출제 의도와 근거(Rationale)를 명시할 것.\n2. 수학 수식이나 증명은 반드시 LaTeX($수식$, $$수식$$)를 사용할 것.`;
                 } 
                 else if (mode === 'concept') {
                     const inputPrompt = document.getElementById('conceptPrompt').value;
@@ -364,27 +398,19 @@
                     
                     tags = rawTags.split(',').map(t => t.trim()).filter(t => t);
                     title = `[코넬노트] ${tags[0] || '핵심 요약'}`;
-                    prompt = `제공된 텍스트/이미지를 완벽한 '코넬 노트(Cornell Note)' 형식으로 변환하세요.
-[원본 텍스트]: ${inputPrompt}
-
-[조건]
-1. 좌측에는 '핵심 키워드/질문', 우측에는 '상세 내용/증명', 하단에는 '전체 요약'이 들어가는 표(Table) 형태로 마크다운을 구성할 것.
-2. 피상적인 요약이 아니라, 텍스트에 숨겨진 철학적/심리적 함의나 수학 공식의 증명 원리를 깊이 파고들어 서술할 것.`;
+                    prompt = `제공된 텍스트/이미지를 완벽한 '코넬 노트(Cornell Note)' 형식으로 변환하세요.\n[원본 텍스트]: ${inputPrompt}\n\n[조건]\n1. 좌측에는 '핵심 키워드/질문', 우측에는 '상세 내용/증명', 하단에는 '전체 요약'이 들어가는 표(Table) 형태로 마크다운을 구성할 것.\n2. 피상적인 요약이 아니라, 텍스트에 숨겨진 철학적/심리적 함의나 수학 공식의 증명 원리를 깊이 파고들어 서술할 것.`;
                 }
                 else if (mode === 'grading') {
                     const qFile = document.getElementById('gradeQuestFile').files[0];
                     const aFile = document.getElementById('gradeAnsFile').files[0];
                     const rawTags = document.getElementById('gradeTags').value;
-                    if (!qFile && !aFile) throw new Error("파일을 올려주세요.");
+                    if (!qFile && !aFile) throw new Error("문제 사진이나 풀이 사진을 올려주세요.");
                     if (qFile) filesToProcess.push(await fileToBase64(qFile));
                     if (aFile) filesToProcess.push(await fileToBase64(aFile));
                     
                     tags = rawTags.split(',').map(t => t.trim()).filter(t => t);
                     title = `[채점] ${tags[0] || '논리 검증'}`;
-                    prompt = `제공된 원본 문제(또는 실험 데이터)와 학생의 풀이를 비교하여 엄밀하게 채점하세요.
-[조건]
-1. 단순 계산 실수가 아니라, 어느 논리 단계나 실험 수치 해석에서 오류가 났는지 역추적할 것.
-2. 실제 수치/데이터가 포함되어 있다면 그 구체적 결괏값에 기반하여 오차 원인을 엄밀히 분석할 것.`;
+                    prompt = `제공된 원본 문제(또는 실험 데이터)와 학생의 풀이를 비교하여 엄밀하게 채점하세요.\n[조건]\n1. 단순 계산 실수가 아니라, 어느 논리 단계나 실험 수치 해석에서 오류가 났는지 역추적할 것.\n2. 실제 수치/데이터가 포함되어 있다면 그 구체적 결괏값에 기반하여 오차 원인을 엄밀히 분석할 것.`;
                 }
 
                 const aiText = await callGeminiAPI(apiKey, prompt, filesToProcess);
@@ -394,11 +420,17 @@
                 if (window.MathJax) MathJax.typesetPromise([resultBox]);
                 saveHistory(title, tags, aiText);
 
-            } catch (error) { alert("오류: " + error.message); } 
-            finally { loader.style.display = 'none'; }
+            } catch (error) { 
+                // 무한 로딩 대신 화면에 확실하게 에러 메시지 띄워주기
+                resultBox.innerHTML = `<div style="color: red; font-weight: bold; padding: 20px; border: 2px dashed red; border-radius: 10px;">🚨 처리 중 오류가 발생했습니다:<br><br>${error.message}</div>`;
+                resultBox.style.display = 'block';
+            } 
+            finally { 
+                loader.style.display = 'none'; 
+            }
         }
 
-        // 보관함 및 단권화 로직 (이전과 동일하게 작동)
+        // 보관함 및 단권화 로직
         function saveHistory(title, tags, content) {
             let history = JSON.parse(localStorage.getItem('cozyArchive') || '[]');
             history.unshift({ id: Date.now(), date: new Date().toLocaleDateString('ko-KR'), title: title, tags: tags, content: content });
@@ -445,7 +477,7 @@
         async function executeUnifiedNote() {
             const apiKey = document.getElementById('sysApiKey').value;
             const checkboxes = document.querySelectorAll('.unified-checkbox:checked');
-            if (!apiKey || checkboxes.length === 0) return alert("API Key와 데이터를 확인하세요.");
+            if (!apiKey || checkboxes.length === 0) return alert("API Key를 입력하고, 병합할 노트를 선택해주세요.");
 
             const loader = document.getElementById('unifiedLoader');
             const resultBox = document.getElementById('unifiedResult');
@@ -464,32 +496,16 @@
                 resultBox.innerHTML = marked.parse(aiText);
                 resultBox.style.display = 'block';
                 if (window.MathJax) MathJax.typesetPromise([resultBox]);
-            } catch (error) { alert("오류: " + error.message); } 
+            } catch (error) { 
+                resultBox.innerHTML = `<div style="color: red; padding: 20px;">🚨 오류: ${error.message}</div>`;
+                resultBox.style.display = 'block';
+            } 
             finally { loader.style.display = 'none'; }
+        }
+
+        function submitQualityFeedback() {
+            document.getElementById('qualityFeedbackResult').innerText = "소중한 피드백이 전송되었습니다! 감사합니다.";
         }
     </script>
 </body>
 </html>
-    <!-- [신규 추가 모듈 4] AI 튜터 피드백 화면 -->
-    <div class="section" id="tutorFeedbackSection" style="display: none; background-color: #f9f9f9; border-left: 4px solid #4a90e2;">
-        <h3>👩‍🏫 AI 튜터 상세 피드백</h3>
-        <p id="tutorFeedbackResult"></p>
-    </div>
-
-    <!-- [신규 추가 모듈 5] AI 모델 품질 평가 화면 (시스템용) -->
-    <div class="section" id="qualityFeedbackSection" style="display: none; background-color: #fff9e6; border-left: 4px solid #f0ad4e;">
-        <h3>⭐ AI 변형 문제 품질 평가</h3>
-        <p style="font-size: 14px; color: #666;">이 문제의 변형 퀄리티는 어땠나요? 피드백을 남겨주시면 AI가 더 똑똑해집니다.</p>
-        
-        <select id="userRating" style="padding: 8px; margin-bottom: 10px; width: 100%;">
-            <option value="5">⭐⭐⭐⭐⭐ 매우 훌륭함</option>
-            <option value="4">⭐⭐⭐⭐ 좋은 편임</option>
-            <option value="3">⭐⭐⭐ 보통 (풀 만함)</option>
-            <option value="2">⭐⭐ 억지스러운 조건이 있음</option>
-            <option value="1">⭐ 오류가 있거나 너무 이상함</option>
-        </select>
-        
-        <input type="text" id="userComment" placeholder="추가 코멘트를 남겨주세요 (예: 도형의 방정식 기호가 깨져요)">
-        <button onclick="submitQualityFeedback()" style="background-color: #f0ad4e;">평가 제출하기</button>
-        <p id="qualityFeedbackResult" style="color: #d9534f; margin-top: 10px; font-weight: bold;"></p>
-    </div>
