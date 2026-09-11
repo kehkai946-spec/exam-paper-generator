@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>단권화 스터디 다이어리 V27 - PDF & Style Fixed</title>
+    <title>단권화 스터디 다이어리 V29 - Logic Fixed & Perfect UX</title>
     
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -160,19 +160,20 @@
         .document-view.focus-mode p, .document-view.focus-mode li, .document-view.focus-mode table { opacity: 0.2; transition: 0.3s; }
         .document-view.focus-mode p:hover, .document-view.focus-mode li:hover, .document-view.focus-mode table:hover { opacity: 1; transform: scale(1.02); background: var(--bg-body); border-radius: 8px; z-index: 10; position: relative; padding: 5px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
 
-        .document-view h2 { margin: 30px 0 15px; font-weight: 800; font-size: 1.4rem; border-bottom: 2px solid var(--border-soft); padding-bottom: 8px; }
-        .document-view h3 { color: var(--accent-blue); margin: 20px 0 10px; font-weight: 700; font-size: 1.1rem; }
-        .document-view p, .document-view li { margin-bottom: 10px; line-height: 1.7; }
-        .document-view blockquote { border-left: 5px solid var(--accent-danger); background: rgba(239, 68, 68, 0.05); padding: 15px 20px; margin: 20px 0; border-radius: 0 12px 12px 0; font-weight: 600; color: var(--accent-danger); }
+        .document-view h2 { margin: 30px 0 15px; font-weight: 800; font-size: 1.4rem; border-bottom: 2px solid var(--border-soft); padding-bottom: 8px; page-break-inside: avoid; }
+        .document-view h3 { color: var(--accent-blue); margin: 20px 0 10px; font-weight: 700; font-size: 1.1rem; page-break-inside: avoid; }
+        .document-view p, .document-view li { margin-bottom: 10px; line-height: 1.7; page-break-inside: avoid; }
+        .document-view blockquote { border-left: 5px solid var(--accent-danger); background: rgba(239, 68, 68, 0.05); padding: 15px 20px; margin: 20px 0; border-radius: 0 12px 12px 0; font-weight: 600; color: var(--accent-danger); page-break-inside: avoid; }
         
-        /* 🔥 파란색 복사 느낌 완전 제거: 배경색 삭제하고 깔끔한 색상 강조로 원복 */
-        .document-view strong { color: var(--accent-primary); font-weight: 800; }
+        /* 🔥 파란색 복사 느낌 100% 제거 (연분홍색 형광펜 밑줄 원복) */
+        .document-view strong { color: var(--text-main); font-weight: 800; background: linear-gradient(180deg, transparent 60%, rgba(255, 139, 167, 0.3) 40%); }
         
         .cloze-blank { background: var(--text-main) !important; color: var(--text-main) !important; border-radius: 4px; padding: 2px 6px; cursor: pointer; }
         
+        /* 🔥 표 가로 스크롤 & 텍스트 삐져나옴 완벽 방지 */
         .table-responsive { width: 100%; overflow-x: auto; margin: 20px 0; border: 1px solid var(--border-soft); border-radius: 12px; background: var(--table-row); -webkit-overflow-scrolling: touch; }
         .document-view table { width: 100%; border-collapse: collapse; min-width: 650px; margin: 0; border: none; }
-        .document-view th, .document-view td { padding: 16px; border: 1px solid var(--border-soft); word-break: keep-all; line-height: 1.6; font-size: 0.95rem; }
+        .document-view th, .document-view td { padding: 16px; border: 1px solid var(--border-soft); word-break: break-word; line-height: 1.6; font-size: 0.95rem; }
         .document-view th { background: var(--table-head); font-weight: 800; border-top: none; }
         .document-view td:first-child { width: 25%; font-weight: 700; color: var(--accent-blue); background: var(--table-head); border-left: none; }
         .document-view tr:last-child td { border-bottom: none; }
@@ -215,7 +216,6 @@
 
         @media print {
             .no-print { display: none !important; }
-            /* 브라우저 기본 인쇄 대비용 */
         }
 
         @media (max-width: 1024px) {
@@ -242,7 +242,7 @@
 
     <div class="app-container">
         <nav class="sidebar no-print" id="sidebar">
-            <div class="brand"><i class="fa-solid fa-book-open" style="color:var(--accent-blue)"></i> V27 Perfect</div>
+            <div class="brand"><i class="fa-solid fa-book-open" style="color:var(--accent-blue)"></i> V29 Fixed</div>
             
             <div class="menu-group">
                 <div class="menu-label">생성 (Create)</div>
@@ -337,7 +337,6 @@
                             <div class="chip" id="ttsBtnConcept" onclick="toggleTTS('conceptResult', 'ttsBtnConcept')"><i class="fa-solid fa-headphones"></i> 소리내어 읽기</div>
                             <div class="chip" onclick="toggleCloze(this)"><i class="fa-solid fa-eye-slash"></i> 빈칸 암기</div>
                             <div class="chip" onclick="copyNotionMarkdown('conceptResult')"><i class="fa-brands fa-neos"></i> 텍스트 복사</div>
-                            <!-- 🔥 백지화 없는 진짜 PDF 직접 다운로드 -->
                             <div class="chip active zen-btn" onclick="downloadPDF('conceptResult', '스마트정리노트')"><i class="fa-solid fa-file-pdf"></i> 파일로 저장</div>
                         </div>
                         
@@ -640,7 +639,6 @@
             });
         }
 
-        // 🔥 표 가로 스크롤 허용 세팅 (모바일 찌그러짐 방지)
         function applyTableWrapper(element) {
             element.querySelectorAll('table').forEach(table => {
                 if (table.parentElement.classList.contains('table-responsive')) return;
@@ -651,32 +649,64 @@
             });
         }
 
-        // 🔥 iOS 백지화 완전 방어: 실제 화면을 강제로 800px로 세팅한 후 캡처 (가상DOM 사용 안함)
+        // 🔥 백지화 및 짤림 완벽 방어 초고화질 PDF 엔진 (인쇄창 없음)
         async function downloadPDF(elementId, fileName) {
-            const element = document.getElementById(elementId);
+            const originalElement = document.getElementById(elementId);
             await document.fonts.ready;
             
-            const noPrints = document.querySelectorAll('.no-print');
+            const noPrints = originalElement.querySelectorAll('.no-print, .toolbar-chips');
             noPrints.forEach(el => el.style.display = 'none');
 
-            // 원본 상태 저장
-            const origWidth = element.style.width;
-            const origMaxWidth = element.style.maxWidth;
-            const origMargin = element.style.margin;
+            const clone = originalElement.cloneNode(true);
+            const container = document.createElement('div');
+            container.appendChild(clone);
             
-            // 모바일 렌더링 박살을 막기 위해 캡처 순간에만 800px 강제 고정
-            element.style.width = '800px';
-            element.style.maxWidth = '800px';
-            element.style.margin = '0 auto';
-            window.scrollTo(0, 0);
+            // 모바일 찌그러짐을 막고 A4 비율로 렌더링하기 위한 고정 사이즈 강제 주입
+            container.style.position = 'absolute';
+            container.style.top = '-9999px';
+            container.style.left = '-9999px';
+            container.style.width = '794px'; 
+            container.style.maxWidth = '794px';
+            container.style.padding = '20px';
+            container.style.boxSizing = 'border-box';
+            
+            // 테마 색상 강제 유지
+            container.style.background = getComputedStyle(document.body).getPropertyValue('--bg-body').trim() || 'white';
+            container.style.color = getComputedStyle(document.body).getPropertyValue('--text-main').trim() || 'black';
+            
+            // 표가 794px 넘쳐서 잘리는 것 방어
+            const tables = container.querySelectorAll('table');
+            tables.forEach(table => {
+                table.style.width = '100%';
+                table.style.tableLayout = 'fixed';
+                table.style.wordBreak = 'break-all';
+            });
+            const allElements = container.querySelectorAll('*');
+            allElements.forEach(el => {
+                el.style.wordWrap = 'break-word';
+                el.style.whiteSpace = 'pre-wrap';
+            });
+
+            document.body.appendChild(container);
+
+            const loaderId = elementId.replace('Result', 'Loader');
+            const loader = document.getElementById(loaderId);
+            if(loader) {
+                loader.style.display = 'block';
+                loader.innerHTML = '<div class="spinner"></div>초고화질 PDF 변환 중입니다...';
+            }
+
+            // 아이패드 메모리 초과 방지: 모바일 기기일 때는 배율을 1.5로 줄임 (PC는 2배율 유지)
+            let pdfScale = window.innerWidth <= 1024 ? 1.5 : 2;
 
             const opt = {
                 margin:       [10, 10, 10, 10], 
                 filename:     `${fileName}.pdf`,
-                image:        { type: 'jpeg', quality: 0.95 },
+                image:        { type: 'jpeg', quality: 1.0 },
                 html2canvas:  { 
-                    scale: window.innerWidth <= 1024 ? 1 : 2, // ⭐️ iOS 백지화 방어용 스케일 조절
+                    scale: pdfScale, 
                     useCORS: true, 
+                    windowWidth: 794,
                     scrollY: 0,
                     logging: false
                 },
@@ -684,23 +714,12 @@
                 pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] } 
             };
             
-            const loaderId = elementId.replace('Result', 'Loader');
-            const loader = document.getElementById(loaderId);
-            if(loader) {
-                loader.style.display = 'block';
-                loader.innerHTML = '<div class="spinner"></div>안전하게 PDF 파일로 추출 중입니다...';
-            }
-
             try {
-                // 인쇄창 우회 없이 다이렉트로 .pdf 다운로드
-                await html2pdf().set(opt).from(element).save();
+                await html2pdf().set(opt).from(container).save();
             } catch (error) {
-                alert("PDF 생성 중 오류가 발생했습니다: " + error.message);
+                alert("PDF 생성 오류: " + error.message);
             } finally {
-                // 캡처 끝난 직후 화면 크기 및 UI 원상 복구
-                element.style.width = origWidth;
-                element.style.maxWidth = origMaxWidth;
-                element.style.margin = origMargin;
+                document.body.removeChild(container);
                 noPrints.forEach(el => el.style.display = '');
                 if(loader) loader.style.display = 'none';
             }
@@ -730,12 +749,11 @@
             btn.classList.add('active');
         }
 
-        // 🔥 프롬프트 공통 포맷 보호 규정
         const formattingRules = `
 [마크다운 및 렌더링 절대 준수 규칙]
 1. 글머리 기호나 리스트 작성 시 하이픈(-) 사용을 금지합니다. 대신 별표(*)나 숫자(1. 2.)를 사용하세요. 표 안에서도 마찬가지입니다.
 2. 텍스트 내에서 단일 달러 기호($)를 절대 사용하지 마세요. 수학 수식에만 이중 달러 기호($$수식$$)를 허용합니다.
-3. 표(Table) 작성 시 한 행(Row)의 내용이 너무 길어지지 않게 여러 개의 행으로 잘게 쪼개서 작성하세요.`;
+3. 표(Table) 작성 시 가독성을 위해 한 행(Row)의 내용이 너무 길어지지 않도록 여러 개의 행으로 쪼개서 작성하세요. 중요어 앞 2글자는 반드시 **볼드체**로 처리하여 가독성을 높이세요.`;
 
         async function callGeminiAPI(apiKey, prompt, files = [], loaderId = null) {
             let requestParts = [{ text: prompt }];
@@ -762,7 +780,7 @@
         async function executeAI(mode, subMode) {
             if(window.speechSynthesis.speaking) window.speechSynthesis.cancel();
             const apiKey = document.getElementById('sysApiKey').value;
-            if (!apiKey) return alert("API Key를 입력해주세요.");
+            if (!apiKey) return alert("왼쪽 하단 메뉴에서 Gemini API Key를 먼저 입력해주세요!");
 
             const loaderId = mode + 'Loader'; const resultWrapper = document.getElementById(mode + 'ResultWrapper'); const resultBox = document.getElementById(mode + 'Result');
             document.getElementById(loaderId).style.display = 'block'; resultWrapper.style.display = 'none';
@@ -811,7 +829,7 @@
                 }
 
                 resultBox.innerHTML = marked.parse(aiText);
-                applyTableWrapper(resultBox); // 🔥 표 가로 스크롤 적용
+                applyTableWrapper(resultBox); // 표 가로 스크롤 적용
                 resultWrapper.style.display = 'block';
                 if (window.MathJax) MathJax.typesetPromise([resultBox]);
                 
@@ -825,10 +843,11 @@
 
         async function askTutor(mode) {
             const apiKey = document.getElementById('sysApiKey').value;
+            if (!apiKey) return alert("왼쪽 하단 메뉴에서 Gemini API Key를 먼저 입력해주세요!");
             const inputField = document.getElementById('chatInput' + (mode === 'concept' ? 'Concept' : 'Grade'));
             const chatBox = document.getElementById('chatBox' + (mode === 'concept' ? 'Concept' : 'Grade'));
             const question = inputField.value.trim();
-            if (!apiKey || !question) return;
+            if (!question) return;
 
             chatBox.innerHTML += `<div class="chat-msg msg-user">${question}</div>`; inputField.value = ""; chatBox.scrollTop = chatBox.scrollHeight;
             const loadingId = "load-" + Date.now(); chatBox.innerHTML += `<div class="chat-msg msg-ai" id="${loadingId}">답변을 생각 중입니다...</div>`;
@@ -911,7 +930,7 @@
                 document.querySelectorAll('.menu-item, .page-section').forEach(el => el.classList.remove('active'));
                 document.getElementById('page-concept').classList.add('active'); 
                 document.getElementById('conceptResult').innerHTML = marked.parse(item.content);
-                applyTableWrapper(document.getElementById('conceptResult')); // 🔥 표 가로 스크롤 적용
+                applyTableWrapper(document.getElementById('conceptResult'));
                 document.getElementById('conceptResultWrapper').style.display = 'block';
                 currentContext = item.content; currentRawMarkdown = item.content;
                 if (window.MathJax) MathJax.typesetPromise([document.getElementById('conceptResult')]);
@@ -945,9 +964,12 @@
         function loadUnifiedSelection() { loadSelectionList('unifiedSelectionList', false); }
 
         async function executeUnifiedNote(type) {
+            // 🔥 에러 로직 완벽 분리
             const apiKey = document.getElementById('sysApiKey').value;
+            if (!apiKey) return alert("왼쪽 하단 메뉴에서 Gemini API Key를 먼저 입력해주세요!");
+            
             const checkboxes = document.querySelectorAll('.unifiedSelectionList-checkbox:checked');
-            if (!apiKey || checkboxes.length === 0) return alert("병합할 노트를 선택해주세요.");
+            if (checkboxes.length === 0) return alert("병합할 노트를 1개 이상 체크해주세요.");
 
             const loaderId = 'unifiedLoader'; const resultWrapper = document.getElementById('unifiedResultWrapper'); const resultBox = document.getElementById('unifiedResult');
             document.getElementById(loaderId).style.display = 'block'; resultWrapper.style.display = 'none';
@@ -964,7 +986,7 @@
             try {
                 const aiText = await callGeminiAPI(apiKey, prompt, [], loaderId);
                 resultBox.innerHTML = coverHtml + `<div style="padding:0;">` + marked.parse(aiText) + `</div>`;
-                applyTableWrapper(resultBox); // 🔥 표 가로 스크롤 적용
+                applyTableWrapper(resultBox); 
                 resultWrapper.style.display = 'block';
                 if (window.MathJax) MathJax.typesetPromise([resultBox]);
                 saveHistory(`[저장] ${type === 'book' ? '단권화' : type === 'exam' ? '모의고사' : '고난도 융합'}`, [], aiText);
@@ -974,9 +996,12 @@
 
         let oxAnswerCache = "";
         async function startTraining(type) {
+            // 🔥 에러 로직 완벽 분리
             const apiKey = document.getElementById('sysApiKey').value;
+            if (!apiKey) return alert("왼쪽 하단 메뉴에서 Gemini API Key를 먼저 입력해주세요!");
+            
             const selected = document.querySelector('.trainingSelectionList-checkbox:checked');
-            if (!apiKey || !selected) return alert("API Key를 입력하고 노트를 하나 선택하세요.");
+            if (!selected) return alert("훈련할 노트를 체크해주세요.");
 
             let history = JSON.parse(localStorage.getItem('cozyArchive') || '[]');
             const item = history.find(h => h.id == selected.value);
