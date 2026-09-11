@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>단권화 스터디 다이어리 V18 - PDF Optimized Edition</title>
+    <title>단권화 스터디 다이어리 V19 - Perfect Layout & Save Edition</title>
     
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- 🚀 수만 줄의 외부 모듈을 단 한 줄로 끌어다 씁니다 (마크다운, 수식, PDF, 마인드맵) -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -100,10 +99,8 @@
         .pdf-actions { display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
         .document-view { background: white; padding: 50px 60px; border-radius: var(--radius-box); border: 1px solid var(--border-soft); box-shadow: var(--shadow-fluffy); font-size: 1.05rem; color: #1E293B; }
         
-        /* 🔥 PDF 출력 시 줄 잘림 현상 방지를 위한 강력한 CSS 속성 (page-break-inside) 추가 */
-        .document-view h2, .document-view h3, .document-view p, .document-view blockquote, .document-view ul, .document-view li {
-            page-break-inside: avoid; break-inside: avoid;
-        }
+        /* 🔥 PDF 출력 시 줄 잘림 방지용 CSS */
+        .document-view h2, .document-view h3, .document-view p, .document-view blockquote, .document-view ul, .document-view li { page-break-inside: avoid; break-inside: avoid; }
 
         .document-view h2 { color: var(--text-main); margin: 40px 0 20px; font-weight: 800; font-size: 1.6rem; border-bottom: 3px solid var(--accent-primary); padding-bottom: 10px; display: inline-block; }
         .document-view h3 { color: var(--accent-blue); margin: 30px 0 15px; font-weight: 700; font-size: 1.3rem; }
@@ -117,16 +114,15 @@
         .cloze-blank { background: #1E293B !important; color: #1E293B !important; border-radius: 4px; padding: 2px 6px; cursor: pointer; user-select: none; }
         .cloze-blank:hover { background: var(--accent-primary) !important; color: white !important; }
 
-        /* 🔥 테이블 줄바꿈 방지 */
+        /* 가독성 극대화를 위한 테이블 세팅 */
         .document-view table { width: 100%; border-collapse: collapse; margin: 30px 0; border: 1px solid #CBD5E1; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.02); page-break-inside: auto; break-inside: auto; }
         .document-view tr { page-break-inside: avoid; break-inside: avoid; }
-        .document-view th, .document-view td { border: 1px solid #E2E8F0; padding: 20px; text-align: left; vertical-align: top; }
+        .document-view th, .document-view td { border: 1px solid #E2E8F0; padding: 20px; text-align: left; vertical-align: top; word-break: keep-all; }
         .document-view th { background-color: #F8FAFC; color: var(--text-main); font-weight: 800; font-size: 1.1rem; border-bottom: 2px solid #CBD5E1; }
         .document-view tr:nth-child(even) td { background-color: #FAFAFA; }
         .document-view td:first-child { width: 28%; font-weight: 700; color: var(--accent-blue); background-color: #F8FAFC; border-right: 2px solid #E2E8F0; }
         .document-view td:nth-child(2) { width: 72%; }
 
-        /* 🔥 책 표지는 무조건 한 페이지를 차지하게 만듦 */
         .book-cover { text-align: center; padding: 150px 40px; background: linear-gradient(135deg, #F8FAFC, #F1F5F9); border: 2px solid #E2E8F0; border-radius: 16px; margin-bottom: 40px; page-break-after: always; break-after: page; }
         .book-title { font-size: 3rem; font-weight: 900; color: var(--text-main); margin-bottom: 20px; }
         .book-subtitle { font-size: 1.5rem; color: var(--accent-blue); font-weight: 700; }
@@ -156,7 +152,6 @@
 
         #mermaidTree { background: white; padding: 30px; border-radius: 16px; border: 1px solid #E2E8F0; box-shadow: var(--shadow-fluffy); overflow: hidden; display: flex; justify-content: center; align-items: center; min-height: 400px; }
 
-        /* 지옥의 OX 서바이벌 모달 UI */
         .ox-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.8); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
         .ox-modal-content { background: white; width: 90%; max-width: 800px; max-height: 85vh; overflow-y: auto; border-radius: 24px; padding: 40px; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
         .ox-close { position: absolute; top: 20px; right: 25px; font-size: 1.8rem; color: #94A3B8; cursor: pointer; transition: 0.2s; }
@@ -166,9 +161,7 @@
         .ox-body { font-size: 1.1rem; line-height: 1.8; color: var(--text-main); }
         .ox-body h3 { color: #E11D48; border-bottom: 2px solid #E11D48; padding-bottom: 5px; margin: 30px 0 15px; }
 
-        @media print {
-            .document-view { box-shadow: none; border: none; padding: 0; }
-        }
+        @media print { .document-view { box-shadow: none; border: none; padding: 0; } }
 
         @media (max-width: 1024px) {
             .mobile-header { display: flex; }
@@ -194,13 +187,13 @@
             
             <div class="menu-group">
                 <div class="menu-label">✏️ Create</div>
-                <div class="menu-item active" onclick="navTo('concept')"><i class="fa-solid fa-shapes"></i> 코넬 정리 & 함정 레이더</div>
+                <div class="menu-item active" onclick="navTo('concept')"><i class="fa-solid fa-shapes"></i> 맞춤 정리 & 함정 레이더</div>
                 <div class="menu-item" onclick="navTo('grading')"><i class="fa-solid fa-marker"></i> OMR & 오답 분석</div>
             </div>
 
             <div class="menu-group">
                 <div class="menu-label">📚 Library</div>
-                <div class="menu-item" onclick="navTo('archive')"><i class="fa-solid fa-box-archive"></i> 기록 보관함 & OX 서바이벌</div>
+                <div class="menu-item" onclick="navTo('archive')"><i class="fa-solid fa-box-archive"></i> 기록 보관함 & OX 훈련</div>
                 <div class="menu-item" onclick="navTo('knowledgetree')"><i class="fa-solid fa-network-wired"></i> 나의 지식 지도</div>
                 <div class="menu-item" onclick="navTo('unified')"><i class="fa-solid fa-book-journal-whills"></i> 문제집 출판 (보스전)</div>
             </div>
@@ -219,19 +212,31 @@
                     <div class="page-header-left">
                         <div class="page-header-icon" style="background: var(--accent-mint);"><i class="fa-solid fa-book-open"></i></div>
                         <div>
-                            <h2 class="page-title">코넬 정리노트 & 함정 레이더</h2>
-                            <p class="page-desc">내용 생략 없이 완벽하게 구조화하고 출제자의 오답 함정을 예측합니다.</p>
+                            <h2 class="page-title">맞춤 정리노트 & 함정 레이더</h2>
+                            <p class="page-desc">원하는 디자인으로 노트를 쾌적하게 구성하고 출제 함정을 파악하세요.</p>
                         </div>
                     </div>
                 </div>
                 <div class="panel no-print">
-                    <div class="form-group">
-                        <label><i class="fa-solid fa-tags"></i> 태그 (과목/단원)</label>
-                        <input type="text" id="conceptTags" placeholder="예: 국어, 문학분석">
+                    <!-- 🔥 노트 정리 방식 선택 기능 추가 -->
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-tags"></i> 태그 (과목/단원)</label>
+                            <input type="text" id="conceptTags" placeholder="예: 국어, 문학분석">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-layer-group"></i> 노트 정리 방식 선택 (가독성 관리)</label>
+                            <select id="conceptFormat">
+                                <option value="auto">🤖 자동 맞춤형 (AI가 내용에 따라 최적 판단)</option>
+                                <option value="cornell">📋 코넬 노트형 (전통적인 2열 표 형식)</option>
+                                <option value="bullet">📝 개조식 요약형 (가독성 최상 - 표 없이 깔끔한 텍스트)</option>
+                                <option value="qna">❓ Q&A 문답형 (예상 질문과 명쾌한 답변 형식)</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label><i class="fa-solid fa-align-left"></i> 요약 및 분석할 텍스트 원본 (필수)</label>
-                        <textarea id="conceptPrompt" rows="8" placeholder="여기에 정리하고 싶은 긴 글, 교과서 본문 등을 복사해서 붙여넣으세요. AI가 내용을 절대 생략하지 않고 상세하게 분석합니다."></textarea>
+                        <textarea id="conceptPrompt" rows="6" placeholder="여기에 정리하고 싶은 긴 글, 교과서 본문 등을 복사해서 붙여넣으세요. AI가 내용을 절대 생략하지 않고 빵빵하게 분석합니다."></textarea>
                     </div>
                     <div class="form-group">
                         <label><i class="fa-solid fa-image"></i> 교재 사진이나 PDF 첨부 (선택)</label>
@@ -243,7 +248,7 @@
                         <div id="conceptPreview" class="preview-area" style="background: var(--accent-mint); color: white;"></div>
                     </div>
                     <button class="btn-primary" style="background: var(--accent-mint);" onclick="executeAI('concept')">
-                        <i class="fa-solid fa-wand-magic-sparkles"></i> 100점 방어 코넬 노트 생성하기
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> 100점 방어 맞춤 노트 생성하기
                     </button>
                     <div id="conceptLoader" class="loader" style="color:var(--accent-mint)"><div class="spinner" style="border-top-color:currentColor"></div>자료를 깊이 있게 분석하여 노트를 작성 중입니다...</div>
                 </div>
@@ -252,7 +257,7 @@
                     <div class="pdf-actions no-print">
                         <button class="btn-tts" id="ttsBtnConcept" onclick="toggleTTS('conceptResult', 'ttsBtnConcept')"><i class="fa-solid fa-headphones"></i> 오디오 브리핑 듣기</button>
                         <button class="btn-cloze" onclick="toggleCloze(this)"><i class="fa-solid fa-eye-slash"></i> 암기 모드 (빈칸 뚫기)</button>
-                        <button class="btn-pdf" onclick="downloadPDF('pdfConceptArea', '코넬정리노트')"><i class="fa-solid fa-file-pdf"></i> PDF 내보내기</button>
+                        <button class="btn-pdf" onclick="downloadPDF('pdfConceptArea', '맞춤정리노트')"><i class="fa-solid fa-file-pdf"></i> PDF 내보내기</button>
                     </div>
                     <div id="pdfConceptArea">
                         <div id="conceptResult" class="document-view"></div>
@@ -358,7 +363,7 @@
                     <div class="page-header-icon" style="background: linear-gradient(135deg, #FFD166, #FF9F1C);"><i class="fa-solid fa-book-journal-whills"></i></div>
                     <div>
                         <h2 class="page-title">문제집 출판 & 융합 킬러 문항 (Boss Fight)</h2>
-                        <p class="page-desc">노트를 전자책으로 묶거나, 여러 단원을 융합한 최고난도 문제를 생성합니다.</p>
+                        <p class="page-desc">노트를 전자책으로 묶거나, 여러 단원을 융합한 최고난도 문제를 생성합니다. 생성 시 보관함에 자동 저장됩니다.</p>
                     </div>
                 </div>
                 <div class="panel no-print">
@@ -492,10 +497,9 @@
             });
         }
 
-        // 🔥 PDF 페이지 잘림 완벽 방어 엔진 (html2pdf pagebreak 세팅)
+        // 🔥 PDF 페이지 잘림 방어 엔진
         async function downloadPDF(elementId, fileName) {
             const element = document.getElementById(elementId);
-            // 폰트와 수식이 모두 그려질 때까지 약간 대기
             await document.fonts.ready;
             
             const opt = {
@@ -504,7 +508,6 @@
                 image:        { type: 'jpeg', quality: 0.98 },
                 html2canvas:  { scale: 2, useCORS: true, letterRendering: true, scrollY: 0 },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                // 페이지 경계선에서 요소가 반으로 잘리지 않도록 강제 보호하는 옵션
                 pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] } 
             };
             html2pdf().set(opt).from(element).save();
@@ -552,12 +555,11 @@
             btn.innerHTML = '<i class="fa-solid fa-circle-stop"></i> 브리핑 중지';
         }
 
-        // 🔥 프롬프트 규칙 (표 길이 조절 조건 추가)
+        // 🔥 프롬프트 공통 포맷 보호 규정
         const formattingRules = `
-[마크다운 및 렌더링 절대 준수 규칙 - 위반 시 감점]
-1. 글머리 기호(Bullet point)나 리스트 작성 시 하이픈(-)을 절대 사용하지 마세요. 반드시 별표(*)나 숫자(1. 2.)를 사용하세요. 표 안에서도 하이픈 금지.
-2. 텍스트에 단일 달러 기호($)를 절대 사용하지 마세요. 필요시 '달러'라고 한글로 표기하고, 수학 수식에만 이중 달러 기호($$수식$$)를 사용하세요.
-3. 표(Table)를 작성할 때, 하나의 칸(Row)에 내용이 너무 길어지지 않도록 여러 개의 행(Row)으로 잘게 쪼개서 작성하세요. 한 줄이 너무 길면 PDF 출력 시 페이지가 잘립니다.`;
+[마크다운 및 렌더링 절대 준수 규칙]
+1. 글머리 기호나 리스트 작성 시 하이픈(-) 사용을 금지합니다. 표 안에서도 마찬가지입니다. 대신 별표(*)나 숫자(1. 2.)를 사용하세요.
+2. 텍스트 내에서 단일 달러 기호($)를 절대 사용하지 마세요. 수학 수식에만 이중 달러 기호($$수식$$)를 허용합니다.`;
 
         async function callGeminiAPI(apiKey, prompt, files = [], loaderId = null) {
             let requestParts = [{ text: prompt }];
@@ -588,7 +590,7 @@
                         }
                         const errorData = await response.json().catch(() => ({}));
                         let errMsg = errorData.error ? errorData.error.message : `API 통신 오류 (${status})`;
-                        if(status === 429 || status === 503) errMsg = "서버 혼잡이 극심합니다. 병합하는 노트 개수를 줄이거나 1분 뒤 다시 시도해주세요.";
+                        if(status === 429 || status === 503) errMsg = "서버 혼잡이 극심합니다. 병합하는 노트 개수를 줄이거나 잠시 후 다시 시도해주세요.";
                         throw new Error(errMsg);
                     }
 
@@ -616,7 +618,7 @@
             const resultWrapper = document.getElementById(mode + 'ResultWrapper');
             const resultBox = document.getElementById(mode + 'Result');
             
-            if(mode === 'concept') loader.innerHTML = `<div class="spinner" style="border-top-color:currentColor"></div>자료를 깊이 있게 분석하여 노트를 작성 중입니다...`;
+            if(mode === 'concept') loader.innerHTML = `<div class="spinner" style="border-top-color:currentColor"></div>자료를 깊이 있게 분석하여 맞춤 노트를 작성 중입니다...`;
             if(mode === 'grading') loader.innerHTML = `<div class="spinner" style="border-top-color:currentColor"></div>오답 원인을 심층 분석 중입니다...`;
             
             loader.style.display = 'block'; 
@@ -630,13 +632,27 @@
                     const inputPrompt = document.getElementById('conceptPrompt').value;
                     const file = document.getElementById('conceptFile').files[0];
                     const rawTags = document.getElementById('conceptTags').value;
+                    const formatChoice = document.getElementById('conceptFormat').value; // 🔥 포맷 선택값 가져오기
+                    
                     if (!inputPrompt && !file) throw new Error("요약할 텍스트나 파일을 넣어주세요.");
                     if (file) filesToProcess.push(await fileToBase64(file));
                     
                     tags = rawTags.split(',').map(t => t.trim()).filter(t => t);
                     title = `[정리노트] ${tags[0] || '핵심 요약'}`;
                     
-                    prompt = `당신은 최고 수준의 일타 강사입니다. 제공된 데이터를 완벽한 '코넬 노트' 형식으로 변환하세요.\n[원본 데이터]: ${inputPrompt}\n\n[필수 조건]\n1. 원본 내용을 절대 생략하지 말고 백과사전 수준으로 깊게 꽉 채워 넣으세요.\n2. 중요 암기 키워드는 반드시 양쪽에 별표 두 개(**단어**)를 쳐서 볼드체로 만드세요.\n3. 좌측 '핵심 키워드', 우측 '상세 내용' 2열짜리 표(Table)로 출력하세요. 단, 내용이 길어지지 않게 여러 개의 행으로 쪼개어 구성하세요.\n4. [🚨 출제자 빙의 함정 레이더] 섹션을 마크다운 인용구(blockquote: >)로 작성하여, 출제자가 인과관계를 꼬거나 일반화 오류를 유도할 만한 '매력적인 오답 선지 패턴'을 경고해 주세요.\n5. [👩‍🏫 AI 선생님의 족집게 하이라이트]를 하단에 기술하세요.\n${formattingRules}`;
+                    // 🔥 사용자가 선택한 스타일에 따른 지시어 강제 적용
+                    let styleInstruction = "";
+                    if (formatChoice === "cornell") {
+                        styleInstruction = "좌측은 '핵심 키워드', 우측은 '상세 내용'으로 구성된 딱 2열짜리 표(Table)로만 출력하세요. 한 칸의 내용이 너무 길어지지 않게 여러 개의 행으로 쪼개서 구성하세요.";
+                    } else if (formatChoice === "bullet") {
+                        styleInstruction = "가독성 극대화를 위해 절대로 표(Table)를 사용하지 마세요. 계층형 글머리 기호(1. 가. *)를 활용하여 깔끔하고 논리적인 개조식 텍스트로만 정리하세요.";
+                    } else if (formatChoice === "qna") {
+                        styleInstruction = "본문 내용을 바탕으로 시험에 나올 법한 예상 질문(Q)과 상세한 답변(A) 형식으로 정리하세요. 인용구(>) 마크다운을 활용해 가독성을 높이세요. 표는 사용하지 마세요.";
+                    } else {
+                        styleInstruction = "내용의 성격을 분석하여, 개념 비교가 많으면 2열 표(Table)를 사용하고, 흐름 위주면 계층형 글머리 기호를 사용하는 등 가장 가독성이 좋은 형태를 유동적으로 선택하세요.";
+                    }
+
+                    prompt = `당신은 최고 수준의 일타 강사입니다. 다음 데이터를 분석하여 완벽한 노트를 작성하세요.\n[원본 데이터]: ${inputPrompt}\n\n[필수 조건]\n1. 원본 내용을 절대 생략하지 말고 백과사전 수준으로 깊게 꽉 채워 넣으세요.\n2. 중요 암기 키워드는 반드시 양쪽에 별표 두 개(**단어**)를 쳐서 볼드체로 만드세요.\n3. [레이아웃 강제 지시]: ${styleInstruction}\n4. [🚨 출제자 빙의 함정 레이더] 섹션을 마크다운 인용구(blockquote: >)로 작성하여, 출제자가 유도할 만한 오답 선지 패턴을 경고해 주세요.\n5. [👩‍🏫 AI 선생님의 족집게 하이라이트]를 하단에 기술하세요.\n${formattingRules}`;
                 }
                 else if (mode === 'grading') {
                     const qFile = document.getElementById('gradeQuestFile').files[0];
@@ -645,8 +661,8 @@
                     if (!omrInput) throw new Error("OMR 카드를 클릭하여 마킹을 완료해주세요.");
                     if (qFile) filesToProcess.push(await fileToBase64(qFile));
                     
-                    title = `[채점/오답분석] 모의고사`;
-                    prompt = `첨부된 시험지와 학생 마킹 답안을 바탕으로 초정밀 가채점 및 분석 리포트를 작성하세요.\n[학생 답안]: ${omrInput}\n\n[조건]\n1. 실제 정답과 학생 답안을 비교 채점(O/X)하세요.\n2. 틀린 문제는 오답 원인(논리적 함정)을 생략 없이 아주 길고 상세하게 해설하세요.\n3. [👩‍🏫 AI 선생님의 약점 보완 하이라이트]와 [🚨 변형 출제 포인트 예측]을 상세히 작성하세요.\n${formattingRules}`;
+                    title = `[오답분석] 모의고사`;
+                    prompt = `첨부된 시험지와 학생 마킹 답안을 바탕으로 초정밀 가채점 및 분석 리포트를 작성하세요.\n[학생 답안]: ${omrInput}\n\n[조건]\n1. 실제 정답과 비교 채점(O/X) 하세요.\n2. 틀린 문제는 오답 원인(논리적 함정)을 생략 없이 아주 길고 상세하게 해설하세요.\n3. [👩‍🏫 AI 선생님의 약점 보완 하이라이트]와 [🚨 변형 출제 포인트 예측]을 상세히 작성하세요.\n${formattingRules}`;
                 }
 
                 const aiText = await callGeminiAPI(apiKey, prompt, filesToProcess, loaderId);
@@ -658,7 +674,7 @@
                 saveHistory(title, tags, aiText);
                 
                 const chatBoxId = mode === 'concept' ? 'chatBoxConcept' : 'chatBoxGrade';
-                document.getElementById(chatBoxId).innerHTML = '<div class="chat-msg msg-ai">자료 정리가 완료되었습니다! 복습 모드(빈칸 뚫기)를 해보시거나, 이해가 안 가는 부분은 저에게 질문해 주세요!</div>';
+                document.getElementById(chatBoxId).innerHTML = '<div class="chat-msg msg-ai">자료 정리가 완료되었습니다! 복습 모드(빈칸 뚫기)를 켜보시거나, 모르는 부분은 언제든 질문해 주세요!</div>';
 
             } catch (error) { 
                 resultBox.innerHTML = `<div style="color: #EF4444; font-weight: bold; padding: 20px; border: 2px dashed #EF4444; border-radius: 10px; background: #FEF2F2;"><i class="fa-solid fa-triangle-exclamation"></i> 에러 발생:<br><br>${error.message}</div>`;
@@ -703,7 +719,8 @@
         function saveHistory(title, tags, content) {
             let history = JSON.parse(localStorage.getItem('cozyArchive') || '[]');
             history.unshift({ id: Date.now(), date: new Date().toLocaleDateString('ko-KR'), title: title, tags: tags, content: content });
-            if (history.length > 30) history.pop();
+            // 히스토리 개수 50개까지 넉넉하게 보관
+            if (history.length > 50) history.pop();
             localStorage.setItem('cozyArchive', JSON.stringify(history));
         }
 
@@ -782,6 +799,7 @@
                 </div>`).join('');
         }
 
+        // 🔥 단권화 문제집 생성 및 보관함에 [영구 저장] 기능 추가!
         async function executeUnifiedNote() {
             if(window.speechSynthesis.speaking) window.speechSynthesis.cancel();
             const apiKey = document.getElementById('sysApiKey').value;
@@ -811,12 +829,16 @@
                 const tagsString = Array.from(selectedTags).join(', ') || '종합 노트';
                 const today = new Date().toLocaleDateString('ko-KR');
                 
-                // 표지가 한 장을 완전히 덮도록 디자인 개선 (page-break-after)
                 const coverHtml = `<div class="book-cover"><div class="book-title">나만의 마스터 단권화 문제집</div><div class="book-subtitle">AI 튜터 분석 에디션</div><div class="book-date">발행일: ${today} | 포함 단원: ${tagsString}</div></div>`;
 
-                resultBox.innerHTML = coverHtml + `<div style="padding: 0 60px 50px;">` + marked.parse(aiText) + `</div>`;
+                const finalHTML = coverHtml + `<div style="padding: 0 60px 50px;">` + marked.parse(aiText) + `</div>`;
+                resultBox.innerHTML = finalHTML;
                 resultWrapper.style.display = 'block';
                 if (window.MathJax) MathJax.typesetPromise([resultBox]);
+                
+                // 🔥 생성된 단권화 노트도 기록 보관함에 영구 저장!
+                saveHistory(`[단권화 마스터] ${tagsString}`, Array.from(selectedTags), aiText);
+
             } catch (error) { 
                 resultBox.innerHTML = `<div style="color: #EF4444; padding: 20px; font-weight: bold; border: 2px dashed #EF4444; background: #FEF2F2;"><i class="fa-solid fa-triangle-exclamation"></i> 에러 발생: ${error.message}</div>`;
                 resultWrapper.style.display = 'block';
@@ -824,6 +846,7 @@
             finally { loader.style.display = 'none'; }
         }
 
+        // 🔥 보스전 (킬러 문항) 생성 및 보관함에 [영구 저장]
         async function executeBossFight() {
             if(window.speechSynthesis.speaking) window.speechSynthesis.cancel();
             const apiKey = document.getElementById('sysApiKey').value;
@@ -841,9 +864,13 @@
 
             let history = JSON.parse(localStorage.getItem('cozyArchive') || '[]');
             let mergedContent = "";
+            let selectedTags = new Set();
             checkboxes.forEach(cb => {
                 const item = history.find(h => h.id == cb.value);
-                if(item) mergedContent += `\n\n[자료]: ${item.content}`;
+                if(item) {
+                    mergedContent += `\n\n[자료]: ${item.content}`;
+                    if(item.tags) item.tags.forEach(t => selectedTags.add(t));
+                }
             });
 
             const prompt = `당신은 수능 출제 위원장입니다. 제공된 여러 단원의 자료를 융합하여 수능 최고난도 수준의 [🔥 융합 킬러 문항]을 1문제 출제하세요.\n\n${mergedContent}\n\n[조건]\n1. 두 개념의 교집합이나 모순점을 파고드는 고난도 추론 문제 출제.\n2. 정답 선지 1개와 치명적인 함정이 숨어있는 오답 선지 4개를 만드세요.\n3. 문제 바로 아래에 왜 이 문제가 킬러 문항인지, 각 선지의 함정이 무엇인지 소름 돋게 상세한 해설을 적어주세요.\n${formattingRules}`;
@@ -854,6 +881,11 @@
                 resultBox.innerHTML = coverHtml + `<div style="padding: 0 60px 50px;">` + marked.parse(aiText) + `</div>`;
                 resultWrapper.style.display = 'block';
                 if (window.MathJax) MathJax.typesetPromise([resultBox]);
+
+                // 🔥 킬러 문항도 나중에 다시 풀 수 있게 영구 저장!
+                const tagsString = Array.from(selectedTags).join(', ');
+                saveHistory(`[보스전] 융합 킬러 문항 (${tagsString})`, Array.from(selectedTags), aiText);
+
             } catch (error) { 
                 resultBox.innerHTML = `<div style="color: #EF4444; padding: 20px; font-weight: bold; border: 2px dashed #EF4444; background: #FEF2F2;"><i class="fa-solid fa-triangle-exclamation"></i> 에러 발생: ${error.message}</div>`;
                 resultWrapper.style.display = 'block';
