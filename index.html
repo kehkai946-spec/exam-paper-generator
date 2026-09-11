@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>단권화 스터디 다이어리 V23 - God Mode Edition</title>
+    <title>단권화 스터디 다이어리 V25 - Intuitive & Multi-Theme Edition</title>
     
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -15,416 +15,427 @@
     <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
 
     <style>
-        /* 🔥 다크모드 대응 CSS 변수 세팅 */
+        /* 🔥 6가지 사용자 맞춤형 테마 CSS 변수 */
         :root[data-theme="light"] {
-            --bg-body: #F8FAFC; --bg-surface: #FFFFFF;
+            --bg-body: #F4F7FA; --bg-surface: #FFFFFF;
             --text-main: #1E293B; --text-sub: #64748B;
-            --accent-primary: #FF8BA7; --accent-secondary: #FFC6C7; 
-            --accent-blue: #3B82F6; --accent-mint: #10B981; --accent-boss: #E11D48; --accent-ox: #8B5CF6;
-            --border-soft: #E2E8F0; --shadow-fluffy: 0 10px 30px rgba(0, 0, 0, 0.05);
-            --radius-box: 20px; --radius-btn: 12px;
-            --table-head: #F8FAFC; --table-row: #FAFAFA; --chat-bg: #F8FAFC;
+            --accent-primary: #3B82F6; --accent-blue: #3B82F6; --accent-mint: #10B981; --accent-danger: #EF4444; --accent-special: #8B5CF6;
+            --border-soft: #E2E8F0; --shadow-fluffy: 0 10px 25px rgba(0, 0, 0, 0.04);
+            --radius-box: 16px; --radius-btn: 10px;
+            --table-head: #F8FAFC; --table-row: #FFFFFF; --chat-bg: #F8FAFC;
         }
         :root[data-theme="dark"] {
             --bg-body: #0F172A; --bg-surface: #1E293B;
             --text-main: #F8FAFC; --text-sub: #94A3B8;
-            --accent-primary: #F43F5E; --accent-secondary: #FDA4AF; 
-            --accent-blue: #3B82F6; --accent-mint: #10B981; --accent-boss: #E11D48; --accent-ox: #8B5CF6;
-            --border-soft: #334155; --shadow-fluffy: 0 10px 30px rgba(0, 0, 0, 0.5);
+            --accent-primary: #3B82F6; --accent-blue: #3B82F6; --accent-mint: #10B981; --accent-danger: #EF4444; --accent-special: #8B5CF6;
+            --border-soft: #334155; --shadow-fluffy: 0 10px 30px rgba(0, 0, 0, 0.4);
             --table-head: #0F172A; --table-row: #1E293B; --chat-bg: #0F172A;
         }
+        :root[data-theme="warmwood"] {
+            --bg-body: #FDFBF7; --bg-surface: #F4EFE6;
+            --text-main: #3E3124; --text-sub: #7A6953;
+            --accent-primary: #8B5A2B; --accent-blue: #607D8B; --accent-mint: #6B8E23; --accent-danger: #C0392B; --accent-special: #D35400;
+            --border-soft: #E6DBCB; --shadow-fluffy: 0 10px 25px rgba(139, 90, 43, 0.05);
+            --radius-box: 16px; --radius-btn: 10px;
+            --table-head: #EBE3D5; --table-row: #F4EFE6; --chat-bg: #FDFBF7;
+        }
+        :root[data-theme="pastel"] {
+            --bg-body: #FFF5F8; --bg-surface: #FFFFFF;
+            --text-main: #4A4A4A; --text-sub: #888888;
+            --accent-primary: #FFA6C9; --accent-blue: #86B6F6; --accent-mint: #B4E380; --accent-danger: #FF8BA7; --accent-special: #B1AFFF;
+            --border-soft: #FFE1E8; --shadow-fluffy: 0 10px 25px rgba(255, 166, 201, 0.1);
+            --radius-box: 24px; --radius-btn: 14px;
+            --table-head: #FFF0F5; --table-row: #FFFFFF; --chat-bg: #FFF5F8;
+        }
+        :root[data-theme="paper"] {
+            --bg-body: #F4F1EA; --bg-surface: #FAF8F5;
+            --text-main: #2C2C2C; --text-sub: #666666;
+            --accent-primary: #A63A28; --accent-blue: #3A5F7A; --accent-mint: #4A7A59; --accent-danger: #B22222; --accent-special: #800020;
+            --border-soft: #DED9C9; --shadow-fluffy: 0 5px 15px rgba(0, 0, 0, 0.03);
+            --radius-box: 8px; --radius-btn: 6px;
+            --table-head: #EAE6D8; --table-row: #FAF8F5; --chat-bg: #F4F1EA;
+        }
+        :root[data-theme="sepianight"] {
+            --bg-body: #2C241E; --bg-surface: #3E3228;
+            --text-main: #E8E3D9; --text-sub: #A89F91;
+            --accent-primary: #D4A373; --accent-blue: #A3B18A; --accent-mint: #CCD5AE; --accent-danger: #E07A5F; --accent-special: #F4A261;
+            --border-soft: #5C4D3C; --shadow-fluffy: 0 10px 30px rgba(0, 0, 0, 0.5);
+            --radius-box: 12px; --radius-btn: 8px;
+            --table-head: #2C241E; --table-row: #3E3228; --chat-bg: #2C241E;
+        }
         
-        * { box-sizing: border-box; margin: 0; padding: 0; transition: background-color 0.3s, color 0.3s; }
-        body { font-family: 'Pretendard', sans-serif; background-color: var(--bg-body); color: var(--text-main); display: flex; flex-direction: column; min-height: 100dvh; overflow-x: hidden; line-height: 1.7; letter-spacing: -0.02em; }
+        * { box-sizing: border-box; margin: 0; padding: 0; transition: background-color 0.3s, color 0.3s, border-color 0.3s; }
+        body { font-family: 'Pretendard', sans-serif; background-color: var(--bg-body); color: var(--text-main); display: flex; flex-direction: column; min-height: 100dvh; overflow-x: hidden; line-height: 1.6; }
         
+        /* 집중(젠) 모드 */
+        body.zen-mode .sidebar, body.zen-mode .mobile-header, body.zen-mode .panel:not(.zen-exempt), body.zen-mode .page-header-left, body.zen-mode .toolbar-chips .chip:not(.zen-btn) { display: none !important; }
+        body.zen-mode .app-container { max-width: 1000px; margin: 0 auto; }
+        body.zen-mode .main-content { padding: 20px; }
+        body.zen-mode .document-view { box-shadow: none; border: 1px solid transparent; background: transparent; font-size: 1.1rem; }
+        body.zen-mode .floating-widget { opacity: 0.3; transition: 0.3s; }
+        body.zen-mode .floating-widget:hover { opacity: 1; }
+
         .mobile-header { display: none; background: var(--bg-surface); padding: 16px 24px; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-soft); position: sticky; top: 0; z-index: 100; }
         .mobile-header h1 { font-size: 1.2rem; font-weight: 800; color: var(--accent-primary); }
         .menu-toggle { background: none; border: none; font-size: 1.4rem; color: var(--accent-primary); cursor: pointer; }
 
-        .app-container { display: flex; flex: 1; position: relative; max-width: 1500px; margin: 0 auto; width: 100%; }
+        .app-container { display: flex; flex: 1; position: relative; max-width: 1500px; margin: 0 auto; width: 100%; transition: 0.3s; }
 
-        .sidebar { width: 280px; background: var(--bg-surface); border-right: 1px solid var(--border-soft); display: flex; flex-direction: column; padding: 32px 0; transition: transform 0.3s ease; z-index: 50; }
-        .brand { padding: 0 32px 32px; font-size: 1.4rem; font-weight: 800; color: var(--accent-primary); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+        .sidebar { width: 260px; background: var(--bg-surface); border-right: 1px solid var(--border-soft); display: flex; flex-direction: column; padding: 30px 0; z-index: 50; transition: 0.3s; }
+        .brand { padding: 0 30px 30px; font-size: 1.2rem; font-weight: 800; color: var(--accent-primary); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
         
-        .menu-group { margin-bottom: 24px; }
-        .menu-label { padding: 0 32px; font-size: 0.8rem; font-weight: 700; color: var(--accent-blue); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
-        .menu-item { padding: 14px 32px; cursor: pointer; display: flex; align-items: center; gap: 14px; font-weight: 600; color: var(--text-sub); transition: 0.2s; font-size: 1rem; position: relative; }
-        .menu-item:hover { color: var(--accent-primary); background: rgba(255, 139, 167, 0.1); }
-        .menu-item.active { color: var(--accent-primary); background: rgba(255, 139, 167, 0.15); font-weight: 700; }
-        .menu-item.active::before { content: ''; position: absolute; left: 0; top: 15%; height: 70%; width: 4px; background: var(--accent-primary); border-radius: 0 10px 10px 0; }
-        .menu-item i { font-size: 1.1rem; width: 22px; text-align: center; }
+        .menu-group { margin-bottom: 20px; }
+        .menu-label { padding: 0 30px; font-size: 0.75rem; font-weight: 700; color: var(--text-sub); margin-bottom: 8px; letter-spacing: 0.05em; }
+        .menu-item { padding: 12px 30px; cursor: pointer; display: flex; align-items: center; gap: 12px; font-weight: 600; color: var(--text-main); font-size: 0.95rem; position: relative; }
+        .menu-item:hover { color: var(--accent-blue); }
+        .menu-item.active { color: var(--accent-blue); background: rgba(59, 130, 246, 0.05); font-weight: 700; }
+        .menu-item.active::before { content: ''; position: absolute; left: 0; top: 20%; height: 60%; width: 4px; background: var(--accent-blue); border-radius: 0 4px 4px 0; }
         
-        .settings-section { margin-top: auto; padding: 24px 32px; border-top: 1px solid var(--border-soft); background: var(--bg-body); }
-        .settings-section input { width: 100%; padding: 12px 16px; border: 1px solid var(--border-soft); border-radius: var(--radius-btn); font-size: 0.9rem; background: var(--bg-surface); color: var(--text-main); outline: none; }
-        .settings-section input:focus { border-color: var(--accent-blue); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+        .settings-section { margin-top: auto; padding: 20px 30px; border-top: 1px solid var(--border-soft); }
+        .settings-section select, .settings-section input { width: 100%; padding: 10px 14px; border: 1px solid var(--border-soft); border-radius: var(--radius-btn); font-size: 0.85rem; background: var(--bg-body); color: var(--text-main); outline: none; margin-bottom: 10px; }
+        .settings-section input:focus, .settings-section select:focus { border-color: var(--accent-blue); }
 
-        /* 🔥 플로팅 타이머 위젯 */
-        .timer-widget { margin: 15px 32px; padding: 15px; background: var(--bg-surface); border-radius: 16px; border: 1px solid var(--border-soft); text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .timer-time { font-size: 1.8rem; font-weight: 900; color: var(--text-main); margin-bottom: 10px; font-variant-numeric: tabular-nums; }
-        .timer-controls button { background: var(--border-soft); color: var(--text-main); border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-weight: 600; margin: 0 3px; }
-        .timer-controls button:hover { background: var(--accent-blue); color: white; }
+        .floating-widget { position: fixed; bottom: 30px; right: 30px; width: 220px; background: var(--bg-surface); padding: 15px; border-radius: 16px; border: 1px solid var(--border-soft); box-shadow: var(--shadow-fluffy); z-index: 1000; cursor: grab; user-select: none; }
+        .floating-widget:active { cursor: grabbing; }
+        .widget-drag-handle { width: 100%; height: 15px; display: flex; justify-content: center; align-items: center; margin-bottom: 5px; color: var(--text-sub); }
+        .timer-time { font-size: 2rem; font-weight: 900; margin-bottom: 10px; font-variant-numeric: tabular-nums; text-align: center; color: var(--accent-blue); }
+        .timer-controls { display: flex; justify-content: center; gap: 8px; }
+        .timer-controls button { background: var(--bg-body); border: 1px solid var(--border-soft); color: var(--text-main); padding: 8px 15px; border-radius: 8px; cursor: pointer; font-size: 1rem; transition: 0.2s; }
+        .timer-controls button:hover { background: var(--accent-blue); color: white; border-color: var(--accent-blue); }
+        .btn-bgm { margin-top: 10px; width: 100%; padding: 8px; font-size: 0.85rem; background: transparent; border: 1px dashed var(--text-sub); color: var(--text-sub); border-radius: 8px; cursor: pointer; transition: 0.2s; }
+        .btn-bgm:hover { background: var(--bg-body); color: var(--text-main); border-color: var(--text-main); }
+        .btn-bgm.playing { background: var(--accent-special); color: white; border-color: var(--accent-special); border-style: solid; }
 
-        /* 🔥 메인 콘텐츠 (스플릿 뷰 지원) */
         .main-wrapper { flex: 1; display: flex; overflow: hidden; }
-        .pdf-viewer-container { display: none; width: 45%; border-right: 2px solid var(--border-soft); background: #333; }
+        .pdf-viewer-container { display: none; width: 45%; border-right: 1px solid var(--border-soft); background: #222; z-index: 10; }
         .pdf-viewer-container iframe { width: 100%; height: 100%; border: none; }
-        .main-content { flex: 1; padding: 40px; width: 100%; overflow-y: auto; height: 100dvh; }
+        .main-content { flex: 1; padding: 35px 50px; width: 100%; overflow-y: auto; height: 100dvh; transition: 0.3s; }
         
-        .page-section { display: none; animation: slideUp 0.4s ease-out; }
+        .page-section { display: none; animation: slideUp 0.3s ease-out; }
         .page-section.active { display: block; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .page-header { margin-bottom: 30px; display: flex; align-items: center; justify-content: space-between; }
-        .page-header-left { display: flex; align-items: center; gap: 18px; }
-        .page-header-icon { background: var(--accent-primary); color: white; width: 54px; height: 54px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; box-shadow: 0 4px 15px rgba(255, 139, 167, 0.3); }
-        .page-title { font-size: 1.6rem; font-weight: 800; color: var(--text-main); margin-bottom: 4px; }
-        .page-desc { color: var(--text-sub); font-size: 0.95rem; font-weight: 500; }
+        .page-header { margin-bottom: 25px; display: flex; align-items: center; justify-content: space-between; }
+        .page-title { font-size: 1.5rem; font-weight: 800; display: flex; align-items: center; gap: 12px; }
+        .page-title i { color: var(--accent-primary); }
         
-        /* 다크모드 토글 */
-        .theme-toggle { background: var(--bg-surface); border: 2px solid var(--border-soft); width: 46px; height: 46px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: var(--text-main); cursor: pointer; transition: 0.3s; }
-        .theme-toggle:hover { background: var(--accent-blue); color: white; border-color: var(--accent-blue); }
+        .header-actions { display: flex; gap: 10px; }
+        .icon-btn { background: var(--bg-surface); border: 1px solid var(--border-soft); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-main); cursor: pointer; transition: 0.2s; }
+        .icon-btn:hover { background: var(--accent-blue); color: white; border-color: var(--accent-blue); }
 
-        .panel { background: var(--bg-surface); padding: 35px; border-radius: var(--radius-box); box-shadow: var(--shadow-fluffy); border: 1px solid var(--border-soft); margin-bottom: 25px; position: relative; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
-        .form-group label { display: flex; font-weight: 700; margin-bottom: 10px; font-size: 0.95rem; color: var(--text-main); align-items: center; gap: 8px; }
-        input[type="text"], textarea, select { width: 100%; padding: 15px 18px; border: 1px solid var(--border-soft); border-radius: var(--radius-btn); font-family: inherit; font-size: 1rem; background: var(--bg-body); color: var(--text-main); transition: all 0.2s; resize: vertical; line-height: 1.6; }
-        input:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent-blue); box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); }
+        .panel { background: var(--bg-surface); padding: 30px; border-radius: var(--radius-box); box-shadow: var(--shadow-fluffy); border: 1px solid var(--border-soft); margin-bottom: 20px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+        .form-group label { display: block; font-weight: 700; margin-bottom: 8px; font-size: 0.9rem; color: var(--text-main); }
         
-        .upload-zone { border: 2px dashed var(--text-sub); background: var(--bg-body); padding: 30px 20px; text-align: center; border-radius: var(--radius-btn); cursor: pointer; position: relative; transition: all 0.3s; }
-        .upload-zone:hover { border-color: var(--accent-blue); }
+        input[type="text"], textarea, select { width: 100%; padding: 14px 16px; border: 1px solid var(--border-soft); border-radius: var(--radius-btn); font-family: inherit; font-size: 0.95rem; background: var(--bg-body); color: var(--text-main); outline: none; overflow: hidden; resize: none; }
+        input:focus, textarea:focus, select:focus { border-color: var(--accent-blue); background: var(--bg-surface); }
+        
+        .upload-zone { border: 2px dashed var(--text-sub); background: var(--bg-body); padding: 25px 15px; text-align: center; border-radius: var(--radius-btn); cursor: pointer; position: relative; transition: 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
+        .upload-zone.dragover { border-color: var(--accent-blue); background: rgba(59, 130, 246, 0.05); }
         .upload-zone input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
-        .upload-zone i { font-size: 2rem; color: var(--text-sub); margin-bottom: 10px; transition: 0.3s; }
-        .upload-zone:hover i { color: var(--accent-blue); transform: translateY(-3px); }
-        .upload-text { font-size: 0.95rem; font-weight: 600; color: var(--text-sub); }
+        .upload-zone i { font-size: 1.8rem; color: var(--text-sub); }
+        .upload-text { font-size: 0.9rem; font-weight: 600; color: var(--text-sub); }
+        .preview-area { display: none; margin-top: 10px; font-size: 0.85rem; color: white; padding: 8px; border-radius: 6px; text-align: center; font-weight: 700; }
 
-        .btn-group { display: flex; gap: 10px; margin-top: 20px; }
-        .btn-primary { background: var(--text-main); color: var(--bg-surface); border: none; padding: 18px 25px; border-radius: var(--radius-btn); font-size: 1.1rem; font-weight: 700; cursor: pointer; width: 100%; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); opacity: 0.9; }
-        .btn-mic { background: #EF4444; width: 60px; flex-shrink: 0; border-radius: var(--radius-btn); color: white; border: none; cursor: pointer; font-size: 1.2rem; transition: 0.3s; }
-        .btn-mic:hover { background: #DC2626; }
-        .btn-mic.recording { animation: pulse 1s infinite; background: #B91C1C; }
+        .btn-primary { background: var(--text-main); color: var(--bg-surface); border: none; padding: 16px; border-radius: var(--radius-btn); font-size: 1rem; font-weight: 700; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; }
+        .btn-primary:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
         
-        .btn-pdf { background: var(--bg-surface); color: var(--text-main); border: 1px solid var(--border-soft); padding: 10px 14px; border-radius: 8px; font-size: 0.9rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: 0.2s; }
-        .btn-pdf:hover { background: var(--border-soft); }
-        .btn-cloze { background: var(--text-main); color: var(--bg-surface); border: none; padding: 10px 14px; border-radius: 8px; font-size: 0.9rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; }
-
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-        .loader { display: none; text-align: center; padding: 30px; font-size: 1rem; font-weight: 700; color: var(--accent-blue); }
-        .spinner { display: inline-block; width: 24px; height: 24px; border: 3px solid var(--border-soft); border-radius: 50%; border-top-color: currentColor; animation: spin 0.8s ease-in-out infinite; margin-right: 10px; vertical-align: middle; }
+        .loader { display: none; text-align: center; padding: 20px; font-size: 0.95rem; font-weight: 700; color: var(--accent-blue); }
+        .spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid var(--border-soft); border-radius: 50%; border-top-color: currentColor; animation: spin 0.8s linear infinite; margin-right: 8px; vertical-align: middle; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        .document-wrapper { display: none; position: relative; margin-top: 30px; }
-        .pdf-actions { display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+        .document-wrapper { display: none; margin-top: 20px; }
+        .toolbar-chips { display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+        .chip { background: var(--bg-surface); border: 1px solid var(--border-soft); color: var(--text-main); padding: 8px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: 0.2s; }
+        .chip:hover { background: var(--bg-body); border-color: var(--text-sub); }
+        .chip.active { background: var(--text-main); color: var(--bg-surface); border-color: var(--text-main); }
         
-        /* 🔥 문서 뷰어 본체 */
-        .document-view { background: var(--bg-surface); padding: 50px 60px; border-radius: var(--radius-box); border: 1px solid var(--border-soft); box-shadow: var(--shadow-fluffy); font-size: 1.05rem; color: var(--text-main); transition: 0.3s; }
-        
-        /* 🔥 포커스 블라인드 모드 (Focus Blind) CSS */
-        .document-view.focus-mode p, .document-view.focus-mode li, .document-view.focus-mode table, .document-view.focus-mode blockquote { opacity: 0.15; filter: blur(1px); transition: all 0.3s ease; }
-        .document-view.focus-mode p:hover, .document-view.focus-mode li:hover, .document-view.focus-mode table:hover, .document-view.focus-mode blockquote:hover { opacity: 1; filter: blur(0); transform: scale(1.01); background: var(--bg-body); border-radius: 8px; z-index: 10; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .document-view { background: var(--bg-surface); padding: 50px; border-radius: var(--radius-box); border: 1px solid var(--border-soft); box-shadow: var(--shadow-fluffy); font-size: 1.05rem; color: var(--text-main); transition: 0.3s; }
+        .document-view.focus-mode p, .document-view.focus-mode li, .document-view.focus-mode table { opacity: 0.2; transition: 0.3s; }
+        .document-view.focus-mode p:hover, .document-view.focus-mode li:hover, .document-view.focus-mode table:hover { opacity: 1; transform: scale(1.02); background: var(--bg-body); border-radius: 8px; z-index: 10; position: relative; padding: 5px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
 
-        .document-view h2, .document-view h3, .document-view p, .document-view blockquote, .document-view ul, .document-view li { page-break-inside: avoid; break-inside: avoid; }
-        .document-view h2 { color: var(--text-main); margin: 40px 0 20px; font-weight: 800; font-size: 1.6rem; border-bottom: 3px solid var(--accent-primary); padding-bottom: 10px; display: inline-block; }
-        .document-view h3 { color: var(--accent-blue); margin: 30px 0 15px; font-weight: 700; font-size: 1.3rem; }
-        .document-view p { margin-bottom: 18px; line-height: 1.8; }
-        .document-view ul, .document-view ol { margin-bottom: 20px; padding-left: 25px; line-height: 1.8; }
-        .document-view li { margin-bottom: 8px; }
+        .document-view h2 { margin: 30px 0 15px; font-weight: 800; font-size: 1.4rem; border-bottom: 2px solid var(--border-soft); padding-bottom: 8px; page-break-inside: avoid; break-inside: avoid; }
+        .document-view h3 { color: var(--accent-blue); margin: 20px 0 10px; font-weight: 700; font-size: 1.1rem; page-break-inside: avoid; break-inside: avoid; }
+        .document-view p, .document-view li { margin-bottom: 10px; line-height: 1.7; page-break-inside: avoid; break-inside: avoid; }
+        .document-view blockquote { border-left: 5px solid var(--accent-danger); background: rgba(239, 68, 68, 0.05); padding: 15px 20px; margin: 20px 0; border-radius: 0 12px 12px 0; font-weight: 600; color: var(--accent-danger); page-break-inside: avoid; break-inside: avoid; }
+        .document-view strong { color: var(--text-main); font-weight: 800; background: linear-gradient(180deg, rgba(255,255,255,0) 60%, rgba(59, 130, 246, 0.2) 40%); }
+        .cloze-blank { background: var(--text-main) !important; color: var(--text-main) !important; border-radius: 4px; padding: 2px 6px; cursor: pointer; }
         
-        .document-view blockquote { border-left: 5px solid var(--accent-boss); background: rgba(225, 29, 72, 0.05); padding: 15px 20px; margin: 20px 0; border-radius: 0 12px 12px 0; font-weight: 600; color: var(--accent-boss); }
-        .document-view strong { color: var(--text-main); font-weight: 800; background: linear-gradient(180deg, rgba(255,255,255,0) 60%, rgba(255, 139, 167, 0.3) 40%); transition: 0.3s; }
-        
-        .cloze-blank { background: var(--text-main) !important; color: var(--text-main) !important; border-radius: 4px; padding: 2px 6px; cursor: pointer; user-select: none; }
-        .cloze-blank:hover { background: var(--accent-primary) !important; color: var(--bg-surface) !important; }
-
-        .document-view table { width: 100%; border-collapse: collapse; margin: 30px 0; border: 1px solid var(--border-soft); border-radius: 12px; overflow: hidden; page-break-inside: auto; }
+        .document-view table { width: 100%; border-collapse: collapse; margin: 20px 0; border: 1px solid var(--border-soft); border-radius: 8px; overflow: hidden; page-break-inside: auto; break-inside: auto; }
         .document-view tr { page-break-inside: avoid; break-inside: avoid; }
-        .document-view th, .document-view td { border: 1px solid var(--border-soft); padding: 20px; text-align: left; vertical-align: top; word-break: keep-all; }
-        .document-view th { background-color: var(--table-head); color: var(--text-main); font-weight: 800; font-size: 1.1rem; border-bottom: 2px solid var(--border-soft); }
-        .document-view tr:nth-child(even) td { background-color: var(--table-row); }
-        .document-view td:first-child { width: 28%; font-weight: 700; color: var(--accent-blue); background-color: var(--table-head); border-right: 2px solid var(--border-soft); }
-        .document-view td:nth-child(2) { width: 72%; }
+        .document-view th, .document-view td { border: 1px solid var(--border-soft); padding: 15px; text-align: left; vertical-align: top; word-break: keep-all; font-size: 0.95rem; }
+        .document-view th { background: var(--table-head); font-weight: 800; }
+        .document-view td:first-child { width: 25%; font-weight: 700; color: var(--accent-blue); background: var(--table-head); border-right: 2px solid var(--border-soft); }
 
-        /* 모의고사 및 책 표지 강제 분리 */
-        .mock-exam-title { text-align: center; font-size: 2rem; font-weight: 900; margin: 40px 0; border-bottom: 4px solid var(--text-main); padding-bottom: 20px; }
-        .book-cover { text-align: center; padding: 150px 40px; background: linear-gradient(135deg, var(--table-head), var(--table-row)); border: 2px solid var(--border-soft); border-radius: 16px; margin-bottom: 40px; page-break-after: always; break-after: page; }
-        .book-title { font-size: 3rem; font-weight: 900; color: var(--text-main); margin-bottom: 20px; }
-        .book-subtitle { font-size: 1.5rem; color: var(--accent-blue); font-weight: 700; }
-        .book-date { margin-top: 50px; font-weight: 600; color: var(--text-sub); }
+        .book-cover { text-align: center; padding: 150px 40px; background: linear-gradient(135deg, var(--table-head), var(--bg-body)); border: 2px solid var(--border-soft); border-radius: var(--radius-box); margin-bottom: 40px; page-break-after: always; break-after: page; }
+        .mock-exam-title { text-align: center; font-size: 2rem; font-weight: 900; margin: 40px 0; border-bottom: 4px solid var(--text-main); padding-bottom: 20px; page-break-after: always; break-after: page; }
+        
+        .dashboard-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
+        #mermaidTree { background: var(--bg-surface); padding: 20px; border-radius: var(--radius-box); border: 1px solid var(--border-soft); min-height: 250px; display: flex; justify-content: center; align-items: center; }
+        .search-bar { position: relative; margin-bottom: 15px; }
+        .search-bar i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-sub); }
+        .search-bar input { padding-left: 40px; border-radius: 30px; }
+        
+        .archive-item { padding: 15px 20px; border: 1px solid var(--border-soft); border-radius: var(--radius-btn); margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; background: var(--bg-surface); cursor: pointer; transition: 0.2s; }
+        .archive-item:hover { border-color: var(--accent-blue); }
+        .archive-title { font-weight: 700; font-size: 1rem; margin-bottom: 4px; }
+        .tag-badge { background: var(--bg-body); color: var(--text-sub); padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; margin-right: 5px; border: 1px solid var(--border-soft); }
 
-        /* 🔥 스터디 잔디 심기 (Study Streak) */
-        .streak-container { background: var(--bg-surface); padding: 20px; border-radius: 16px; border: 1px solid var(--border-soft); margin-bottom: 25px; }
+        .streak-container { background: var(--bg-surface); padding: 20px; border-radius: var(--radius-box); border: 1px solid var(--border-soft); margin-bottom: 20px; }
         .streak-title { font-size: 1rem; font-weight: 800; color: var(--text-main); margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
         .streak-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(18px, 1fr)); gap: 4px; }
-        .streak-box { width: 18px; height: 18px; border-radius: 4px; background: var(--border-soft); }
-        .streak-box.active { background: var(--accent-mint); box-shadow: 0 0 5px rgba(16, 185, 129, 0.4); }
+        .streak-box { width: 18px; height: 18px; border-radius: 4px; background: var(--bg-body); border: 1px solid var(--border-soft); }
+        .streak-box.active { background: var(--accent-mint); border-color: var(--accent-mint); box-shadow: 0 0 5px rgba(16, 185, 129, 0.3); }
 
-        /* 🔥 폴더형 아카이브 */
-        .folder-group { margin-bottom: 25px; }
-        .folder-title { font-size: 1.2rem; font-weight: 800; color: var(--text-main); margin-bottom: 10px; border-bottom: 2px solid var(--border-soft); padding-bottom: 5px; display: flex; align-items: center; gap: 10px; }
-        .archive-item { padding: 20px; border: 1px solid var(--border-soft); border-radius: var(--radius-box); margin-bottom: 10px; display: flex; align-items: flex-start; justify-content: space-between; background: var(--bg-surface); transition: 0.3s; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
-        .archive-item:hover { border-color: var(--accent-blue); transform: translateY(-3px); box-shadow: 0 8px 20px rgba(59, 130, 246, 0.1); }
-        
-        .omr-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; background: var(--bg-body); padding: 25px; border-radius: 16px; border: 1px solid var(--border-soft); margin-top: 10px; }
-        .omr-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 15px; background: var(--bg-surface); border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .omr-qnum { font-weight: 800; font-size: 1.1rem; color: var(--text-main); width: 35px; }
-        .omr-bubbles { display: flex; gap: 10px; }
-        .omr-bubble { width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--border-soft); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.05rem; color: var(--text-sub); font-weight: 700; transition: all 0.2s; background: var(--bg-surface); }
-        .omr-bubble.selected { background-color: var(--accent-blue); border-color: var(--accent-blue); color: white; }
+        .omr-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; background: var(--bg-body); padding: 20px; border-radius: 12px; }
+        .omr-row { display: flex; align-items: center; justify-content: space-between; background: var(--bg-surface); padding: 5px 15px; border-radius: 8px; border: 1px solid var(--border-soft); }
+        .omr-bubble { width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--border-soft); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.9rem; color: var(--text-sub); font-weight: 700; }
+        .omr-bubble.selected { background: var(--accent-blue); color: white; border-color: var(--accent-blue); }
 
-        .qna-section { margin-top: 40px; padding-top: 30px; border-top: 2px dashed var(--border-soft); }
-        .qna-title { font-size: 1.3rem; font-weight: 800; color: var(--text-main); margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
-        .chat-box { background: var(--chat-bg); border: 1px solid var(--border-soft); border-radius: 16px; padding: 20px; max-height: 400px; overflow-y: auto; margin-bottom: 15px; display: flex; flex-direction: column; gap: 15px; }
-        .chat-msg { padding: 12px 18px; border-radius: 16px; max-width: 85%; font-size: 0.95rem; line-height: 1.5; }
+        .chat-box { background: var(--chat-bg); border: 1px solid var(--border-soft); border-radius: 12px; padding: 15px; max-height: 300px; overflow-y: auto; margin: 15px 0; display: flex; flex-direction: column; gap: 10px; }
+        .chat-msg { padding: 10px 15px; border-radius: 12px; max-width: 85%; font-size: 0.9rem; }
         .msg-user { background: var(--accent-blue); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
-        .msg-ai { background: var(--bg-surface); color: var(--text-main); border: 1px solid var(--border-soft); align-self: flex-start; border-bottom-left-radius: 4px; }
-        .chat-input-area { display: flex; gap: 10px; }
-        .chat-input-area input { flex: 1; margin: 0; }
-
-        #mermaidTree { background: var(--bg-surface); padding: 30px; border-radius: 16px; border: 1px solid var(--border-soft); box-shadow: var(--shadow-fluffy); overflow: hidden; display: flex; justify-content: center; align-items: center; min-height: 400px; }
-
-        .ox-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0, 0.7); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
-        .ox-modal-content { background: var(--bg-surface); width: 90%; max-width: 800px; max-height: 85vh; overflow-y: auto; border-radius: 24px; padding: 40px; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-        .ox-close { position: absolute; top: 20px; right: 25px; font-size: 1.8rem; color: var(--text-sub); cursor: pointer; transition: 0.2s; }
+        .msg-ai { background: var(--bg-surface); border: 1px solid var(--border-soft); align-self: flex-start; border-bottom-left-radius: 4px; }
         
+        .ox-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0, 0.6); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(3px); }
+        .ox-modal-content { background: var(--bg-surface); width: 90%; max-width: 800px; max-height: 85vh; overflow-y: auto; border-radius: var(--radius-box); padding: 40px; position: relative; box-shadow: var(--shadow-fluffy); border: 1px solid var(--border-soft); }
+        .ox-close { position: absolute; top: 20px; right: 25px; font-size: 1.8rem; color: var(--text-sub); cursor: pointer; transition: 0.2s; }
+        .ox-header h2 { color: var(--accent-special); font-size: 2rem; font-weight: 900; margin-bottom: 20px; text-align: center; }
+
         @media print {
-            @page { margin: 15mm 10mm; }
+            @page { margin: 15mm; }
             body { background: white; color: black; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-            .no-print, .sidebar, .mobile-header, .panel, .qna-section, .pdf-actions, .timer-widget { display: none !important; }
+            .no-print, .sidebar, .mobile-header, .panel:not(.zen-exempt), .toolbar-chips, .floating-widget, .header-actions { display: none !important; }
             .app-container, .main-content, .main-wrapper { display: block; width: 100%; max-width: 100%; padding: 0; margin: 0; }
             .pdf-viewer-container { display: none !important; }
-            .document-wrapper { display: block !important; margin: 0; padding: 0; }
             .document-view { box-shadow: none !important; border: none !important; padding: 0 !important; }
-            .document-view.focus-mode * { opacity: 1 !important; filter: none !important; } /* 인쇄 시 블라인드 해제 */
-            h2, h3, p, li, blockquote, tr, td, th { page-break-inside: avoid; break-inside: avoid; }
-            .book-cover, .mock-exam-title { page-break-after: always; break-after: page; }
+            .document-view.focus-mode * { opacity: 1 !important; filter: none !important; }
         }
 
         @media (max-width: 1024px) {
             .mobile-header { display: flex; }
-            .sidebar { position: fixed; left: -280px; top: 0; height: 100%; box-shadow: 10px 0 30px rgba(0,0,0,0.5); }
-            .sidebar.open { transform: translateX(280px); }
+            .sidebar { position: fixed; left: -260px; top: 0; height: 100%; box-shadow: 10px 0 30px rgba(0,0,0,0.3); }
+            .sidebar.open { transform: translateX(260px); }
             .main-content { padding: 20px; }
-            .pdf-viewer-container { display: none !important; } /* 모바일에서는 스플릿 뷰 숨김 */
+            .pdf-viewer-container { display: none !important; }
+            .omr-container { grid-template-columns: 1fr; }
+            .floating-widget { bottom: 15px; right: 15px; width: 180px; padding: 10px; }
+            .timer-time { font-size: 1.5rem; }
         }
     </style>
 </head>
 <body>
 
     <header class="mobile-header no-print">
-        <h1><i class="fa-solid fa-bolt"></i> God Mode Diary</h1>
-        <div style="display:flex; gap:15px;">
-            <button class="theme-toggle" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button>
+        <h1><i class="fa-solid fa-book-open"></i> Study Diary</h1>
+        <div class="header-actions">
             <button class="menu-toggle" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
         </div>
     </header>
 
     <div class="app-container">
         <nav class="sidebar no-print" id="sidebar">
-            <div class="brand"><i class="fa-solid fa-bolt" style="color:var(--accent-boss)"></i> God Mode</div>
+            <div class="brand"><i class="fa-solid fa-book-open" style="color:var(--accent-blue)"></i> V25 Study</div>
             
             <div class="menu-group">
-                <div class="menu-label">✏️ Create</div>
-                <div class="menu-item active" onclick="navTo('concept')"><i class="fa-solid fa-file-pdf"></i> PDF 딥다이브 & 정리</div>
-                <div class="menu-item" onclick="navTo('grading')"><i class="fa-solid fa-marker"></i> OMR & 취약점 히트맵</div>
+                <div class="menu-label">생성 (Create)</div>
+                <div class="menu-item active" onclick="navTo('concept')"><i class="fa-solid fa-file-pdf"></i> PDF 개념 요약</div>
+                <div class="menu-item" onclick="navTo('grading')"><i class="fa-solid fa-marker"></i> OMR & 오답 해설</div>
             </div>
 
             <div class="menu-group">
-                <div class="menu-label">📚 Library</div>
-                <div class="menu-item" onclick="navTo('archive')"><i class="fa-solid fa-folder-tree"></i> 스마트 보관함 & OX</div>
-                <div class="menu-item" onclick="navTo('knowledgetree')"><i class="fa-solid fa-network-wired"></i> 나의 지식 지도</div>
-                <div class="menu-item" onclick="navTo('unified')"><i class="fa-solid fa-book-journal-whills"></i> 실전 모의고사 출판</div>
+                <div class="menu-label">관리 (Manage)</div>
+                <div class="menu-item" onclick="navTo('dashboard')"><i class="fa-solid fa-chart-pie"></i> 단원별 지식 맵</div>
+                <div class="menu-item" onclick="navTo('unified')"><i class="fa-solid fa-layer-group"></i> 단권화 & 모의고사 생성</div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-label" style="color:var(--accent-danger)">훈련 (Training)</div>
+                <div class="menu-item" onclick="navTo('training')"><i class="fa-solid fa-dumbbell"></i> 오답 선지 OX 훈련</div>
             </div>
 
             <div class="settings-section">
-                <label style="font-size: 0.8rem; font-weight: 700; color: var(--accent-blue); margin-bottom: 8px; display: block;">Gemini API Key</label>
+                <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-sub); margin-bottom: 6px; display: block;">테마 선택</label>
+                <select id="themeSelector" onchange="changeTheme(this.value)">
+                    <option value="light">밝은 기본 (Light)</option>
+                    <option value="dark">어두운 기본 (Dark)</option>
+                    <option value="warmwood">웜 우드 (Warm Wood)</option>
+                    <option value="pastel">코지 파스텔 (Cozy Pastel)</option>
+                    <option value="paper">클래식 종이 (Classic Paper)</option>
+                    <option value="sepianight">세피아 나이트 (Sepia Night)</option>
+                </select>
+                <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-sub); margin-bottom: 6px; display: block;">Gemini API Key</label>
                 <input type="password" id="sysApiKey" placeholder="API Key 입력" onchange="saveApiKey()">
-            </div>
-            
-            <!-- 뽀모도로 타이머 위젯 -->
-            <div class="timer-widget">
-                <div class="timer-time" id="timerDisplay">25:00</div>
-                <div class="timer-controls">
-                    <button onclick="startTimer()"><i class="fa-solid fa-play"></i></button>
-                    <button onclick="pauseTimer()"><i class="fa-solid fa-pause"></i></button>
-                    <button onclick="resetTimer()"><i class="fa-solid fa-rotate-right"></i></button>
-                </div>
-                <!-- 백색소음 -->
-                <audio id="bgm" loop>
-                    <source src="https://assets.mixkit.co/sfx/preview/mixkit-campfire-crackles-1330.mp3" type="audio/mpeg">
-                </audio>
-                <button class="btn-pdf" style="margin-top:10px; width:100%; justify-content:center;" onclick="toggleBGM()"><i class="fa-solid fa-fire"></i> 모닥불 소리 켜기</button>
             </div>
         </nav>
 
         <div class="main-wrapper">
-            <!-- 🔥 PDF 스플릿 뷰 (왼쪽 패널) -->
             <div class="pdf-viewer-container no-print" id="pdfViewerPanel">
                 <iframe id="pdfIframe"></iframe>
             </div>
 
             <main class="main-content" onclick="closeSidebarOutside()">
                 
-                <div class="page-header no-print" style="margin-bottom: 10px;">
-                    <div class="page-header-left">
-                        <div class="page-header-icon" style="background: var(--accent-mint);"><i class="fa-solid fa-book-open"></i></div>
-                        <div>
-                            <h2 class="page-title" id="pageTitleText">PDF 딥다이브 & 스마트 정리</h2>
-                        </div>
+                <div class="page-header no-print">
+                    <div class="page-title" id="pageTitleText"><i class="fa-solid fa-file-pdf"></i> PDF 개념 요약</div>
+                    <div class="header-actions">
+                        <button class="icon-btn" title="전체화면 집중 모드" onclick="toggleZenMode()"><i class="fa-solid fa-expand"></i></button>
                     </div>
-                    <!-- 데스크탑용 다크모드 버튼 -->
-                    <button class="theme-toggle" style="display:none;" id="desktopThemeBtn" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button>
                 </div>
 
-                <!-- 1. 코넬 탭 -->
+                <!-- 1. 코넬 탭 (PDF 요약) -->
                 <section id="page-concept" class="page-section active">
                     <div class="panel no-print">
                         <div class="grid-2">
                             <div class="form-group">
-                                <label><i class="fa-solid fa-image"></i> 교재 PDF 첨부 (스플릿 뷰 자동 실행)</label>
-                                <div class="upload-zone" style="border-color: var(--accent-mint);">
-                                    <i class="fa-solid fa-cloud-arrow-up" style="color: var(--accent-mint);"></i>
-                                    <div class="upload-text">PDF 첨부 시 왼쪽에 원본이 열립니다</div>
+                                <label>교재 PDF 첨부 (Drag & Drop)</label>
+                                <div class="upload-zone" id="conceptDropZone" onclick="document.getElementById('conceptFile').click()">
+                                    <i class="fa-solid fa-cloud-arrow-up" style="color:var(--accent-blue)"></i>
+                                    <div class="upload-text">파일을 끌어다 놓으세요</div>
                                     <input type="file" id="conceptFile" accept=".pdf,image/*,.txt" onchange="handleFile('conceptFile', 'conceptPreview')">
                                 </div>
-                                <div id="conceptPreview" class="preview-area" style="background: var(--accent-mint); color: white;"></div>
+                                <div id="conceptPreview" class="preview-area" style="background:var(--accent-blue)"></div>
                             </div>
                             <div class="form-group">
-                                <label><i class="fa-solid fa-layer-group"></i> 레이아웃 자동/수동 선택</label>
-                                <select id="conceptFormat" style="margin-bottom:10px;">
-                                    <option value="auto">🤖 자동 맞춤형 (AI가 최적화 판단)</option>
-                                    <option value="cornell">📋 코넬 노트 (2열 표 형식)</option>
-                                    <option value="bullet">📝 개조식 요약 (표 없이 깔끔하게)</option>
+                                <label>레이아웃 & 태그</label>
+                                <select id="conceptFormat" style="margin-bottom:15px;">
+                                    <option value="auto">🤖 AI 최적화</option>
+                                    <option value="cornell">📋 표 형식 (코넬 노트)</option>
+                                    <option value="bullet">📝 텍스트 형식 (개조식)</option>
                                 </select>
-                                <label><i class="fa-solid fa-tags"></i> 스마트 태그 (비워두면 AI가 생성)</label>
-                                <input type="text" id="conceptTags" placeholder="자동 생성 대기 중...">
+                                <input type="text" id="conceptTags" placeholder="태그 (비워두면 AI 자동 생성)">
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label><i class="fa-solid fa-align-left"></i> 요약 지시사항 (또는 음성 필기)</label>
-                            <div class="btn-group" style="margin-top:0;">
-                                <textarea id="conceptPrompt" rows="4" placeholder="교재를 첨부하셨다면 요약 방향을, 첨부하지 않으셨다면 요약할 내용을 직접 적거나 마이크 버튼을 눌러 음성으로 말씀하세요."></textarea>
-                                <button class="btn-mic" id="micBtn" onclick="toggleSpeechRecognition()"><i class="fa-solid fa-microphone"></i></button>
+                        <div class="form-group" style="display:flex; gap:10px; align-items:flex-end;">
+                            <div style="flex:1;">
+                                <label>요약 지시사항 (음성 지원)</label>
+                                <textarea id="conceptPrompt" rows="1" style="min-height:45px;" oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'" placeholder="요약할 내용이나 지시사항을 적어주세요."></textarea>
                             </div>
+                            <button class="icon-btn" style="background:var(--accent-danger); color:white; border:none; width:45px; height:45px; flex-shrink:0;" id="micBtn" onclick="toggleSpeechRecognition()"><i class="fa-solid fa-microphone"></i></button>
                         </div>
                         
                         <div class="grid-2">
-                            <button class="btn-primary" style="background: var(--accent-mint);" onclick="executeAI('concept', 'note')">
-                                <i class="fa-solid fa-wand-magic-sparkles"></i> 갓 모드 노트 생성
-                            </button>
-                            <button class="btn-primary" style="background: var(--accent-blue);" onclick="executeAI('concept', 'curriculum')">
-                                <i class="fa-solid fa-calendar-days"></i> 커리큘럼(진도표) 쪼개기
-                            </button>
+                            <button class="btn-primary" style="background:var(--accent-blue);" onclick="executeAI('concept', 'note')">노트 생성</button>
+                            <button class="btn-primary" style="background:var(--text-main);" onclick="executeAI('concept', 'curriculum')">진도표 생성</button>
                         </div>
-                        <div id="conceptLoader" class="loader" style="color:var(--accent-mint)"><div class="spinner" style="border-top-color:currentColor"></div>AI가 자료를 씹어먹고 있습니다...</div>
+                        <div id="conceptLoader" class="loader"><div class="spinner"></div>문서를 분석하고 있습니다...</div>
                     </div>
                     
                     <div id="conceptResultWrapper" class="document-wrapper">
-                        <div class="pdf-actions no-print">
-                            <!-- 🔥 포커스 블라인드 버튼 추가 -->
-                            <button class="btn-pdf" onclick="toggleFocusMode('conceptResult')"><i class="fa-solid fa-eye-low-vision"></i> 포커스 블라인드</button>
-                            <button class="btn-tts" id="ttsBtnConcept" onclick="toggleTTS('conceptResult', 'ttsBtnConcept')"><i class="fa-solid fa-headphones"></i> 듣기</button>
-                            <button class="btn-cloze" onclick="toggleCloze(this)"><i class="fa-solid fa-eye-slash"></i> 암기 모드</button>
-                            <button class="btn-pdf" onclick="copyNotionMarkdown('conceptResult')"><i class="fa-brands fa-neos"></i> 노션 복사</button>
-                            <button class="btn-pdf" onclick="downloadPDF()"><i class="fa-solid fa-file-pdf"></i> PDF 저장</button>
+                        <div class="toolbar-chips no-print">
+                            <div class="chip" onclick="toggleFocusMode('conceptResult')"><i class="fa-solid fa-eye-low-vision"></i> 포커스 모드</div>
+                            <div class="chip" id="ttsBtnConcept" onclick="toggleTTS('conceptResult', 'ttsBtnConcept')"><i class="fa-solid fa-headphones"></i> 소리내어 읽기</div>
+                            <div class="chip" onclick="toggleCloze(this)"><i class="fa-solid fa-eye-slash"></i> 빈칸 암기</div>
+                            <div class="chip" onclick="copyNotionMarkdown('conceptResult')"><i class="fa-brands fa-neos"></i> 텍스트 복사</div>
+                            <div class="chip active zen-btn" onclick="downloadPDF()"><i class="fa-solid fa-file-pdf"></i> PDF 저장</div>
                         </div>
+                        
                         <div id="conceptResult" class="document-view"></div>
                         
-                        <div class="qna-section no-print" id="qnaConcept">
-                            <div class="qna-title"><i class="fa-solid fa-chalkboard-user"></i> AI 선생님 1:1 과외 (질문하기)</div>
+                        <div class="qna-section no-print">
                             <div class="chat-box" id="chatBoxConcept">
-                                <div class="chat-msg msg-ai">작성된 노트 내용 중 이해가 안 가거나 추가로 궁금한 점이 있다면 편하게 물어보세요!</div>
+                                <div class="chat-msg msg-ai">노트에 대해 궁금한 점을 질문해 주세요.</div>
                             </div>
                             <div class="chat-input-area">
                                 <input type="text" id="chatInputConcept" placeholder="질문을 입력하세요..." onkeypress="if(event.key === 'Enter') askTutor('concept')">
-                                <button class="btn-primary" style="width:100px; padding:0;" onclick="askTutor('concept')"><i class="fa-solid fa-paper-plane"></i></button>
+                                <button class="btn-primary" style="width:60px; padding:0; border-radius:8px;" onclick="askTutor('concept')"><i class="fa-solid fa-paper-plane"></i></button>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                <!-- OMR & 히트맵 탭 -->
+                <!-- 2. OMR 탭 -->
                 <section id="page-grading" class="page-section">
                     <div class="panel no-print">
-                        <div class="form-group">
-                            <label><i class="fa-solid fa-image"></i> 객관식 문제지 첨부</label>
-                            <div class="upload-zone" style="border-color: var(--accent-blue);"><input type="file" id="gradeQuestFile" accept="image/*,.pdf" onchange="handleFile('gradeQuestFile', 'gradeQuestPreview')"><div class="upload-text">문제지 첨부</div></div>
-                            <div id="gradeQuestPreview" class="preview-area"></div>
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label>문제지 첨부</label>
+                                <div class="upload-zone" id="gradeDropZone" onclick="document.getElementById('gradeQuestFile').click()">
+                                    <i class="fa-solid fa-file-image"></i>
+                                    <div class="upload-text">파일을 끌어다 놓으세요</div>
+                                    <input type="file" id="gradeQuestFile" accept="image/*,.pdf" onchange="handleFile('gradeQuestFile', 'gradeQuestPreview')">
+                                </div>
+                                <div id="gradeQuestPreview" class="preview-area" style="background:var(--accent-blue)"></div>
+                            </div>
+                            <div class="form-group">
+                                <label>태그 (선택)</label>
+                                <input type="text" id="gradeTags" placeholder="예: 9월 모의고사">
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label><i class="fa-solid fa-list-ol"></i> 나의 OMR 마킹</label>
+                            <label>OMR 마킹</label>
                             <div id="visualOMR" class="omr-container"></div>
-                            <div class="omr-controls">
-                                <button class="btn-small" onclick="clearOMR()"><i class="fa-solid fa-rotate-right"></i> 초기화</button>
-                            </div>
-                            <input type="text" id="omrAnswers" readonly style="margin-top: 15px; border:none; background:transparent; font-weight:bold; color:var(--accent-blue);">
+                            <div style="text-align:right; margin-top:10px;"><a href="#" onclick="clearOMR()" style="color:var(--text-sub); font-size:0.85rem;">마킹 초기화</a></div>
+                            <input type="hidden" id="omrAnswers">
                         </div>
                         <div class="grid-2">
-                            <button class="btn-primary" style="background: var(--accent-blue);" onclick="executeAI('grading', 'score')"><i class="fa-solid fa-magnifying-glass-chart"></i> 가채점 및 오답 분석</button>
-                            <!-- 🔥 구급상자 노트 (가장 많이 틀린 개념 요약) -->
-                            <button class="btn-primary" style="background: #EF4444;" onclick="executeAI('grading', 'firstaid')"><i class="fa-solid fa-kit-medical"></i> 약점 구급상자 노트 생성</button>
+                            <button class="btn-primary" style="background:var(--accent-blue);" onclick="executeAI('grading', 'score')">가채점 분석</button>
+                            <button class="btn-primary" style="background:var(--accent-danger);" onclick="executeAI('grading', 'firstaid')">최다 오답 개념 초압축 노트</button>
                         </div>
-                        <div id="gradeLoader" class="loader" style="color:var(--accent-blue)"><div class="spinner" style="border-top-color:currentColor"></div>분석 중입니다...</div>
+                        <div id="gradeLoader" class="loader"><div class="spinner"></div>오답을 분석 중입니다...</div>
                     </div>
 
                     <div id="gradeResultWrapper" class="document-wrapper">
-                        <div class="pdf-actions no-print">
-                            <button class="btn-pdf" onclick="toggleFocusMode('gradeResult')"><i class="fa-solid fa-eye-low-vision"></i> 포커스</button>
-                            <button class="btn-tts" id="ttsBtnGrade" onclick="toggleTTS('gradeResult', 'ttsBtnGrade')"><i class="fa-solid fa-headphones"></i> 듣기</button>
-                            <button class="btn-cloze" onclick="toggleCloze(this)"><i class="fa-solid fa-eye-slash"></i> 암기 모드</button>
-                            <button class="btn-pdf" onclick="downloadPDF()"><i class="fa-solid fa-file-pdf"></i> PDF 저장</button>
+                        <div class="toolbar-chips no-print">
+                            <div class="chip" onclick="toggleFocusMode('gradeResult')"><i class="fa-solid fa-eye-low-vision"></i> 포커스 모드</div>
+                            <div class="chip" id="ttsBtnGrade" onclick="toggleTTS('gradeResult', 'ttsBtnGrade')"><i class="fa-solid fa-headphones"></i> 소리내어 읽기</div>
+                            <div class="chip" onclick="toggleCloze(this)"><i class="fa-solid fa-eye-slash"></i> 빈칸 암기</div>
+                            <div class="chip active zen-btn" onclick="downloadPDF()"><i class="fa-solid fa-file-pdf"></i> PDF 저장</div>
                         </div>
                         <div id="gradeResult" class="document-view"></div>
-                        
-                        <div class="qna-section no-print" id="qnaGrade">
-                            <div class="qna-title"><i class="fa-solid fa-chalkboard-user"></i> AI 선생님 1:1 과외</div>
-                            <div class="chat-box" id="chatBoxGrade">
-                                <div class="chat-msg msg-ai">채점 결과에 대해 궁금한 점이 있나요?</div>
-                            </div>
-                            <div class="chat-input-area">
-                                <input type="text" id="chatInputGrade" placeholder="질문을 입력하세요..." onkeypress="if(event.key === 'Enter') askTutor('grade')">
-                                <button class="btn-primary" style="width:100px; padding:0;" onclick="askTutor('grade')"><i class="fa-solid fa-paper-plane"></i></button>
-                            </div>
-                        </div>
                     </div>
                 </section>
 
-                <!-- 보관함 & 자동 폴더링 -->
-                <section id="page-archive" class="page-section">
-                    <!-- 🔥 깃허브 잔디 심기 UI -->
+                <!-- 3. 지식 대시보드 -->
+                <section id="page-dashboard" class="page-section">
                     <div class="streak-container no-print">
-                        <div class="streak-title"><i class="fa-solid fa-fire" style="color:#F97316;"></i> 나의 학습 발자취 (최근 30일)</div>
+                        <div class="streak-title"><i class="fa-solid fa-fire" style="color:var(--accent-special);"></i> 최근 학습 기록</div>
                         <div class="streak-grid" id="streakGrid"></div>
                     </div>
-
-                    <div class="panel no-print" style="background: transparent; border: none; box-shadow: none; padding: 0;">
-                        <input type="text" id="archiveSearch" placeholder="🔍 제목이나 태그 검색..." onkeyup="filterHistory()" style="margin-bottom: 20px;">
-                        <div id="historyList">기록이 없습니다.</div>
+                    <div class="dashboard-grid">
+                        <div class="panel no-print" style="padding:20px;">
+                            <label style="font-weight:700; margin-bottom:15px; display:block; color:var(--text-main);"><i class="fa-solid fa-network-wired"></i> 단원별 지식 맵</label>
+                            <div id="mermaidTree"></div>
+                        </div>
+                        <div class="panel no-print" style="padding:20px; background:transparent; border:none; box-shadow:none;">
+                            <div class="search-bar">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" id="archiveSearch" placeholder="저장된 노트를 검색하세요..." onkeyup="filterHistory()">
+                            </div>
+                            <div id="historyList">기록이 없습니다.</div>
+                        </div>
                     </div>
                 </section>
 
-                <!-- 지식 지도 탭 -->
-                <section id="page-knowledgetree" class="page-section">
-                    <div id="mermaidTree"></div>
+                <!-- 4. 객관식 훈련소 -->
+                <section id="page-training" class="page-section">
+                    <div class="panel no-print">
+                        <p style="margin-bottom:15px; font-weight:700; color:var(--text-main);">🎯 훈련할 노트를 보관함에서 선택하세요</p>
+                        <div id="trainingSelectionList" style="max-height:200px; overflow-y:auto; margin-bottom: 20px; border:1px solid var(--border-soft); border-radius:12px; padding:10px;"></div>
+                        
+                        <div style="display:flex; gap:10px;">
+                            <button class="btn-primary" style="background:var(--accent-special);" onclick="startTraining('ox')"><i class="fa-solid fa-gamepad"></i> 오답 선지 OX 훈련</button>
+                            <button class="btn-primary" style="background:var(--text-main); opacity:0.5;" onclick="alert('다음 업데이트에 추가될 기능입니다!')"><i class="fa-solid fa-list-check"></i> 다중 선택지 훈련 (예정)</button>
+                        </div>
+                    </div>
                 </section>
 
-                <!-- 문제집 출판 & 실전 모의고사 조판 -->
+                <!-- 5. 단권화 및 모의고사 -->
                 <section id="page-unified" class="page-section">
                     <div class="panel no-print">
-                        <p style="margin-bottom:15px; font-weight:700; color:var(--text-main);">📝 단권화 또는 모의고사로 묶을 노트를 선택하세요 (2~3개 권장)</p>
-                        <div id="unifiedSelectionList" style="max-height:300px; overflow-y:auto; margin-bottom: 25px;"></div>
+                        <p style="margin-bottom:15px; font-weight:700; color:var(--text-main);">📝 묶을 노트를 선택하세요</p>
+                        <div id="unifiedSelectionList" style="max-height:250px; overflow-y:auto; margin-bottom: 20px; border:1px solid var(--border-soft); border-radius:12px; padding:10px;"></div>
                         
-                        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                            <button class="btn-primary" style="background: #FF9F1C; flex: 1;" onclick="executeUnifiedNote('book')"><i class="fa-solid fa-book"></i> 전자책 단권화 출판</button>
-                            <!-- 🔥 실전 모의고사 출제 기능 -->
-                            <button class="btn-primary" style="background: var(--accent-ox); flex: 1;" onclick="executeUnifiedNote('exam')"><i class="fa-solid fa-file-pen"></i> 실전 모의고사(PDF) 생성</button>
-                            <button class="btn-primary" style="background: var(--accent-boss); flex: 1;" onclick="executeUnifiedNote('boss')"><i class="fa-solid fa-skull"></i> 융합 킬러 문항 생성</button>
+                        <div class="grid-2">
+                            <button class="btn-primary" style="background:var(--accent-blue);" onclick="executeUnifiedNote('book')">단권화 노트 병합</button>
+                            <button class="btn-primary" style="background:var(--accent-danger);" onclick="executeUnifiedNote('boss')">다단원 융합 고난도 출제</button>
                         </div>
-                        <div id="unifiedLoader" class="loader" style="color:#FF9F1C"><div class="spinner" style="border-top-color:currentColor"></div>서버에 요청 중입니다...</div>
+                        <button class="btn-primary" style="background:var(--text-main); margin-top:15px;" onclick="executeUnifiedNote('exam')">실전 모의고사 생성</button>
+                        <div id="unifiedLoader" class="loader"><div class="spinner"></div>서버에 요청 중입니다...</div>
                     </div>
                     <div id="unifiedResultWrapper" class="document-wrapper">
-                        <div class="pdf-actions no-print">
-                            <button class="btn-tts" id="ttsBtnUnified" onclick="toggleTTS('unifiedResult', 'ttsBtnUnified')"><i class="fa-solid fa-headphones"></i> 듣기</button>
-                            <button class="btn-pdf" onclick="downloadPDF()"><i class="fa-solid fa-file-pdf"></i> 📚 PDF 다운로드</button>
+                        <div class="toolbar-chips no-print">
+                            <div class="chip active zen-btn" onclick="downloadPDF()"><i class="fa-solid fa-file-pdf"></i> PDF 다운로드</div>
                         </div>
                         <div id="unifiedResult" class="document-view" style="padding: 0;"></div>
                     </div>
@@ -434,20 +445,33 @@
         </div>
     </div>
 
-    <!-- OX 모달 -->
+    <!-- 🔥 플로팅 타이머 위젯 -->
+    <div class="floating-widget no-print" id="floatingTimer">
+        <div class="widget-drag-handle"><i class="fa-solid fa-grip-lines"></i></div>
+        <div class="timer-time" id="timerDisplay">25:00</div>
+        <div class="timer-controls">
+            <button onclick="startTimer()"><i class="fa-solid fa-play"></i></button>
+            <button onclick="pauseTimer()"><i class="fa-solid fa-pause"></i></button>
+            <button onclick="resetTimer()"><i class="fa-solid fa-rotate-right"></i></button>
+        </div>
+        <audio id="bgm" loop><source src="https://assets.mixkit.co/sfx/preview/mixkit-campfire-crackles-1330.mp3" type="audio/mpeg"></audio>
+        <button class="btn-bgm" id="bgmBtn" onclick="toggleBGM()"><i class="fa-solid fa-fire"></i> 집중 소음</button>
+    </div>
+
+    <!-- OX 훈련소 모달 -->
     <div id="oxModal" class="ox-modal">
         <div class="ox-modal-content">
             <i class="fa-solid fa-circle-xmark ox-close" onclick="closeOXModal()"></i>
             <div class="ox-header">
-                <h2><i class="fa-solid fa-gamepad"></i> 지옥의 OX 서바이벌</h2>
+                <h2 style="color:var(--accent-special); font-weight:900;"><i class="fa-solid fa-gamepad"></i> 오답 선지 OX 훈련</h2>
             </div>
-            <div id="oxLoader" class="loader" style="color:var(--accent-ox); display:none;"><div class="spinner" style="border-top-color:currentColor"></div>출제 중...</div>
+            <div id="oxLoader" class="loader" style="color:var(--accent-special); display:none;"><div class="spinner"></div>출제 중...</div>
             <div id="oxPlayArea" style="display:none;">
-                <div id="oxQuestionContent" class="ox-body"></div>
-                <button class="btn-primary" style="background: var(--accent-ox); margin-top: 30px;" onclick="revealOXAnswer()"><i class="fa-solid fa-unlock-keyhole"></i> 정답 보기</button>
+                <div id="oxQuestionContent" style="font-size:1.05rem; line-height:1.8;"></div>
+                <button class="btn-primary" style="background:var(--accent-special); margin-top:30px;" onclick="revealOXAnswer()">정답 확인</button>
             </div>
-            <div id="oxAnswerArea" style="display:none; margin-top: 30px;">
-                <div id="oxAnswerContent" class="ox-body"></div>
+            <div id="oxAnswerArea" style="display:none; margin-top:20px; padding-top:20px; border-top:1px solid var(--border-soft);">
+                <div id="oxAnswerContent" style="font-size:1.05rem; line-height:1.8;"></div>
             </div>
         </div>
     </div>
@@ -455,45 +479,61 @@
     <script>
         mermaid.initialize({ startOnLoad: false, theme: 'base' });
 
-        // 🔥 다크모드 및 UI 초기화
+        // 🔥 위젯 드래그
+        function dragElement(elmnt) {
+            var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+            if (elmnt.querySelector(".widget-drag-handle")) { elmnt.querySelector(".widget-drag-handle").onmousedown = dragMouseDown; } 
+            else { elmnt.onmousedown = dragMouseDown; }
+
+            function dragMouseDown(e) { e = e || window.event; e.preventDefault(); pos3 = e.clientX; pos4 = e.clientY; document.onmouseup = closeDragElement; document.onmousemove = elementDrag; }
+            function elementDrag(e) { e = e || window.event; e.preventDefault(); pos1 = pos3 - e.clientX; pos2 = pos4 - e.clientY; pos3 = e.clientX; pos4 = e.clientY; elmnt.style.top = (elmnt.offsetTop - pos2) + "px"; elmnt.style.left = (elmnt.offsetLeft - pos1) + "px"; elmnt.style.bottom = "auto"; elmnt.style.right = "auto"; }
+            function closeDragElement() { document.onmouseup = null; document.onmousemove = null; }
+        }
+
+        function setupDragAndDrop(zoneId, inputId) {
+            const zone = document.getElementById(zoneId); const input = document.getElementById(inputId);
+            if(!zone || !input) return;
+            zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('dragover'); });
+            zone.addEventListener('dragleave', (e) => { e.preventDefault(); zone.classList.remove('dragover'); });
+            zone.addEventListener('drop', (e) => { e.preventDefault(); zone.classList.remove('dragover'); if(e.dataTransfer.files.length) { input.files = e.dataTransfer.files; handleFile(inputId, inputId.replace('File', 'Preview')); } });
+        }
+
         window.onload = () => {
-            if(window.innerWidth > 1024) document.getElementById('desktopThemeBtn').style.display = 'flex';
             const savedKey = localStorage.getItem('geminiApiKey');
             if (savedKey) document.getElementById('sysApiKey').value = savedKey;
             
             const savedTheme = localStorage.getItem('theme') || 'light';
             document.documentElement.setAttribute('data-theme', savedTheme);
+            document.getElementById('themeSelector').value = savedTheme;
             
             renderOMR();
-            renderStreak(); // 잔디 심기
+            setupDragAndDrop('conceptDropZone', 'conceptFile');
+            setupDragAndDrop('gradeDropZone', 'gradeQuestFile');
+            dragElement(document.getElementById("floatingTimer"));
+            renderStreak();
         };
 
-        function toggleTheme() {
-            const current = document.documentElement.getAttribute('data-theme');
-            const target = current === 'light' ? 'dark' : 'light';
-            document.documentElement.setAttribute('data-theme', target);
-            localStorage.setItem('theme', target);
+        // 🔥 테마 선택 로직
+        function changeTheme(themeValue) {
+            document.documentElement.setAttribute('data-theme', themeValue);
+            localStorage.setItem('theme', themeValue);
+        }
+
+        function toggleZenMode() {
+            document.body.classList.toggle('zen-mode');
+            if(document.body.classList.contains('zen-mode')) { document.getElementById('pdfViewerPanel').style.display = 'none'; }
         }
 
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
         function closeSidebarOutside() { if(window.innerWidth <= 1024) document.getElementById('sidebar').classList.remove('open'); }
 
-        // 🔥 PDF 스플릿 뷰 컨트롤
         function handleFile(inputId, previewId) {
             const file = document.getElementById(inputId).files[0];
             const preview = document.getElementById(previewId);
-            
-            if (file && file.size > 20 * 1024 * 1024) {
-                alert("파일 용량 20MB 초과.");
-                document.getElementById(inputId).value = ""; 
-                return;
-            }
+            if (file && file.size > 20 * 1024 * 1024) { alert("20MB 초과"); document.getElementById(inputId).value = ""; return; }
             if (file) {
-                preview.style.display = 'block';
-                preview.innerHTML = `<i class="fa-solid fa-check-circle"></i> 첨부완료: ${file.name}`;
-                
-                // 모바일이 아니고 PDF 파일일 경우 스플릿 뷰 활성화
-                if(file.type === 'application/pdf' && window.innerWidth > 1024) {
+                preview.style.display = 'block'; preview.innerHTML = `${file.name}`;
+                if(file.type === 'application/pdf' && window.innerWidth > 1024 && !document.body.classList.contains('zen-mode')) {
                     const fileURL = URL.createObjectURL(file);
                     document.getElementById('pdfIframe').src = fileURL;
                     document.getElementById('pdfViewerPanel').style.display = 'block';
@@ -501,96 +541,46 @@
             }
         }
 
-        // 🔥 음성 인식 필기 (Web Speech API)
-        let recognition;
-        let isRecording = false;
+        let recognition; let isRecording = false;
         function toggleSpeechRecognition() {
-            if (!('webkitSpeechRecognition' in window)) return alert("현재 브라우저는 음성 인식을 지원하지 않습니다. (크롬 권장)");
-            
-            const btn = document.getElementById('micBtn');
-            const promptBox = document.getElementById('conceptPrompt');
-
-            if (isRecording) {
-                recognition.stop();
-                return;
-            }
-
-            recognition = new webkitSpeechRecognition();
-            recognition.lang = 'ko-KR';
-            recognition.continuous = true;
-            recognition.interimResults = true;
-
-            recognition.onstart = () => {
-                isRecording = true;
-                btn.classList.add('recording');
-                promptBox.placeholder = "듣고 있습니다... 자유롭게 말씀하세요.";
-            };
-
-            recognition.onresult = (event) => {
-                let interimTranscript = '';
-                for (let i = event.resultIndex; i < event.results.length; ++i) {
-                    if (event.results[i].isFinal) {
-                        promptBox.value += event.results[i][0].transcript + " ";
-                    }
-                }
-            };
-
-            recognition.onend = () => {
-                isRecording = false;
-                btn.classList.remove('recording');
-                promptBox.placeholder = "음성 인식이 종료되었습니다.";
-            };
-
+            if (!('webkitSpeechRecognition' in window)) return alert("크롬을 사용해주세요.");
+            const btn = document.getElementById('micBtn'); const promptBox = document.getElementById('conceptPrompt');
+            if (isRecording) { recognition.stop(); return; }
+            recognition = new webkitSpeechRecognition(); recognition.lang = 'ko-KR'; recognition.continuous = true; recognition.interimResults = true;
+            recognition.onstart = () => { isRecording = true; promptBox.placeholder = "듣고 있습니다..."; };
+            recognition.onresult = (e) => { for (let i = e.resultIndex; i < e.results.length; ++i) { if (e.results[i].isFinal) { promptBox.value += e.results[i][0].transcript + " "; promptBox.style.height = promptBox.scrollHeight + 'px'; } } };
+            recognition.onend = () => { isRecording = false; promptBox.placeholder = "요약할 내용을 입력하세요."; };
             recognition.start();
         }
 
-        // 🔥 뽀모도로 타이머
-        let timerInterval;
-        let timeLeft = 25 * 60;
-        let isTimerRunning = false;
+        let timerInterval; let timeLeft = 25 * 60; let isTimerRunning = false;
         function updateTimerDisplay() {
             const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
             const s = (timeLeft % 60).toString().padStart(2, '0');
             document.getElementById('timerDisplay').innerText = `${m}:${s}`;
         }
-        function startTimer() {
-            if(isTimerRunning) return;
-            isTimerRunning = true;
-            timerInterval = setInterval(() => {
-                if(timeLeft > 0) { timeLeft--; updateTimerDisplay(); }
-                else { pauseTimer(); alert("뽀모도로 완료! 5분 휴식하세요."); }
-            }, 1000);
-        }
+        function startTimer() { if(!isTimerRunning) { isTimerRunning = true; timerInterval = setInterval(() => { if(timeLeft > 0) { timeLeft--; updateTimerDisplay(); } else { pauseTimer(); alert("완료!"); } }, 1000); } }
         function pauseTimer() { clearInterval(timerInterval); isTimerRunning = false; }
         function resetTimer() { pauseTimer(); timeLeft = 25 * 60; updateTimerDisplay(); }
         
         let isBgmPlaying = false;
         function toggleBGM() {
-            const bgm = document.getElementById('bgm');
-            if(isBgmPlaying) { bgm.pause(); isBgmPlaying = false; }
-            else { bgm.play(); isBgmPlaying = true; }
+            const bgm = document.getElementById('bgm'); const btn = document.getElementById('bgmBtn');
+            if(isBgmPlaying) { bgm.pause(); isBgmPlaying = false; btn.classList.remove('playing'); } 
+            else { bgm.play(); isBgmPlaying = true; btn.classList.add('playing'); }
         }
 
-        // 🔥 노션 완벽 복사 (HTML to Text)
         let currentRawMarkdown = ""; 
         function copyNotionMarkdown() {
-            if(!currentRawMarkdown) return alert("복사할 내용이 없습니다.");
-            navigator.clipboard.writeText(currentRawMarkdown).then(() => {
-                alert("마크다운이 복사되었습니다! 노션이나 옵시디언에 붙여넣기(Ctrl+V) 하시면 포맷이 그대로 유지됩니다.");
-            });
+            if(!currentRawMarkdown) return;
+            navigator.clipboard.writeText(currentRawMarkdown).then(() => alert("마크다운 복사 완료!"));
         }
 
-        // 🔥 포커스 블라인드 모드
-        function toggleFocusMode(elementId) {
-            const el = document.getElementById(elementId);
-            el.classList.toggle('focus-mode');
-        }
+        function toggleFocusMode(elementId) { document.getElementById(elementId).classList.toggle('focus-mode'); }
 
-        // --- OMR 로직 ---
         let userAnswers = {}; 
         function renderOMR() {
-            const container = document.getElementById('visualOMR');
-            if(!container) return;
+            const container = document.getElementById('visualOMR'); if(!container) return;
             let html = '';
             for(let i=1; i<=20; i++) {
                 html += `<div class="omr-row"><div class="omr-qnum">${i}.</div><div class="omr-bubbles">`;
@@ -599,17 +589,22 @@
             }
             container.innerHTML = html;
         }
-        function selectOMR(questionNum, choice) {
-            userAnswers[questionNum] = choice;
-            for(let j=1; j<=5; j++) document.getElementById(`omr-q${questionNum}-c${j}`).classList.remove('selected');
-            document.getElementById(`omr-q${questionNum}-c${choice}`).classList.add('selected');
-            updateOMRText();
+        function selectOMR(q, c) {
+            userAnswers[q] = c;
+            for(let j=1; j<=5; j++) document.getElementById(`omr-q${q}-c${j}`).classList.remove('selected');
+            document.getElementById(`omr-q${q}-c${c}`).classList.add('selected');
+            let ansArr = []; for(let i=1; i<=20; i++) if(userAnswers[i]) ansArr.push(`${i}:${userAnswers[i]}`);
+            document.getElementById('omrAnswers').value = ansArr.join(',');
         }
-        function clearOMR() { userAnswers = {}; for(let i=1; i<=20; i++) for(let j=1; j<=5; j++) document.getElementById(`omr-q${i}-c${j}`).classList.remove('selected'); updateOMRText(); }
-        function updateOMRText() {
-            let ansArr = []; for(let i=1; i<=20; i++) if(userAnswers[i]) ansArr.push(`${i}번:${userAnswers[i]}`);
-            document.getElementById('omrAnswers').value = ansArr.join(', ');
-        }
+        function clearOMR() { userAnswers = {}; for(let i=1; i<=20; i++) for(let j=1; j<=5; j++) document.getElementById(`omr-q${i}-c${j}`).classList.remove('selected'); document.getElementById('omrAnswers').value = ''; }
+
+        const pageTitles = {
+            'concept': '<i class="fa-solid fa-file-pdf"></i> PDF 개념 요약',
+            'grading': '<i class="fa-solid fa-marker"></i> OMR & 오답 해설',
+            'dashboard': '<i class="fa-solid fa-chart-pie"></i> 단원별 지식 맵',
+            'training': '<i class="fa-solid fa-dumbbell"></i> 오답 선지 OX 훈련',
+            'unified': '<i class="fa-solid fa-layer-group"></i> 단권화 & 모의고사 생성'
+        };
 
         function navTo(pageId) {
             if(window.speechSynthesis.speaking) window.speechSynthesis.cancel(); 
@@ -619,101 +614,81 @@
             document.getElementById('page-' + pageId).classList.add('active');
             closeSidebarOutside();
             
-            // 페이지 이동 시 스플릿 뷰 닫기
+            document.body.classList.remove('zen-mode'); 
             document.getElementById('pdfViewerPanel').style.display = 'none';
-            document.getElementById('pageTitleText').innerText = pageId === 'concept' ? "PDF 딥다이브 & 스마트 정리" : 
-                                                                  pageId === 'grading' ? "OMR & 오답 심층 분석" : "";
+            document.getElementById('pageTitleText').innerHTML = pageTitles[pageId] || '';
 
-            if(pageId === 'archive') loadHistory();
-            if(pageId === 'knowledgetree') renderKnowledgeTree();
+            if(pageId === 'dashboard') { loadHistory(); renderKnowledgeTree(); }
+            if(pageId === 'training') loadTrainingSelection();
             if(pageId === 'unified') loadUnifiedSelection();
         }
 
         function fileToBase64(file) {
             return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
+                const reader = new FileReader(); reader.readAsDataURL(file);
                 reader.onload = () => resolve({ data: reader.result.split(',')[1], mimeType: file.type });
                 reader.onerror = error => reject(error);
             });
         }
 
-        // 🔥 네이티브 PDF 출력
-        function downloadPDF() {
-            window.scrollTo(0, 0); 
-            window.print(); 
-        }
+        function downloadPDF() { window.scrollTo(0, 0); window.print(); }
 
         function toggleCloze(btn) {
             const container = btn.closest('.document-wrapper').querySelector('.document-view');
             const strongTags = container.querySelectorAll('strong');
             let isCloze = btn.dataset.cloze === 'true';
-            
             if (!isCloze) {
                 strongTags.forEach(el => { el.classList.add('cloze-blank'); el.onclick = function() { this.classList.remove('cloze-blank'); }; });
-                btn.dataset.cloze = 'true';
-                btn.innerHTML = '<i class="fa-solid fa-eye"></i> 암기 모드 끄기';
+                btn.dataset.cloze = 'true'; btn.classList.add('active');
             } else {
                 strongTags.forEach(el => { el.classList.remove('cloze-blank'); el.onclick = null; });
-                btn.dataset.cloze = 'false';
-                btn.innerHTML = '<i class="fa-solid fa-eye-slash"></i> 암기 모드';
+                btn.dataset.cloze = 'false'; btn.classList.remove('active');
             }
         }
 
         let currentUtterance = null;
         function toggleTTS(elementId, btnId) {
             const btn = document.getElementById(btnId);
-            if(window.speechSynthesis.speaking) { window.speechSynthesis.cancel(); btn.classList.remove('playing'); btn.innerHTML = '<i class="fa-solid fa-headphones"></i> 듣기'; return; }
-            const text = document.getElementById(elementId).innerText;
-            currentUtterance = new SpeechSynthesisUtterance(text);
+            if(window.speechSynthesis.speaking) { window.speechSynthesis.cancel(); btn.classList.remove('active'); return; }
+            currentUtterance = new SpeechSynthesisUtterance(document.getElementById(elementId).innerText);
             currentUtterance.lang = 'ko-KR'; currentUtterance.rate = 1.1; 
-            currentUtterance.onend = () => { btn.classList.remove('playing'); btn.innerHTML = '<i class="fa-solid fa-headphones"></i> 듣기'; };
+            currentUtterance.onend = () => { btn.classList.remove('active'); };
             window.speechSynthesis.speak(currentUtterance);
-            btn.classList.add('playing'); btn.innerHTML = '<i class="fa-solid fa-circle-stop"></i> 중지';
+            btn.classList.add('active');
         }
 
-        const formattingRules = `
-[마크다운 필수 규칙] 하이픈(-) 절대 금지(별표 사용). 단일 달러기호($) 금지(한글 '달러' 표기, 수식만 $$ 사용). 표는 가독성을 위해 잘게 쪼갤 것. 가독성을 위해 핵심 개념어의 앞 두 글자를 **볼드체**로 처리할 것 (바이오닉 리딩).`;
+        // 🔥 명확하고 직관적인 프롬프트 작성 규칙
+        const formattingRules = `[규칙] 하이픈(-) 사용을 금지합니다. 단일 달러기호($) 금지(수식에만 $$ 허용). 표 작성 시 가독성을 위해 칸을 잘게 나누세요. 중요어 앞 2글자는 반드시 **볼드체** 처리하여 가독성을 높이세요.`;
 
         async function callGeminiAPI(apiKey, prompt, files = [], loaderId = null) {
             let requestParts = [{ text: prompt }];
             files.forEach(f => requestParts.push({ inlineData: { data: f.data, mimeType: f.mimeType } }));
             const options = { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: requestParts }], generationConfig: { temperature: 0.7 } }) };
 
-            const maxRetries = 4; let delay = 3000; 
-            for (let i = 0; i <= maxRetries; i++) {
+            for (let i = 0; i < 3; i++) {
                 try {
                     const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`, options);
                     if (!response.ok) {
-                        const status = response.status;
-                        if ((status === 429 || status === 503 || status === 500) && i < maxRetries) {
-                            if (loaderId) document.getElementById(loaderId).innerHTML = `<div class="spinner"></div>서버 과부하 우회 중... (${i+1}/${maxRetries})`;
-                            await new Promise(resolve => setTimeout(resolve, delay)); delay += 2000; continue;
+                        if (response.status === 429 || response.status === 503) {
+                            if (loaderId) document.getElementById(loaderId).innerHTML = `<div class="spinner"></div>서버 우회 접속 시도 중... (${i+1}/3)`;
+                            await new Promise(r=>setTimeout(r, 2000)); continue;
                         }
-                        const err = await response.json().catch(()=>({}));
-                        throw new Error(err.error ? err.error.message : `오류 (${status})`);
+                        throw new Error("서버 통신 에러");
                     }
-                    const data = await response.json();
-                    if(data.error) throw new Error(data.error.message);
-                    return data.candidates[0].content.parts[0].text;
-                } catch (error) {
-                    if (i === maxRetries) throw error; 
-                    await new Promise(resolve => setTimeout(resolve, delay)); delay += 2000;
-                }
+                    const data = await response.json(); return data.candidates[0].content.parts[0].text;
+                } catch (e) { if(i===2) throw e; await new Promise(r=>setTimeout(r, 2000)); }
             }
         }
+
+        let currentContext = ""; 
 
         async function executeAI(mode, subMode) {
             if(window.speechSynthesis.speaking) window.speechSynthesis.cancel();
             const apiKey = document.getElementById('sysApiKey').value;
-            if (!apiKey) return alert("API Key를 입력해주세요!");
+            if (!apiKey) return alert("API Key를 입력해주세요.");
 
-            const loaderId = mode + 'Loader';
-            const resultWrapper = document.getElementById(mode + 'ResultWrapper');
-            const resultBox = document.getElementById(mode + 'Result');
-            
-            document.getElementById(loaderId).style.display = 'block'; 
-            resultWrapper.style.display = 'none'; resultBox.innerHTML = ""; 
+            const loaderId = mode + 'Loader'; const resultWrapper = document.getElementById(mode + 'ResultWrapper'); const resultBox = document.getElementById(mode + 'Result');
+            document.getElementById(loaderId).style.display = 'block'; resultWrapper.style.display = 'none';
 
             let prompt = "", title = "", filesToProcess = [], tags = [];
 
@@ -723,38 +698,36 @@
                     const file = document.getElementById('conceptFile').files[0];
                     let rawTags = document.getElementById('conceptTags').value;
                     const formatChoice = document.getElementById('conceptFormat').value; 
-                    if (!inputPrompt && !file) throw new Error("텍스트나 파일을 넣어주세요.");
+                    if (!inputPrompt && !file) throw new Error("분석할 텍스트나 파일이 필요합니다.");
                     if (file) filesToProcess.push(await fileToBase64(file));
                     
                     if(subMode === 'note') {
-                        let styleInstruction = formatChoice === "cornell" ? "2열짜리 표(Table) 형태." : formatChoice === "bullet" ? "표 없이 계층형 글머리 기호 사용." : "내용에 맞게 유동적 판단.";
-                        prompt = `완벽한 학습 노트를 작성하세요.\n[데이터]: ${inputPrompt}\n\n[조건]\n1. 내용 생략 불가.\n2. 중요 암기어 **볼드체**.\n3. [레이아웃]: ${styleInstruction}\n4. [🚨 함정 레이더] (blockquote 사용)\n5. [🔗 지식 연결] 이 내용과 연관된 과거 배경지식을 하나 소환할 것.\n6. 태그가 비어있다면 글 마지막에 '#태그1, #태그2' 형식으로 추천 태그를 적을 것.\n7. [📺 추천 미디어] 개념 이해를 도울 유튜브 검색어 2개 추천.\n${formattingRules}`;
-                    } else if (subMode === 'curriculum') {
-                        prompt = `제공된 데이터를 분석하여 최적의 학습 커리큘럼(진도표)을 쪼개어 표로 만들어주세요. 일차별로 나누고, 각 일차의 핵심 목표를 적으세요.\n[데이터]: ${inputPrompt}\n${formattingRules}`;
+                        let styleIns = formatChoice === "cornell" ? "2열 표(Table) 형식" : formatChoice === "bullet" ? "개조식 (표 사용 금지)" : "내용에 맞게 AI 유동적 판단";
+                        prompt = `[데이터]: ${inputPrompt}\n[레이아웃 지정]: ${styleIns}\n내용 생략 금지. [🚨 출제자 오답 패턴 경고] 포함. 태그가 비어있으면 문서 끝에 '#태그' 추천.\n${formattingRules}`;
+                    } else {
+                        prompt = `[데이터]: ${inputPrompt}\n내용을 분석하여 최적의 진도표/커리큘럼을 표 형태로 작성하세요.\n${formattingRules}`;
                     }
-                    title = `[노트] ${rawTags || '스마트 분석'}`;
+                    title = `[노트] ${rawTags || '개념 요약'}`;
                 }
                 else if (mode === 'grading') {
                     const qFile = document.getElementById('gradeQuestFile').files[0];
                     const omrInput = document.getElementById('omrAnswers').value;
-                    if (!qFile) throw new Error("문제지 이미지를 올려주세요.");
-                    if (qFile) filesToProcess.push(await fileToBase64(qFile));
+                    if (!qFile) throw new Error("문제지 파일을 첨부해주세요.");
+                    filesToProcess.push(await fileToBase64(qFile));
                     
                     if(subMode === 'score') {
-                        if (!omrInput) throw new Error("OMR 마킹을 입력하세요.");
-                        prompt = `가채점 및 분석 리포트 작성.\n[답안]: ${omrInput}\n\n[조건] 실제 정답 비교 채점, 오답 원인 상세 해설, 약점 보완 가이드.\n${formattingRules}`;
-                        title = `[채점] 모의고사`;
-                    } else if (subMode === 'firstaid') {
-                        prompt = `시험지 내용 중 내가 틀릴 확률이 가장 높은(가장 어려운) 극악의 개념 3가지만 뽑아서 '구급상자(초압축) 노트'를 작성해 줘.\n${formattingRules}`;
-                        title = `[구급상자] 약점 처방전`;
+                        if (!omrInput) throw new Error("OMR 마킹을 입력해주세요.");
+                        prompt = `[학생 답안]: ${omrInput}\n채점 및 오답에 대한 상세 해설, 약점 보완 가이드를 제공하세요.\n${formattingRules}`;
+                        title = `[오답 해설] 모의고사`;
+                    } else {
+                        prompt = `이 시험지에서 틀릴 확률이 가장 높은 핵심 개념 3개만 추출하여 초압축 요약 노트를 작성하세요.\n${formattingRules}`;
+                        title = `[초압축 노트] 약점 대비`;
                     }
                 }
 
                 const aiText = await callGeminiAPI(apiKey, prompt, filesToProcess, loaderId);
-                currentContext = aiText; 
-                currentRawMarkdown = aiText; // 노션 복사용 원본 저장
+                currentContext = aiText; currentRawMarkdown = aiText; 
                 
-                // AI가 생성한 태그 추출 로직
                 if(mode === 'concept' && !document.getElementById('conceptTags').value) {
                     const tagMatch = aiText.match(/#(\S+)/g);
                     if(tagMatch) document.getElementById('conceptTags').value = tagMatch.join(', ').replace(/#/g, '');
@@ -766,12 +739,9 @@
                 
                 let finalTags = document.getElementById(mode === 'concept' ? 'conceptTags' : 'gradeTags').value.split(',').map(t=>t.trim()).filter(t=>t);
                 saveHistory(title, finalTags, aiText);
-                markStreak(); // 공부 잔디 심기
+                markStreak();
 
-            } catch (error) { 
-                resultBox.innerHTML = `<div style="color: #EF4444; font-weight: bold; padding: 20px; border: 2px dashed #EF4444; background: #FEF2F2;">🚨 에러: ${error.message}</div>`;
-                resultWrapper.style.display = 'block';
-            } 
+            } catch (error) { resultBox.innerHTML = `<div style="color:red; padding:20px;">🚨 에러: ${error.message}</div>`; resultWrapper.style.display = 'block'; } 
             finally { document.getElementById(loaderId).style.display = 'none'; }
         }
 
@@ -782,110 +752,19 @@
             const question = inputField.value.trim();
             if (!apiKey || !question) return;
 
-            chatBox.innerHTML += `<div class="chat-msg msg-user">${question}</div>`;
-            inputField.value = ""; chatBox.scrollTop = chatBox.scrollHeight;
-
-            const loadingId = "load-" + Date.now();
-            chatBox.innerHTML += `<div class="chat-msg msg-ai" id="${loadingId}"><i class="fa-solid fa-spinner fa-spin"></i> 생각 중...</div>`;
-            
-            const prompt = `[학습 자료]:\n${currentContext}\n\n[질문]: ${question}\n[답변 지침]: 자료 맥락 안에서 상세히 설명.\n${formattingRules}`;
+            chatBox.innerHTML += `<div class="chat-msg msg-user">${question}</div>`; inputField.value = ""; chatBox.scrollTop = chatBox.scrollHeight;
+            const loadingId = "load-" + Date.now(); chatBox.innerHTML += `<div class="chat-msg msg-ai" id="${loadingId}">답변을 생각 중입니다...</div>`;
+            const prompt = `[학습 자료]:\n${currentContext}\n\n[학생 질문]: ${question}\n위 자료 맥락 안에서 명확히 답변하세요.\n${formattingRules}`;
 
             try {
-                const answerText = await callGeminiAPI(apiKey, prompt, [], null);
+                const answerText = await callGeminiAPI(apiKey, prompt, []);
                 document.getElementById(loadingId).remove();
                 chatBox.innerHTML += `<div class="chat-msg msg-ai">${marked.parse(answerText)}</div>`;
                 if (window.MathJax) MathJax.typesetPromise([chatBox]);
-            } catch (error) {
-                document.getElementById(loadingId).remove();
-                chatBox.innerHTML += `<div class="chat-msg msg-ai" style="color:red;">🚨 에러: ${error.message}</div>`;
-            }
+            } catch (error) { document.getElementById(loadingId).remove(); chatBox.innerHTML += `<div style="color:red;">에러 발생</div>`; }
             chatBox.scrollTop = chatBox.scrollHeight;
         }
 
-        // 🔥 보관함 자동 폴더링 로직으로 개선
-        function loadHistory() {
-            const list = document.getElementById('historyList');
-            let history = JSON.parse(localStorage.getItem('cozyArchive') || '[]');
-            if (history.length === 0) return list.innerHTML = "<div style='color:var(--text-sub); padding:20px;'>데이터가 없습니다.</div>";
-            
-            // 메인 태그별로 폴더링(그룹화)
-            let folders = {};
-            history.forEach(item => {
-                let mainTag = (item.tags && item.tags.length > 0) ? item.tags[0] : "미분류";
-                if(!folders[mainTag]) folders[mainTag] = [];
-                folders[mainTag].push(item);
-            });
-
-            let html = "";
-            for(let tag in folders) {
-                html += `<div class="folder-group"><div class="folder-title"><i class="fa-solid fa-folder-open" style="color:var(--accent-blue)"></i> ${tag} <span style="font-size:0.8rem; color:var(--text-sub)">(${folders[tag].length})</span></div>`;
-                folders[tag].forEach(item => {
-                    let tagsHtml = (item.tags || []).map(t => `<span class="tag-badge" style="background:var(--border-soft); color:var(--text-sub); border:none; padding:4px 8px; font-size:0.75rem; margin-right:4px;">${t}</span>`).join('');
-                    html += `
-                    <div class="archive-item">
-                        <div style="flex:1;" onclick="viewHistory(${item.id})">
-                            <div style="font-weight:800; margin-bottom:5px; color:var(--text-main);">${item.title}</div>
-                            <div>${tagsHtml}</div>
-                        </div>
-                        <div style="display:flex; flex-direction:column; gap:5px;">
-                            <button class="btn-ox" onclick="startOXSurvival(${item.id})"><i class="fa-solid fa-gamepad"></i> OX</button>
-                            <button class="btn-small" onclick="deleteHistory(${item.id}, event)"><i class="fa-solid fa-trash"></i> 삭제</button>
-                        </div>
-                    </div>`;
-                });
-                html += `</div>`;
-            }
-            list.innerHTML = html;
-        }
-
-        function saveHistory(title, tags, content) {
-            let history = JSON.parse(localStorage.getItem('cozyArchive') || '[]');
-            history.unshift({ id: Date.now(), date: new Date().toLocaleDateString('ko-KR'), title: title, tags: tags, content: content });
-            if (history.length > 50) history.pop();
-            localStorage.setItem('cozyArchive', JSON.stringify(history));
-        }
-
-        function deleteHistory(id, event) {
-            event.stopPropagation();
-            if(!confirm("정말 이 노트를 삭제하시겠습니까?")) return;
-            let history = JSON.parse(localStorage.getItem('cozyArchive') || '[]');
-            history = history.filter(h => h.id !== id);
-            localStorage.setItem('cozyArchive', JSON.stringify(history));
-            loadHistory(); renderKnowledgeTree();
-        }
-
-        function filterHistory() {
-            const query = document.getElementById('archiveSearch').value.toLowerCase();
-            const items = document.querySelectorAll('#historyList .archive-item');
-            items.forEach(item => {
-                const text = item.innerText.toLowerCase();
-                item.style.display = text.includes(query) ? 'flex' : 'none';
-            });
-        }
-
-        function viewHistory(id) {
-            if(window.speechSynthesis.speaking) window.speechSynthesis.cancel();
-            let history = JSON.parse(localStorage.getItem('cozyArchive') || '[]');
-            const item = history.find(h => h.id === id);
-            if (item) {
-                document.querySelectorAll('.menu-item, .page-section').forEach(el => el.classList.remove('active'));
-                document.getElementById('page-concept').classList.add('active'); 
-                
-                const resultBox = document.getElementById('conceptResult');
-                const resultWrapper = document.getElementById('conceptResultWrapper');
-                
-                currentContext = item.content; 
-                currentRawMarkdown = item.content;
-                resultBox.innerHTML = marked.parse(item.content);
-                resultWrapper.style.display = 'block';
-                if (window.MathJax) MathJax.typesetPromise([resultBox]);
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-                
-                document.getElementById('chatBoxConcept').innerHTML = '<div class="chat-msg msg-ai">보관함에서 노트를 불러왔습니다!</div>';
-            }
-        }
-
-        // 🔥 스터디 잔디 심기
         function markStreak() {
             let streaks = JSON.parse(localStorage.getItem('studyStreak') || '{}');
             const today = new Date().toISOString().split('T')[0];
@@ -907,97 +786,120 @@
             grid.innerHTML = html;
         }
 
+        function saveHistory(title, tags, content) {
+            let history = JSON.parse(localStorage.getItem('cozyArchive') || '[]');
+            history.unshift({ id: Date.now(), title: title, tags: tags, content: content });
+            if (history.length > 50) history.pop();
+            localStorage.setItem('cozyArchive', JSON.stringify(history));
+        }
+
+        function loadHistory() {
+            const list = document.getElementById('historyList');
+            let history = JSON.parse(localStorage.getItem('cozyArchive') || '[]');
+            if (history.length === 0) return list.innerHTML = "<div style='color:var(--text-sub);'>저장된 기록이 없습니다.</div>";
+            list.innerHTML = history.map(item => {
+                let tagsHtml = (item.tags || []).map(t => `<span class="tag-badge">${t}</span>`).join('');
+                return `
+                <div class="archive-item" onclick="viewHistory(${item.id})">
+                    <div style="flex:1;">
+                        <div class="archive-title">${item.title}</div>
+                        <div>${tagsHtml}</div>
+                    </div>
+                    <button class="icon-btn" style="border:none; box-shadow:none; width:30px; height:30px; background:transparent;" onclick="deleteHistory(${item.id}, event)"><i class="fa-solid fa-trash" style="font-size:0.9rem; color:var(--text-sub);"></i></button>
+                </div>`;
+            }).join('');
+        }
+
+        function deleteHistory(id, event) {
+            event.stopPropagation();
+            if(!confirm("이 노트를 삭제하시겠습니까?")) return;
+            let history = JSON.parse(localStorage.getItem('cozyArchive') || '[]');
+            history = history.filter(h => h.id !== id);
+            localStorage.setItem('cozyArchive', JSON.stringify(history));
+            loadHistory(); renderKnowledgeTree(); loadTrainingSelection();
+        }
+
+        function filterHistory() {
+            const query = document.getElementById('archiveSearch').value.toLowerCase();
+            const items = document.querySelectorAll('#historyList .archive-item');
+            items.forEach(item => { item.style.display = item.innerText.toLowerCase().includes(query) ? 'flex' : 'none'; });
+        }
+
+        function viewHistory(id) {
+            if(window.speechSynthesis.speaking) window.speechSynthesis.cancel();
+            let history = JSON.parse(localStorage.getItem('cozyArchive') || '[]');
+            const item = history.find(h => h.id === id);
+            if (item) {
+                document.querySelectorAll('.menu-item, .page-section').forEach(el => el.classList.remove('active'));
+                document.getElementById('page-concept').classList.add('active'); 
+                document.getElementById('conceptResult').innerHTML = marked.parse(item.content);
+                document.getElementById('conceptResultWrapper').style.display = 'block';
+                currentContext = item.content; currentRawMarkdown = item.content;
+                if (window.MathJax) MathJax.typesetPromise([document.getElementById('conceptResult')]);
+                window.scrollTo({ top: 0 });
+            }
+        }
+
         function renderKnowledgeTree() {
             let history = JSON.parse(localStorage.getItem('cozyArchive') || '[]');
             let treeContainer = document.getElementById('mermaidTree');
-            if (history.length === 0) return treeContainer.innerHTML = "<div style='color:var(--text-sub);'>지식이 없습니다.</div>";
-            let graphDef = "graph TD\n Root((지식 코어))";
-            let tagMap = {}; 
-            history.forEach((item, index) => {
-                let mainTag = (item.tags && item.tags.length > 0) ? item.tags[0] : "기타";
-                let titleTrimmed = item.title.replace(/\[.*?\] /g, '').substring(0, 15); 
-                if(!tagMap[mainTag]) tagMap[mainTag] = [];
-                tagMap[mainTag].push({ id: "node_" + index, name: titleTrimmed });
-            });
-            let tagIndex = 0;
-            for(let tag in tagMap) {
-                let tagNode = "T" + tagIndex;
-                graphDef += `\n Root --> ${tagNode}[${tag}]`;
-                tagMap[tag].forEach(sub => { graphDef += `\n ${tagNode} --> ${sub.id}("${sub.name}")`; });
-                tagIndex++;
-            }
+            if (history.length === 0) return treeContainer.innerHTML = "<div style='color:var(--text-sub);'>지식 맵을 구성할 데이터가 없습니다.</div>";
+            let graphDef = "graph TD\n Root((핵심 지식))";
+            history.forEach((item, index) => { graphDef += `\n Root --> node_${index}("${item.title.substring(0,15)}")`; });
             treeContainer.innerHTML = `<div class="mermaid">${graphDef}</div>`;
             mermaid.init(undefined, document.querySelectorAll('.mermaid'));
         }
 
-        function loadUnifiedSelection() {
-            const list = document.getElementById('unifiedSelectionList');
+        function loadSelectionList(containerId, isRadio = false) {
+            const list = document.getElementById(containerId);
             let history = JSON.parse(localStorage.getItem('cozyArchive') || '[]');
-            if (history.length === 0) return list.innerHTML = "<div>데이터가 없습니다.</div>";
+            if (history.length === 0) return list.innerHTML = "<div style='padding:10px; color:var(--text-sub);'>선택할 노트가 없습니다.</div>";
+            const inputType = isRadio ? 'radio' : 'checkbox';
+            const nameAttr = isRadio ? 'name="trainingSel"' : '';
             list.innerHTML = history.map(item => `
-                <div style="padding:10px; border-bottom:1px solid var(--border-soft); display:flex; align-items:center; gap:10px;">
-                    <input type="checkbox" class="unified-checkbox" value="${item.id}" style="width:20px;">
-                    <div>${item.title}</div>
-                </div>`).join('');
+                <label style="display:flex; align-items:center; gap:10px; padding:10px; border-bottom:1px solid var(--border-soft); cursor:pointer;">
+                    <input type="${inputType}" ${nameAttr} class="${containerId}-checkbox" value="${item.id}" style="width:18px; height:18px;">
+                    <span style="font-weight:600;">${item.title}</span>
+                </label>`).join('');
         }
+        function loadTrainingSelection() { loadSelectionList('trainingSelectionList', true); }
+        function loadUnifiedSelection() { loadSelectionList('unifiedSelectionList', false); }
 
-        // 🔥 모의고사 & 보스전 (다단 조판 프롬프트)
         async function executeUnifiedNote(type) {
-            if(window.speechSynthesis.speaking) window.speechSynthesis.cancel();
             const apiKey = document.getElementById('sysApiKey').value;
-            const checkboxes = document.querySelectorAll('.unified-checkbox:checked');
-            if (!apiKey || checkboxes.length === 0) return alert("선택된 노트가 없습니다.");
+            const checkboxes = document.querySelectorAll('.unifiedSelectionList-checkbox:checked');
+            if (!apiKey || checkboxes.length === 0) return alert("병합할 노트를 선택해주세요.");
 
-            const loaderId = 'unifiedLoader';
-            const resultWrapper = document.getElementById('unifiedResultWrapper');
-            const resultBox = document.getElementById('unifiedResult');
-            
-            document.getElementById(loaderId).style.display = 'block'; 
-            resultWrapper.style.display = 'none';
+            const loaderId = 'unifiedLoader'; const resultWrapper = document.getElementById('unifiedResultWrapper'); const resultBox = document.getElementById('unifiedResult');
+            document.getElementById(loaderId).style.display = 'block'; resultWrapper.style.display = 'none';
 
             let history = JSON.parse(localStorage.getItem('cozyArchive') || '[]');
-            let mergedContent = ""; let selectedTags = new Set();
-            checkboxes.forEach(cb => {
-                const item = history.find(h => h.id == cb.value);
-                if(item) { mergedContent += `\n\n[자료]: ${item.content}`; if(item.tags) item.tags.forEach(t => selectedTags.add(t)); }
-            });
+            let mergedContent = ""; 
+            checkboxes.forEach(cb => { const item = history.find(h => h.id == cb.value); if(item) mergedContent += `\n\n[자료]: ${item.content}`; });
 
-            let prompt = "";
-            let coverHtml = "";
-            const tagsString = Array.from(selectedTags).join(', ');
-            const today = new Date().toLocaleDateString('ko-KR');
-
-            if (type === 'book') {
-                prompt = `자료 병합 단권화 노트를 작성하세요.\n${mergedContent}\n\n[조건] 생략 없이 유기적으로 연결, 킬러 문항 예측 리포트 포함.\n${formattingRules}`;
-                coverHtml = `<div class="book-cover"><div class="book-title">마스터 단권화 문제집</div><div class="book-date">${tagsString}</div></div>`;
-            } else if (type === 'exam') {
-                prompt = `제공된 자료를 바탕으로 실제 수능/내신 형식의 [실전 모의고사]를 출제하세요.\n${mergedContent}\n\n[조건] 객관식 5지 선다형 10문제 출제. 정답과 해설은 마지막에 모아서 배치.\n${formattingRules}`;
-                coverHtml = `<div class="mock-exam-title">🔥 ${tagsString} 실전 모의고사</div>`;
-            } else {
-                prompt = `여러 단원을 융합하여 수능 최고난도 [융합 킬러 문항] 1문제를 출제하고 소름돋는 해설을 작성하세요.\n${mergedContent}\n${formattingRules}`;
-                coverHtml = `<div class="book-cover" style="background:#FEF2F2; border-color:#FDA4AF;"><div class="book-title" style="color:#E11D48;"><i class="fa-solid fa-skull"></i> 융합 킬러 문항</div></div>`;
-            }
+            let prompt = "", coverHtml = "";
+            if (type === 'book') { prompt = `단권화 병합 노트 작성\n${mergedContent}\n${formattingRules}`; coverHtml = `<div class="book-cover"><div class="book-title">단권화 병합 노트</div></div>`; } 
+            else if (type === 'exam') { prompt = `실전 모의고사 출제 (정답/해설은 하단에 배치)\n${mergedContent}\n${formattingRules}`; coverHtml = `<div class="mock-exam-title">실전 모의고사</div>`; } 
+            else { prompt = `다단원 융합 고난도 문제 1문제 출제\n${mergedContent}\n${formattingRules}`; coverHtml = `<div class="book-cover" style="background:var(--bg-body);"><div class="book-title" style="color:var(--accent-danger);">다단원 융합 고난도 문제</div></div>`; }
 
             try {
                 const aiText = await callGeminiAPI(apiKey, prompt, [], loaderId);
                 resultBox.innerHTML = coverHtml + `<div style="padding:0;">` + marked.parse(aiText) + `</div>`;
                 resultWrapper.style.display = 'block';
                 if (window.MathJax) MathJax.typesetPromise([resultBox]);
-                saveHistory(`[${type==='book'?'단권화':type==='exam'?'모의고사':'보스전'}] ${tagsString}`, Array.from(selectedTags), aiText);
-            } catch (error) { 
-                resultBox.innerHTML = `<div style="color:red;">🚨 에러: ${error.message}</div>`;
-                resultWrapper.style.display = 'block';
-            } 
+                saveHistory(`[저장] ${type === 'book' ? '단권화' : type === 'exam' ? '모의고사' : '고난도 융합'}`, [], aiText);
+            } catch (error) { resultBox.innerHTML = `<div style="color:red;">🚨 에러 발생</div>`; resultWrapper.style.display = 'block'; } 
             finally { document.getElementById(loaderId).style.display = 'none'; }
         }
 
         let oxAnswerCache = "";
-        async function startOXSurvival(id) {
+        async function startTraining(type) {
             const apiKey = document.getElementById('sysApiKey').value;
-            if (!apiKey) return alert("API Key를 입력해주세요.");
+            const selected = document.querySelector('.trainingSelectionList-checkbox:checked');
+            if (!apiKey || !selected) return alert("API Key를 입력하고 노트를 하나 선택하세요.");
 
             let history = JSON.parse(localStorage.getItem('cozyArchive') || '[]');
-            const item = history.find(h => h.id === id);
+            const item = history.find(h => h.id == selected.value);
             if (!item) return;
 
             document.getElementById('oxModal').style.display = 'flex';
@@ -1005,28 +907,24 @@
             document.getElementById('oxAnswerArea').style.display = 'none';
             document.getElementById('oxLoader').style.display = 'block';
 
-            const prompt = `다음 내용으로 [지옥의 OX 선지] 5개를 출제.\n${item.content}\n\n[조건] 중간에 '====ANSWER====' 넣고 그 위엔 문제만, 아래엔 정답/해설.\n${formattingRules}`;
+            const prompt = `[오답 선지 OX 훈련] 문제 5개 출제.\n${item.content}\n\n[조건] 중간에 '====ANSWER====' 넣고 그 위엔 문제만, 아래엔 정답/해설 작성.\n${formattingRules}`;
             try {
                 const aiText = await callGeminiAPI(apiKey, prompt, []);
                 const parts = aiText.split('====ANSWER====');
                 document.getElementById('oxLoader').style.display = 'none';
                 document.getElementById('oxPlayArea').style.display = 'block';
-                document.getElementById('oxQuestionContent').innerHTML = marked.parse(parts[0] ? parts[0].trim() : "출제 실패");
-                oxAnswerCache = parts[1] ? parts[1].trim() : "해설 없음";
-            } catch(error) {
-                document.getElementById('oxLoader').style.display = 'none';
-                document.getElementById('oxPlayArea').style.display = 'block';
-                document.getElementById('oxQuestionContent').innerHTML = `<div style="color:red;">🚨 에러: ${error.message}</div>`;
-            }
+                document.getElementById('oxQuestionContent').innerHTML = marked.parse(parts[0] ? parts[0].trim() : "출제 오류");
+                oxAnswerCache = parts[1] ? parts[1].trim() : "해설 데이터 없음";
+            } catch(error) { document.getElementById('oxLoader').style.display = 'none'; document.getElementById('oxPlayArea').style.display = 'block'; document.getElementById('oxQuestionContent').innerHTML = `<div style="color:red;">🚨 에러 발생</div>`; }
         }
 
         function revealOXAnswer() {
             document.getElementById('oxAnswerArea').style.display = 'block';
             document.getElementById('oxAnswerContent').innerHTML = marked.parse(oxAnswerCache);
             document.querySelector('#oxPlayArea .btn-primary').style.display = 'none';
-            markStreak(); // 퀴즈 풀면 잔디 심기
+            markStreak(); // 문제 풀이 완료 후 잔디 심기
         }
-        function closeOXModal() { document.getElementById('oxModal').style.display = 'none'; document.querySelector('#oxPlayArea .btn-primary').style.display = 'flex'; }
+        function closeOXModal() { document.getElementById('oxModal').style.display = 'none'; document.querySelector('#oxPlayArea .btn-primary').style.display = 'block'; }
     </script>
 </body>
 </html>
