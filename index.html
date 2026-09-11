@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>단권화 스터디 다이어리 V17 - The Ultimate AI Tutor</title>
+    <title>단권화 스터디 다이어리 V18 - PDF Optimized Edition</title>
     
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -83,7 +83,6 @@
         .btn-cloze { background: #1E293B; color: white; border: none; padding: 10px 18px; border-radius: 8px; font-size: 0.95rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .btn-cloze:hover { background: var(--accent-primary); }
 
-        /* 🔥 TTS 및 OX 버튼 추가 */
         .btn-tts { background: var(--accent-blue); color: white; border: none; padding: 10px 18px; border-radius: 8px; font-size: 0.95rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s; box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3); }
         .btn-tts:hover { background: #2563EB; }
         .btn-tts.playing { background: #EF4444; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3); animation: pulse 1.5s infinite; }
@@ -101,27 +100,34 @@
         .pdf-actions { display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
         .document-view { background: white; padding: 50px 60px; border-radius: var(--radius-box); border: 1px solid var(--border-soft); box-shadow: var(--shadow-fluffy); font-size: 1.05rem; color: #1E293B; }
         
+        /* 🔥 PDF 출력 시 줄 잘림 현상 방지를 위한 강력한 CSS 속성 (page-break-inside) 추가 */
+        .document-view h2, .document-view h3, .document-view p, .document-view blockquote, .document-view ul, .document-view li {
+            page-break-inside: avoid; break-inside: avoid;
+        }
+
         .document-view h2 { color: var(--text-main); margin: 40px 0 20px; font-weight: 800; font-size: 1.6rem; border-bottom: 3px solid var(--accent-primary); padding-bottom: 10px; display: inline-block; }
         .document-view h3 { color: var(--accent-blue); margin: 30px 0 15px; font-weight: 700; font-size: 1.3rem; }
         .document-view p { margin-bottom: 18px; line-height: 1.8; }
         .document-view ul, .document-view ol { margin-bottom: 20px; padding-left: 25px; line-height: 1.8; }
         .document-view li { margin-bottom: 8px; }
         
-        /* 🔥 함정 레이더 특별 디자인 */
         .document-view blockquote { border-left: 5px solid #EF4444; background: #FEF2F2; padding: 15px 20px; margin: 20px 0; border-radius: 0 12px 12px 0; font-weight: 600; color: #991B1B; }
-
         .document-view strong { color: #0F172A; font-weight: 800; background: linear-gradient(180deg, rgba(255,255,255,0) 60%, rgba(255, 139, 167, 0.2) 40%); transition: 0.3s; }
+        
         .cloze-blank { background: #1E293B !important; color: #1E293B !important; border-radius: 4px; padding: 2px 6px; cursor: pointer; user-select: none; }
         .cloze-blank:hover { background: var(--accent-primary) !important; color: white !important; }
 
-        .document-view table { width: 100%; border-collapse: collapse; margin: 30px 0; border: 1px solid #CBD5E1; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+        /* 🔥 테이블 줄바꿈 방지 */
+        .document-view table { width: 100%; border-collapse: collapse; margin: 30px 0; border: 1px solid #CBD5E1; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.02); page-break-inside: auto; break-inside: auto; }
+        .document-view tr { page-break-inside: avoid; break-inside: avoid; }
         .document-view th, .document-view td { border: 1px solid #E2E8F0; padding: 20px; text-align: left; vertical-align: top; }
         .document-view th { background-color: #F8FAFC; color: var(--text-main); font-weight: 800; font-size: 1.1rem; border-bottom: 2px solid #CBD5E1; }
         .document-view tr:nth-child(even) td { background-color: #FAFAFA; }
         .document-view td:first-child { width: 28%; font-weight: 700; color: var(--accent-blue); background-color: #F8FAFC; border-right: 2px solid #E2E8F0; }
         .document-view td:nth-child(2) { width: 72%; }
 
-        .book-cover { text-align: center; padding: 120px 40px; background: linear-gradient(135deg, #F8FAFC, #F1F5F9); border: 2px solid #E2E8F0; border-radius: 16px; margin-bottom: 40px; }
+        /* 🔥 책 표지는 무조건 한 페이지를 차지하게 만듦 */
+        .book-cover { text-align: center; padding: 150px 40px; background: linear-gradient(135deg, #F8FAFC, #F1F5F9); border: 2px solid #E2E8F0; border-radius: 16px; margin-bottom: 40px; page-break-after: always; break-after: page; }
         .book-title { font-size: 3rem; font-weight: 900; color: var(--text-main); margin-bottom: 20px; }
         .book-subtitle { font-size: 1.5rem; color: var(--accent-blue); font-weight: 700; }
         .book-date { margin-top: 50px; font-weight: 600; color: var(--text-sub); }
@@ -150,7 +156,7 @@
 
         #mermaidTree { background: white; padding: 30px; border-radius: 16px; border: 1px solid #E2E8F0; box-shadow: var(--shadow-fluffy); overflow: hidden; display: flex; justify-content: center; align-items: center; min-height: 400px; }
 
-        /* 🔥 지옥의 OX 서바이벌 모달 UI */
+        /* 지옥의 OX 서바이벌 모달 UI */
         .ox-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.8); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
         .ox-modal-content { background: white; width: 90%; max-width: 800px; max-height: 85vh; overflow-y: auto; border-radius: 24px; padding: 40px; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
         .ox-close { position: absolute; top: 20px; right: 25px; font-size: 1.8rem; color: #94A3B8; cursor: pointer; transition: 0.2s; }
@@ -159,6 +165,10 @@
         .ox-header h2 { color: var(--accent-ox); font-size: 2rem; font-weight: 900; margin-bottom: 10px; }
         .ox-body { font-size: 1.1rem; line-height: 1.8; color: var(--text-main); }
         .ox-body h3 { color: #E11D48; border-bottom: 2px solid #E11D48; padding-bottom: 5px; margin: 30px 0 15px; }
+
+        @media print {
+            .document-view { box-shadow: none; border: none; padding: 0; }
+        }
 
         @media (max-width: 1024px) {
             .mobile-header { display: flex; }
@@ -203,6 +213,7 @@
 
         <main class="main-content" onclick="closeSidebarOutside()">
             
+            <!-- 코넬 탭 -->
             <section id="page-concept" class="page-section active">
                 <div class="page-header">
                     <div class="page-header-left">
@@ -220,7 +231,7 @@
                     </div>
                     <div class="form-group">
                         <label><i class="fa-solid fa-align-left"></i> 요약 및 분석할 텍스트 원본 (필수)</label>
-                        <textarea id="conceptPrompt" rows="8" placeholder="여기에 정리하고 싶은 긴 글, 교과서 본문 등을 복사해서 붙여넣으세요. AI가 내용을 절대 생략하지 않고 빵빵하게 분석합니다."></textarea>
+                        <textarea id="conceptPrompt" rows="8" placeholder="여기에 정리하고 싶은 긴 글, 교과서 본문 등을 복사해서 붙여넣으세요. AI가 내용을 절대 생략하지 않고 상세하게 분석합니다."></textarea>
                     </div>
                     <div class="form-group">
                         <label><i class="fa-solid fa-image"></i> 교재 사진이나 PDF 첨부 (선택)</label>
@@ -238,7 +249,6 @@
                 </div>
                 
                 <div id="conceptResultWrapper" class="document-wrapper">
-                    <!-- 🔥 TTS, 백지 복습, PDF 다운로드 툴바 -->
                     <div class="pdf-actions no-print">
                         <button class="btn-tts" id="ttsBtnConcept" onclick="toggleTTS('conceptResult', 'ttsBtnConcept')"><i class="fa-solid fa-headphones"></i> 오디오 브리핑 듣기</button>
                         <button class="btn-cloze" onclick="toggleCloze(this)"><i class="fa-solid fa-eye-slash"></i> 암기 모드 (빈칸 뚫기)</button>
@@ -261,6 +271,7 @@
                 </div>
             </section>
 
+            <!-- OMR 탭 -->
             <section id="page-grading" class="page-section">
                 <div class="page-header">
                     <div class="page-header-left">
@@ -316,6 +327,7 @@
                 </div>
             </section>
 
+            <!-- 보관함 탭 -->
             <section id="page-archive" class="page-section">
                 <div class="page-header">
                     <div class="page-header-icon" style="background: #D4A373;"><i class="fa-solid fa-box-archive"></i></div>
@@ -328,6 +340,7 @@
                 </div>
             </section>
 
+            <!-- 지식 지도 탭 -->
             <section id="page-knowledgetree" class="page-section">
                 <div class="page-header">
                     <div class="page-header-icon" style="background: #8B5CF6;"><i class="fa-solid fa-network-wired"></i></div>
@@ -339,6 +352,7 @@
                 <div id="mermaidTree"></div>
             </section>
 
+            <!-- 문제집 출판 탭 -->
             <section id="page-unified" class="page-section">
                 <div class="page-header">
                     <div class="page-header-icon" style="background: linear-gradient(135deg, #FFD166, #FF9F1C);"><i class="fa-solid fa-book-journal-whills"></i></div>
@@ -353,7 +367,6 @@
                     
                     <div style="display: flex; gap: 15px; flex-wrap: wrap;">
                         <button class="btn-primary" style="background: #FF9F1C; flex: 1;" onclick="executeUnifiedNote()"><i class="fa-solid fa-layer-group"></i> 전자책 출판하기</button>
-                        <!-- 🔥 융합 킬러 문항 생성 버튼 -->
                         <button class="btn-primary" style="background: var(--accent-boss); flex: 1;" onclick="executeBossFight()"><i class="fa-solid fa-skull"></i> 융합 킬러 문항 생성 (Boss Fight)</button>
                     </div>
                     <div id="unifiedLoader" class="loader" style="color:#FF9F1C"><div class="spinner" style="border-top-color:currentColor"></div>서버에 요청 중입니다...</div>
@@ -372,7 +385,7 @@
         </main>
     </div>
 
-    <!-- 🔥 지옥의 OX 서바이벌 모달 UI -->
+    <!-- 지옥의 OX 서바이벌 모달 UI -->
     <div id="oxModal" class="ox-modal">
         <div class="ox-modal-content">
             <i class="fa-solid fa-circle-xmark ox-close" onclick="closeOXModal()"></i>
@@ -439,11 +452,11 @@
             document.getElementById('omrAnswers').value = ansArr.join(', ');
         }
 
-        // --- 공통 기능 (TTS, PDF, 빈칸 등) ---
+        // --- 공통 기능 ---
         function saveApiKey() { localStorage.setItem('geminiApiKey', document.getElementById('sysApiKey').value); }
 
         function navTo(pageId) {
-            if(window.speechSynthesis.speaking) window.speechSynthesis.cancel(); // 탭 이동 시 오디오 중지
+            if(window.speechSynthesis.speaking) window.speechSynthesis.cancel(); 
             document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
             event.currentTarget.classList.add('active');
             document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
@@ -479,14 +492,20 @@
             });
         }
 
-        function downloadPDF(elementId, fileName) {
+        // 🔥 PDF 페이지 잘림 완벽 방어 엔진 (html2pdf pagebreak 세팅)
+        async function downloadPDF(elementId, fileName) {
             const element = document.getElementById(elementId);
+            // 폰트와 수식이 모두 그려질 때까지 약간 대기
+            await document.fonts.ready;
+            
             const opt = {
-                margin:       [15, 0, 15, 0],
+                margin:       [15, 10, 15, 10], 
                 filename:     `${fileName}.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true },
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                html2canvas:  { scale: 2, useCORS: true, letterRendering: true, scrollY: 0 },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                // 페이지 경계선에서 요소가 반으로 잘리지 않도록 강제 보호하는 옵션
+                pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] } 
             };
             html2pdf().set(opt).from(element).save();
         }
@@ -509,7 +528,6 @@
             }
         }
 
-        // 🔥 오디오 브리핑 (TTS) 로직
         let currentUtterance = null;
         function toggleTTS(elementId, btnId) {
             const btn = document.getElementById(btnId);
@@ -522,7 +540,7 @@
             const text = document.getElementById(elementId).innerText;
             currentUtterance = new SpeechSynthesisUtterance(text);
             currentUtterance.lang = 'ko-KR';
-            currentUtterance.rate = 1.1; // 약간 빠른 템포
+            currentUtterance.rate = 1.1; 
             
             currentUtterance.onend = () => {
                 btn.classList.remove('playing');
@@ -534,11 +552,12 @@
             btn.innerHTML = '<i class="fa-solid fa-circle-stop"></i> 브리핑 중지';
         }
 
-        // 🔥 통신 로직 및 포맷 보호 (하이픈, 달러 금지)
+        // 🔥 프롬프트 규칙 (표 길이 조절 조건 추가)
         const formattingRules = `
 [마크다운 및 렌더링 절대 준수 규칙 - 위반 시 감점]
 1. 글머리 기호(Bullet point)나 리스트 작성 시 하이픈(-)을 절대 사용하지 마세요. 반드시 별표(*)나 숫자(1. 2.)를 사용하세요. 표 안에서도 하이픈 금지.
-2. 텍스트에 단일 달러 기호($)를 절대 사용하지 마세요. 필요시 '달러'라고 한글로 표기하고, 수학 수식에만 이중 달러 기호($$수식$$)를 사용하세요.`;
+2. 텍스트에 단일 달러 기호($)를 절대 사용하지 마세요. 필요시 '달러'라고 한글로 표기하고, 수학 수식에만 이중 달러 기호($$수식$$)를 사용하세요.
+3. 표(Table)를 작성할 때, 하나의 칸(Row)에 내용이 너무 길어지지 않도록 여러 개의 행(Row)으로 잘게 쪼개서 작성하세요. 한 줄이 너무 길면 PDF 출력 시 페이지가 잘립니다.`;
 
         async function callGeminiAPI(apiKey, prompt, files = [], loaderId = null) {
             let requestParts = [{ text: prompt }];
@@ -617,8 +636,7 @@
                     tags = rawTags.split(',').map(t => t.trim()).filter(t => t);
                     title = `[정리노트] ${tags[0] || '핵심 요약'}`;
                     
-                    // 🔥 함정 레이더 프롬프트 추가 완료!
-                    prompt = `당신은 최고 수준의 일타 강사입니다. 제공된 데이터를 완벽한 '코넬 노트' 형식으로 변환하세요.\n[원본 데이터]: ${inputPrompt}\n\n[필수 조건]\n1. 원본 내용을 절대 생략하지 말고 백과사전 수준으로 깊게 꽉 채워 넣으세요.\n2. 중요 암기 키워드는 반드시 양쪽에 별표 두 개(**단어**)를 쳐서 볼드체로 만드세요.\n3. 좌측 '핵심 키워드', 우측 '상세 내용' 2열짜리 표(Table)로 출력하세요.\n4. [🚨 출제자 빙의 함정 레이더] 섹션을 마크다운 인용구(blockquote: >)로 작성하여, 출제자가 인과관계를 꼬거나 일반화 오류를 유도할 만한 '매력적인 오답 선지 패턴'을 경고해 주세요.\n5. [👩‍🏫 AI 선생님의 족집게 하이라이트]를 하단에 상세히 기술하세요.\n${formattingRules}`;
+                    prompt = `당신은 최고 수준의 일타 강사입니다. 제공된 데이터를 완벽한 '코넬 노트' 형식으로 변환하세요.\n[원본 데이터]: ${inputPrompt}\n\n[필수 조건]\n1. 원본 내용을 절대 생략하지 말고 백과사전 수준으로 깊게 꽉 채워 넣으세요.\n2. 중요 암기 키워드는 반드시 양쪽에 별표 두 개(**단어**)를 쳐서 볼드체로 만드세요.\n3. 좌측 '핵심 키워드', 우측 '상세 내용' 2열짜리 표(Table)로 출력하세요. 단, 내용이 길어지지 않게 여러 개의 행으로 쪼개어 구성하세요.\n4. [🚨 출제자 빙의 함정 레이더] 섹션을 마크다운 인용구(blockquote: >)로 작성하여, 출제자가 인과관계를 꼬거나 일반화 오류를 유도할 만한 '매력적인 오답 선지 패턴'을 경고해 주세요.\n5. [👩‍🏫 AI 선생님의 족집게 하이라이트]를 하단에 기술하세요.\n${formattingRules}`;
                 }
                 else if (mode === 'grading') {
                     const qFile = document.getElementById('gradeQuestFile').files[0];
@@ -689,7 +707,6 @@
             localStorage.setItem('cozyArchive', JSON.stringify(history));
         }
 
-        // 보관함에 OX 버튼 추가
         function loadHistory() {
             const list = document.getElementById('historyList');
             let history = JSON.parse(localStorage.getItem('cozyArchive') || '[]');
@@ -793,6 +810,8 @@
                 const aiText = await callGeminiAPI(apiKey, prompt, [], loaderId);
                 const tagsString = Array.from(selectedTags).join(', ') || '종합 노트';
                 const today = new Date().toLocaleDateString('ko-KR');
+                
+                // 표지가 한 장을 완전히 덮도록 디자인 개선 (page-break-after)
                 const coverHtml = `<div class="book-cover"><div class="book-title">나만의 마스터 단권화 문제집</div><div class="book-subtitle">AI 튜터 분석 에디션</div><div class="book-date">발행일: ${today} | 포함 단원: ${tagsString}</div></div>`;
 
                 resultBox.innerHTML = coverHtml + `<div style="padding: 0 60px 50px;">` + marked.parse(aiText) + `</div>`;
@@ -805,7 +824,6 @@
             finally { loader.style.display = 'none'; }
         }
 
-        // 🔥 보스전 (융합 킬러 문항 생성) 로직
         async function executeBossFight() {
             if(window.speechSynthesis.speaking) window.speechSynthesis.cancel();
             const apiKey = document.getElementById('sysApiKey').value;
@@ -828,10 +846,10 @@
                 if(item) mergedContent += `\n\n[자료]: ${item.content}`;
             });
 
-            const prompt = `당신은 수능 출제 위원장입니다. 제공된 여러 단원의 자료를 융합하여 수능 20번(최고난도) 수준의 [🔥 융합 킬러 문항]을 1문제 출제하세요.\n\n${mergedContent}\n\n[조건]\n1. 단순 지식이 아니라 두 개념의 교집합이나 모순점을 파고드는 고난도 추론 문제여야 합니다.\n2. 정답 선지 1개와 치명적인 함정이 숨어있는 오답 선지 4개를 만드세요.\n3. 문제 바로 아래에 왜 이 문제가 킬러 문항인지, 각 선지의 함정(매력적인 이유)이 무엇인지 소름 돋게 상세한 해설을 적어주세요.\n${formattingRules}`;
+            const prompt = `당신은 수능 출제 위원장입니다. 제공된 여러 단원의 자료를 융합하여 수능 최고난도 수준의 [🔥 융합 킬러 문항]을 1문제 출제하세요.\n\n${mergedContent}\n\n[조건]\n1. 두 개념의 교집합이나 모순점을 파고드는 고난도 추론 문제 출제.\n2. 정답 선지 1개와 치명적인 함정이 숨어있는 오답 선지 4개를 만드세요.\n3. 문제 바로 아래에 왜 이 문제가 킬러 문항인지, 각 선지의 함정이 무엇인지 소름 돋게 상세한 해설을 적어주세요.\n${formattingRules}`;
             try {
                 const aiText = await callGeminiAPI(apiKey, prompt, [], loaderId);
-                const coverHtml = `<div class="book-cover" style="padding:60px 40px; background:linear-gradient(135deg, #FFF1F2, #FFE4E6); border-color:#FDA4AF;"><div class="book-title" style="color:#E11D48;"><i class="fa-solid fa-skull"></i> BOSS FIGHT</div><div class="book-subtitle">단원 융합 최고난도 킬러 문항</div></div>`;
+                const coverHtml = `<div class="book-cover" style="padding:150px 40px; background:linear-gradient(135deg, #FFF1F2, #FFE4E6); border-color:#FDA4AF;"><div class="book-title" style="color:#E11D48;"><i class="fa-solid fa-skull"></i> BOSS FIGHT</div><div class="book-subtitle">단원 융합 최고난도 킬러 문항</div></div>`;
 
                 resultBox.innerHTML = coverHtml + `<div style="padding: 0 60px 50px;">` + marked.parse(aiText) + `</div>`;
                 resultWrapper.style.display = 'block';
@@ -843,7 +861,6 @@
             finally { loader.style.display = 'none'; }
         }
 
-        // 🔥 지옥의 OX 서바이벌 로직
         let oxAnswerCache = "";
         async function startOXSurvival(id) {
             const apiKey = document.getElementById('sysApiKey').value;
@@ -863,7 +880,6 @@
             try {
                 const aiText = await callGeminiAPI(apiKey, prompt, []);
                 
-                // 구분선으로 문제와 해설 분리
                 const parts = aiText.split('====ANSWER====');
                 const questionPart = parts[0] ? parts[0].trim() : "문제를 불러오지 못했습니다.";
                 oxAnswerCache = parts[1] ? parts[1].trim() : "해설이 제공되지 않았습니다.";
@@ -882,13 +898,12 @@
         function revealOXAnswer() {
             document.getElementById('oxAnswerArea').style.display = 'block';
             document.getElementById('oxAnswerContent').innerHTML = marked.parse(oxAnswerCache);
-            // 정답 보기 버튼 숨기기
             document.querySelector('#oxPlayArea .btn-primary').style.display = 'none';
         }
 
         function closeOXModal() {
             document.getElementById('oxModal').style.display = 'none';
-            document.querySelector('#oxPlayArea .btn-primary').style.display = 'flex'; // 버튼 원상복구
+            document.querySelector('#oxPlayArea .btn-primary').style.display = 'flex'; 
         }
     </script>
 </body>
