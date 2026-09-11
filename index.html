@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>단권화 스터디 다이어리 V25 - Intuitive & Multi-Theme Edition</title>
+    <title>단권화 스터디 다이어리 V26 - Flawless Export & Responsive</title>
     
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -15,59 +15,66 @@
     <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
 
     <style>
-        /* 🔥 6가지 사용자 맞춤형 테마 CSS 변수 */
+        /* 🔥 9가지 사용자 맞춤형 테마 CSS 변수 */
         :root[data-theme="light"] {
-            --bg-body: #F4F7FA; --bg-surface: #FFFFFF;
-            --text-main: #1E293B; --text-sub: #64748B;
+            --bg-body: #F4F7FA; --bg-surface: #FFFFFF; --text-main: #1E293B; --text-sub: #64748B;
             --accent-primary: #3B82F6; --accent-blue: #3B82F6; --accent-mint: #10B981; --accent-danger: #EF4444; --accent-special: #8B5CF6;
-            --border-soft: #E2E8F0; --shadow-fluffy: 0 10px 25px rgba(0, 0, 0, 0.04);
-            --radius-box: 16px; --radius-btn: 10px;
+            --border-soft: #E2E8F0; --shadow-fluffy: 0 10px 25px rgba(0, 0, 0, 0.04); --radius-box: 16px; --radius-btn: 10px;
             --table-head: #F8FAFC; --table-row: #FFFFFF; --chat-bg: #F8FAFC;
         }
         :root[data-theme="dark"] {
-            --bg-body: #0F172A; --bg-surface: #1E293B;
-            --text-main: #F8FAFC; --text-sub: #94A3B8;
+            --bg-body: #0F172A; --bg-surface: #1E293B; --text-main: #F8FAFC; --text-sub: #94A3B8;
             --accent-primary: #3B82F6; --accent-blue: #3B82F6; --accent-mint: #10B981; --accent-danger: #EF4444; --accent-special: #8B5CF6;
-            --border-soft: #334155; --shadow-fluffy: 0 10px 30px rgba(0, 0, 0, 0.4);
+            --border-soft: #334155; --shadow-fluffy: 0 10px 30px rgba(0, 0, 0, 0.4); --radius-box: 16px; --radius-btn: 10px;
             --table-head: #0F172A; --table-row: #1E293B; --chat-bg: #0F172A;
         }
         :root[data-theme="warmwood"] {
-            --bg-body: #FDFBF7; --bg-surface: #F4EFE6;
-            --text-main: #3E3124; --text-sub: #7A6953;
+            --bg-body: #FDFBF7; --bg-surface: #F4EFE6; --text-main: #3E3124; --text-sub: #7A6953;
             --accent-primary: #8B5A2B; --accent-blue: #607D8B; --accent-mint: #6B8E23; --accent-danger: #C0392B; --accent-special: #D35400;
-            --border-soft: #E6DBCB; --shadow-fluffy: 0 10px 25px rgba(139, 90, 43, 0.05);
-            --radius-box: 16px; --radius-btn: 10px;
+            --border-soft: #E6DBCB; --shadow-fluffy: 0 10px 25px rgba(139, 90, 43, 0.05); --radius-box: 16px; --radius-btn: 10px;
             --table-head: #EBE3D5; --table-row: #F4EFE6; --chat-bg: #FDFBF7;
         }
         :root[data-theme="pastel"] {
-            --bg-body: #FFF5F8; --bg-surface: #FFFFFF;
-            --text-main: #4A4A4A; --text-sub: #888888;
+            --bg-body: #FFF5F8; --bg-surface: #FFFFFF; --text-main: #4A4A4A; --text-sub: #888888;
             --accent-primary: #FFA6C9; --accent-blue: #86B6F6; --accent-mint: #B4E380; --accent-danger: #FF8BA7; --accent-special: #B1AFFF;
-            --border-soft: #FFE1E8; --shadow-fluffy: 0 10px 25px rgba(255, 166, 201, 0.1);
-            --radius-box: 24px; --radius-btn: 14px;
+            --border-soft: #FFE1E8; --shadow-fluffy: 0 10px 25px rgba(255, 166, 201, 0.1); --radius-box: 24px; --radius-btn: 14px;
             --table-head: #FFF0F5; --table-row: #FFFFFF; --chat-bg: #FFF5F8;
         }
         :root[data-theme="paper"] {
-            --bg-body: #F4F1EA; --bg-surface: #FAF8F5;
-            --text-main: #2C2C2C; --text-sub: #666666;
+            --bg-body: #F4F1EA; --bg-surface: #FAF8F5; --text-main: #2C2C2C; --text-sub: #666666;
             --accent-primary: #A63A28; --accent-blue: #3A5F7A; --accent-mint: #4A7A59; --accent-danger: #B22222; --accent-special: #800020;
-            --border-soft: #DED9C9; --shadow-fluffy: 0 5px 15px rgba(0, 0, 0, 0.03);
-            --radius-box: 8px; --radius-btn: 6px;
+            --border-soft: #DED9C9; --shadow-fluffy: 0 5px 15px rgba(0, 0, 0, 0.03); --radius-box: 8px; --radius-btn: 6px;
             --table-head: #EAE6D8; --table-row: #FAF8F5; --chat-bg: #F4F1EA;
         }
         :root[data-theme="sepianight"] {
-            --bg-body: #2C241E; --bg-surface: #3E3228;
-            --text-main: #E8E3D9; --text-sub: #A89F91;
+            --bg-body: #2C241E; --bg-surface: #3E3228; --text-main: #E8E3D9; --text-sub: #A89F91;
             --accent-primary: #D4A373; --accent-blue: #A3B18A; --accent-mint: #CCD5AE; --accent-danger: #E07A5F; --accent-special: #F4A261;
-            --border-soft: #5C4D3C; --shadow-fluffy: 0 10px 30px rgba(0, 0, 0, 0.5);
-            --radius-box: 12px; --radius-btn: 8px;
+            --border-soft: #5C4D3C; --shadow-fluffy: 0 10px 30px rgba(0, 0, 0, 0.5); --radius-box: 12px; --radius-btn: 8px;
             --table-head: #2C241E; --table-row: #3E3228; --chat-bg: #2C241E;
+        }
+        /* 신규 테마 3종 */
+        :root[data-theme="mintchoco"] {
+            --bg-body: #F0FDF4; --bg-surface: #FFFFFF; --text-main: #1F2937; --text-sub: #4B5563;
+            --accent-primary: #0D9488; --accent-blue: #0284C7; --accent-mint: #059669; --accent-danger: #E11D48; --accent-special: #7C3AED;
+            --border-soft: #CCFBF1; --shadow-fluffy: 0 10px 25px rgba(13, 148, 136, 0.1); --radius-box: 16px; --radius-btn: 10px;
+            --table-head: #ECFDF5; --table-row: #FFFFFF; --chat-bg: #F0FDF4;
+        }
+        :root[data-theme="midnightblue"] {
+            --bg-body: #082F49; --bg-surface: #0C4A6E; --text-main: #F0F9FF; --text-sub: #BAE6FD;
+            --accent-primary: #38BDF8; --accent-blue: #7DD3FC; --accent-mint: #34D399; --accent-danger: #F43F5E; --accent-special: #A78BFA;
+            --border-soft: #0284C7; --shadow-fluffy: 0 10px 30px rgba(0, 0, 0, 0.4); --radius-box: 16px; --radius-btn: 10px;
+            --table-head: #082F49; --table-row: #0C4A6E; --chat-bg: #082F49;
+        }
+        :root[data-theme="cherryblossom"] {
+            --bg-body: #FFF1F2; --bg-surface: #FFE4E6; --text-main: #881337; --text-sub: #BE123C;
+            --accent-primary: #E11D48; --accent-blue: #2563EB; --accent-mint: #059669; --accent-danger: #F43F5E; --accent-special: #9333EA;
+            --border-soft: #FECDD3; --shadow-fluffy: 0 10px 25px rgba(225, 29, 72, 0.15); --radius-box: 20px; --radius-btn: 12px;
+            --table-head: #FFE4E6; --table-row: #FFF1F2; --chat-bg: #FFF1F2;
         }
         
         * { box-sizing: border-box; margin: 0; padding: 0; transition: background-color 0.3s, color 0.3s, border-color 0.3s; }
         body { font-family: 'Pretendard', sans-serif; background-color: var(--bg-body); color: var(--text-main); display: flex; flex-direction: column; min-height: 100dvh; overflow-x: hidden; line-height: 1.6; }
         
-        /* 집중(젠) 모드 */
         body.zen-mode .sidebar, body.zen-mode .mobile-header, body.zen-mode .panel:not(.zen-exempt), body.zen-mode .page-header-left, body.zen-mode .toolbar-chips .chip:not(.zen-btn) { display: none !important; }
         body.zen-mode .app-container { max-width: 1000px; margin: 0 auto; }
         body.zen-mode .main-content { padding: 20px; }
@@ -154,24 +161,28 @@
         .document-view.focus-mode p, .document-view.focus-mode li, .document-view.focus-mode table { opacity: 0.2; transition: 0.3s; }
         .document-view.focus-mode p:hover, .document-view.focus-mode li:hover, .document-view.focus-mode table:hover { opacity: 1; transform: scale(1.02); background: var(--bg-body); border-radius: 8px; z-index: 10; position: relative; padding: 5px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
 
-        .document-view h2 { margin: 30px 0 15px; font-weight: 800; font-size: 1.4rem; border-bottom: 2px solid var(--border-soft); padding-bottom: 8px; page-break-inside: avoid; break-inside: avoid; }
-        .document-view h3 { color: var(--accent-blue); margin: 20px 0 10px; font-weight: 700; font-size: 1.1rem; page-break-inside: avoid; break-inside: avoid; }
-        .document-view p, .document-view li { margin-bottom: 10px; line-height: 1.7; page-break-inside: avoid; break-inside: avoid; }
-        .document-view blockquote { border-left: 5px solid var(--accent-danger); background: rgba(239, 68, 68, 0.05); padding: 15px 20px; margin: 20px 0; border-radius: 0 12px 12px 0; font-weight: 600; color: var(--accent-danger); page-break-inside: avoid; break-inside: avoid; }
+        .document-view h2 { margin: 30px 0 15px; font-weight: 800; font-size: 1.4rem; border-bottom: 2px solid var(--border-soft); padding-bottom: 8px; page-break-inside: avoid; }
+        .document-view h3 { color: var(--accent-blue); margin: 20px 0 10px; font-weight: 700; font-size: 1.1rem; page-break-inside: avoid; }
+        .document-view p, .document-view li { margin-bottom: 10px; line-height: 1.7; page-break-inside: avoid; }
+        .document-view blockquote { border-left: 5px solid var(--accent-danger); background: rgba(239, 68, 68, 0.05); padding: 15px 20px; margin: 20px 0; border-radius: 0 12px 12px 0; font-weight: 600; color: var(--accent-danger); page-break-inside: avoid; }
         .document-view strong { color: var(--text-main); font-weight: 800; background: linear-gradient(180deg, rgba(255,255,255,0) 60%, rgba(59, 130, 246, 0.2) 40%); }
         .cloze-blank { background: var(--text-main) !important; color: var(--text-main) !important; border-radius: 4px; padding: 2px 6px; cursor: pointer; }
         
-        .document-view table { width: 100%; border-collapse: collapse; margin: 20px 0; border: 1px solid var(--border-soft); border-radius: 8px; overflow: hidden; page-break-inside: auto; break-inside: auto; }
+        /* 🔥 표(Table) 모바일 찌그러짐 완벽 방지: 가로 스크롤 허용 CSS */
+        .table-responsive { width: 100%; overflow-x: auto; margin: 20px 0; border: 1px solid var(--border-soft); border-radius: 12px; background: var(--table-row); -webkit-overflow-scrolling: touch; }
+        .document-view table { width: 100%; border-collapse: collapse; min-width: 650px; margin: 0; border: none; }
         .document-view tr { page-break-inside: avoid; break-inside: avoid; }
-        .document-view th, .document-view td { border: 1px solid var(--border-soft); padding: 15px; text-align: left; vertical-align: top; word-break: keep-all; font-size: 0.95rem; }
-        .document-view th { background: var(--table-head); font-weight: 800; }
-        .document-view td:first-child { width: 25%; font-weight: 700; color: var(--accent-blue); background: var(--table-head); border-right: 2px solid var(--border-soft); }
+        .document-view th, .document-view td { padding: 16px; border: 1px solid var(--border-soft); word-break: keep-all; line-height: 1.6; }
+        .document-view th { background: var(--table-head); font-weight: 800; border-top: none; }
+        .document-view td:first-child { width: 25%; font-weight: 700; color: var(--accent-blue); background: var(--table-head); border-left: none; }
+        .document-view tr:last-child td { border-bottom: none; }
+        .document-view tr td:last-child, .document-view tr th:last-child { border-right: none; }
 
-        .book-cover { text-align: center; padding: 150px 40px; background: linear-gradient(135deg, var(--table-head), var(--bg-body)); border: 2px solid var(--border-soft); border-radius: var(--radius-box); margin-bottom: 40px; page-break-after: always; break-after: page; }
+        .book-cover { text-align: center; padding: 150px 40px; background: linear-gradient(135deg, var(--table-head), var(--bg-body)); border: 2px solid var(--border-soft); border-radius: 16px; margin-bottom: 40px; page-break-after: always; break-after: page; }
         .mock-exam-title { text-align: center; font-size: 2rem; font-weight: 900; margin: 40px 0; border-bottom: 4px solid var(--text-main); padding-bottom: 20px; page-break-after: always; break-after: page; }
         
         .dashboard-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
-        #mermaidTree { background: var(--bg-surface); padding: 20px; border-radius: var(--radius-box); border: 1px solid var(--border-soft); min-height: 250px; display: flex; justify-content: center; align-items: center; }
+        #mermaidTree { background: var(--bg-surface); padding: 20px; border-radius: var(--radius-box); border: 1px solid var(--border-soft); min-height: 250px; display: flex; justify-content: center; align-items: center; overflow-x: auto; }
         .search-bar { position: relative; margin-bottom: 15px; }
         .search-bar i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-sub); }
         .search-bar input { padding-left: 40px; border-radius: 30px; }
@@ -202,16 +213,6 @@
         .ox-close { position: absolute; top: 20px; right: 25px; font-size: 1.8rem; color: var(--text-sub); cursor: pointer; transition: 0.2s; }
         .ox-header h2 { color: var(--accent-special); font-size: 2rem; font-weight: 900; margin-bottom: 20px; text-align: center; }
 
-        @media print {
-            @page { margin: 15mm; }
-            body { background: white; color: black; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-            .no-print, .sidebar, .mobile-header, .panel:not(.zen-exempt), .toolbar-chips, .floating-widget, .header-actions { display: none !important; }
-            .app-container, .main-content, .main-wrapper { display: block; width: 100%; max-width: 100%; padding: 0; margin: 0; }
-            .pdf-viewer-container { display: none !important; }
-            .document-view { box-shadow: none !important; border: none !important; padding: 0 !important; }
-            .document-view.focus-mode * { opacity: 1 !important; filter: none !important; }
-        }
-
         @media (max-width: 1024px) {
             .mobile-header { display: flex; }
             .sidebar { position: fixed; left: -260px; top: 0; height: 100%; box-shadow: 10px 0 30px rgba(0,0,0,0.3); }
@@ -221,6 +222,8 @@
             .omr-container { grid-template-columns: 1fr; }
             .floating-widget { bottom: 15px; right: 15px; width: 180px; padding: 10px; }
             .timer-time { font-size: 1.5rem; }
+            /* 모바일에서 테이블 스크롤 시 짤림 방지용 패딩 */
+            .document-view { padding: 20px; } 
         }
     </style>
 </head>
@@ -235,7 +238,7 @@
 
     <div class="app-container">
         <nav class="sidebar no-print" id="sidebar">
-            <div class="brand"><i class="fa-solid fa-book-open" style="color:var(--accent-blue)"></i> V25 Study</div>
+            <div class="brand"><i class="fa-solid fa-book-open" style="color:var(--accent-blue)"></i> V26 Perfect</div>
             
             <div class="menu-group">
                 <div class="menu-label">생성 (Create)</div>
@@ -255,7 +258,8 @@
             </div>
 
             <div class="settings-section">
-                <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-sub); margin-bottom: 6px; display: block;">테마 선택</label>
+                <!-- 🔥 9가지 테마 선택기 확장 -->
+                <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-sub); margin-bottom: 6px; display: block;">테마 색상 선택</label>
                 <select id="themeSelector" onchange="changeTheme(this.value)">
                     <option value="light">밝은 기본 (Light)</option>
                     <option value="dark">어두운 기본 (Dark)</option>
@@ -263,6 +267,9 @@
                     <option value="pastel">코지 파스텔 (Cozy Pastel)</option>
                     <option value="paper">클래식 종이 (Classic Paper)</option>
                     <option value="sepianight">세피아 나이트 (Sepia Night)</option>
+                    <option value="mintchoco">민트 초코 (Mint Choco)</option>
+                    <option value="midnightblue">미드나잇 블루 (Midnight Blue)</option>
+                    <option value="cherryblossom">체리 블라썸 (Cherry Blossom)</option>
                 </select>
                 <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-sub); margin-bottom: 6px; display: block;">Gemini API Key</label>
                 <input type="password" id="sysApiKey" placeholder="API Key 입력" onchange="saveApiKey()">
@@ -283,7 +290,7 @@
                     </div>
                 </div>
 
-                <!-- 1. 코넬 탭 (PDF 요약) -->
+                <!-- 1. 코넬 탭 -->
                 <section id="page-concept" class="page-section active">
                     <div class="panel no-print">
                         <div class="grid-2">
@@ -299,7 +306,7 @@
                             <div class="form-group">
                                 <label>레이아웃 & 태그</label>
                                 <select id="conceptFormat" style="margin-bottom:15px;">
-                                    <option value="auto">🤖 AI 최적화</option>
+                                    <option value="auto">🤖 AI 자동 맞춤형</option>
                                     <option value="cornell">📋 표 형식 (코넬 노트)</option>
                                     <option value="bullet">📝 텍스트 형식 (개조식)</option>
                                 </select>
@@ -327,7 +334,8 @@
                             <div class="chip" id="ttsBtnConcept" onclick="toggleTTS('conceptResult', 'ttsBtnConcept')"><i class="fa-solid fa-headphones"></i> 소리내어 읽기</div>
                             <div class="chip" onclick="toggleCloze(this)"><i class="fa-solid fa-eye-slash"></i> 빈칸 암기</div>
                             <div class="chip" onclick="copyNotionMarkdown('conceptResult')"><i class="fa-brands fa-neos"></i> 텍스트 복사</div>
-                            <div class="chip active zen-btn" onclick="downloadPDF()"><i class="fa-solid fa-file-pdf"></i> PDF 저장</div>
+                            <!-- 🔥 진짜 파일 다운로드로 복구 (인쇄창 없음!) -->
+                            <div class="chip active zen-btn" onclick="downloadPDF('conceptResult', '스마트정리노트')"><i class="fa-solid fa-file-pdf"></i> PDF 저장</div>
                         </div>
                         
                         <div id="conceptResult" class="document-view"></div>
@@ -380,13 +388,14 @@
                             <div class="chip" onclick="toggleFocusMode('gradeResult')"><i class="fa-solid fa-eye-low-vision"></i> 포커스 모드</div>
                             <div class="chip" id="ttsBtnGrade" onclick="toggleTTS('gradeResult', 'ttsBtnGrade')"><i class="fa-solid fa-headphones"></i> 소리내어 읽기</div>
                             <div class="chip" onclick="toggleCloze(this)"><i class="fa-solid fa-eye-slash"></i> 빈칸 암기</div>
-                            <div class="chip active zen-btn" onclick="downloadPDF()"><i class="fa-solid fa-file-pdf"></i> PDF 저장</div>
+                            <!-- 🔥 다운로드 복구 -->
+                            <div class="chip active zen-btn" onclick="downloadPDF('gradeResult', '오답분석리포트')"><i class="fa-solid fa-file-pdf"></i> PDF 저장</div>
                         </div>
                         <div id="gradeResult" class="document-view"></div>
                     </div>
                 </section>
 
-                <!-- 3. 지식 대시보드 -->
+                <!-- 3. 대시보드 -->
                 <section id="page-dashboard" class="page-section">
                     <div class="streak-container no-print">
                         <div class="streak-title"><i class="fa-solid fa-fire" style="color:var(--accent-special);"></i> 최근 학습 기록</div>
@@ -407,7 +416,7 @@
                     </div>
                 </section>
 
-                <!-- 4. 객관식 훈련소 -->
+                <!-- 4. 훈련소 -->
                 <section id="page-training" class="page-section">
                     <div class="panel no-print">
                         <p style="margin-bottom:15px; font-weight:700; color:var(--text-main);">🎯 훈련할 노트를 보관함에서 선택하세요</p>
@@ -415,15 +424,15 @@
                         
                         <div style="display:flex; gap:10px;">
                             <button class="btn-primary" style="background:var(--accent-special);" onclick="startTraining('ox')"><i class="fa-solid fa-gamepad"></i> 오답 선지 OX 훈련</button>
-                            <button class="btn-primary" style="background:var(--text-main); opacity:0.5;" onclick="alert('다음 업데이트에 추가될 기능입니다!')"><i class="fa-solid fa-list-check"></i> 다중 선택지 훈련 (예정)</button>
+                            <button class="btn-primary" style="background:var(--text-main); opacity:0.5;" onclick="alert('다음 업데이트를 기대해주세요!')"><i class="fa-solid fa-list-check"></i> 다중 선택지 훈련 (예정)</button>
                         </div>
                     </div>
                 </section>
 
-                <!-- 5. 단권화 및 모의고사 -->
+                <!-- 5. 모의고사 출판 -->
                 <section id="page-unified" class="page-section">
                     <div class="panel no-print">
-                        <p style="margin-bottom:15px; font-weight:700; color:var(--text-main);">📝 묶을 노트를 선택하세요</p>
+                        <p style="margin-bottom:15px; font-weight:700; color:var(--text-main);">📝 묶을 노트를 선택하세요 (2~3개 권장)</p>
                         <div id="unifiedSelectionList" style="max-height:250px; overflow-y:auto; margin-bottom: 20px; border:1px solid var(--border-soft); border-radius:12px; padding:10px;"></div>
                         
                         <div class="grid-2">
@@ -435,7 +444,7 @@
                     </div>
                     <div id="unifiedResultWrapper" class="document-wrapper">
                         <div class="toolbar-chips no-print">
-                            <div class="chip active zen-btn" onclick="downloadPDF()"><i class="fa-solid fa-file-pdf"></i> PDF 다운로드</div>
+                            <div class="chip active zen-btn" onclick="downloadPDF('unifiedResult', '나만의_마스터자료')"><i class="fa-solid fa-file-pdf"></i> PDF 다운로드</div>
                         </div>
                         <div id="unifiedResult" class="document-view" style="padding: 0;"></div>
                     </div>
@@ -445,7 +454,7 @@
         </div>
     </div>
 
-    <!-- 🔥 플로팅 타이머 위젯 -->
+    <!-- 플로팅 타이머 위젯 -->
     <div class="floating-widget no-print" id="floatingTimer">
         <div class="widget-drag-handle"><i class="fa-solid fa-grip-lines"></i></div>
         <div class="timer-time" id="timerDisplay">25:00</div>
@@ -458,14 +467,14 @@
         <button class="btn-bgm" id="bgmBtn" onclick="toggleBGM()"><i class="fa-solid fa-fire"></i> 집중 소음</button>
     </div>
 
-    <!-- OX 훈련소 모달 -->
+    <!-- OX 모달 -->
     <div id="oxModal" class="ox-modal">
         <div class="ox-modal-content">
             <i class="fa-solid fa-circle-xmark ox-close" onclick="closeOXModal()"></i>
             <div class="ox-header">
                 <h2 style="color:var(--accent-special); font-weight:900;"><i class="fa-solid fa-gamepad"></i> 오답 선지 OX 훈련</h2>
             </div>
-            <div id="oxLoader" class="loader" style="color:var(--accent-special); display:none;"><div class="spinner"></div>출제 중...</div>
+            <div id="oxLoader" class="loader" style="color:var(--accent-special); display:none;"><div class="spinner" style="border-top-color:currentColor"></div>출제 중...</div>
             <div id="oxPlayArea" style="display:none;">
                 <div id="oxQuestionContent" style="font-size:1.05rem; line-height:1.8;"></div>
                 <button class="btn-primary" style="background:var(--accent-special); margin-top:30px;" onclick="revealOXAnswer()">정답 확인</button>
@@ -479,12 +488,11 @@
     <script>
         mermaid.initialize({ startOnLoad: false, theme: 'base' });
 
-        // 🔥 위젯 드래그
+        // 위젯 드래그
         function dragElement(elmnt) {
             var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
             if (elmnt.querySelector(".widget-drag-handle")) { elmnt.querySelector(".widget-drag-handle").onmousedown = dragMouseDown; } 
             else { elmnt.onmousedown = dragMouseDown; }
-
             function dragMouseDown(e) { e = e || window.event; e.preventDefault(); pos3 = e.clientX; pos4 = e.clientY; document.onmouseup = closeDragElement; document.onmousemove = elementDrag; }
             function elementDrag(e) { e = e || window.event; e.preventDefault(); pos1 = pos3 - e.clientX; pos2 = pos4 - e.clientY; pos3 = e.clientX; pos4 = e.clientY; elmnt.style.top = (elmnt.offsetTop - pos2) + "px"; elmnt.style.left = (elmnt.offsetLeft - pos1) + "px"; elmnt.style.bottom = "auto"; elmnt.style.right = "auto"; }
             function closeDragElement() { document.onmouseup = null; document.onmousemove = null; }
@@ -513,7 +521,6 @@
             renderStreak();
         };
 
-        // 🔥 테마 선택 로직
         function changeTheme(themeValue) {
             document.documentElement.setAttribute('data-theme', themeValue);
             localStorage.setItem('theme', themeValue);
@@ -631,7 +638,70 @@
             });
         }
 
-        function downloadPDF() { window.scrollTo(0, 0); window.print(); }
+        // 🔥 표 렌더링 헬퍼: 마크다운으로 그려진 모든 table을 가로 스크롤 가능하게 감싸줌
+        function applyTableWrapper(element) {
+            element.querySelectorAll('table').forEach(table => {
+                if (table.parentElement.classList.contains('table-responsive')) return;
+                const wrapper = document.createElement('div');
+                wrapper.className = 'table-responsive';
+                table.parentNode.insertBefore(wrapper, table);
+                wrapper.appendChild(table);
+            });
+        }
+
+        // 🔥 백지화 & 페이지 잘림 원천 차단 PDF 엔진 (인쇄창 없음)
+        async function downloadPDF(elementId, fileName) {
+            const originalElement = document.getElementById(elementId);
+            await document.fonts.ready; // 폰트, 수식 로딩 대기
+
+            // 다운로드 직전에 숨겨야 할 버튼들 처리
+            const noPrints = originalElement.querySelectorAll('.no-print');
+            noPrints.forEach(el => el.style.display = 'none');
+
+            // 1. 원본 화면 보호를 위해 내용을 복제하여 보이지 않는 가상 공간에 세팅
+            const clone = originalElement.cloneNode(true);
+            const container = document.createElement('div');
+            container.appendChild(clone);
+            
+            // 2. 가상 공간의 폭을 800px로 고정 (모바일에서도 PC처럼 렌더링되게 하여 레이아웃 박살 방지)
+            container.style.position = 'absolute';
+            container.style.top = '-9999px';
+            container.style.left = '-9999px';
+            container.style.width = '800px'; 
+            
+            // 테마에 맞는 배경색/글자색 강제 주입
+            container.style.background = getComputedStyle(document.body).getPropertyValue('--bg-body').trim() || 'white';
+            container.style.color = getComputedStyle(document.body).getPropertyValue('--text-main').trim() || 'black';
+            container.style.padding = '20px';
+            document.body.appendChild(container);
+
+            // 3. 화질 압축(Scale)으로 기기 메모리 초과(백지화) 방어
+            const opt = {
+                margin:       [10, 10, 10, 10], 
+                filename:     `${fileName}.pdf`,
+                image:        { type: 'jpeg', quality: 0.95 },
+                html2canvas:  { 
+                    scale: 1.5, // 20페이지 이상 방대한 파일도 안전하게 뽑아내는 최적의 해상도
+                    useCORS: true, 
+                    windowWidth: 800,
+                    scrollY: 0,
+                    logging: false
+                },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] } 
+            };
+            
+            // 4. PDF 생성 및 다운로드 (완료 후 가상 공간 삭제)
+            html2pdf().set(opt).from(container).save().then(() => {
+                document.body.removeChild(container);
+                noPrints.forEach(el => el.style.display = ''); // 화면 복구
+            }).catch(err => {
+                console.error(err);
+                alert("PDF 생성 중 오류가 발생했습니다. 분량이 너무 방대할 경우 나누어 시도해주세요.");
+                document.body.removeChild(container);
+                noPrints.forEach(el => el.style.display = '');
+            });
+        }
 
         function toggleCloze(btn) {
             const container = btn.closest('.document-wrapper').querySelector('.document-view');
@@ -657,8 +727,7 @@
             btn.classList.add('active');
         }
 
-        // 🔥 명확하고 직관적인 프롬프트 작성 규칙
-        const formattingRules = `[규칙] 하이픈(-) 사용을 금지합니다. 단일 달러기호($) 금지(수식에만 $$ 허용). 표 작성 시 가독성을 위해 칸을 잘게 나누세요. 중요어 앞 2글자는 반드시 **볼드체** 처리하여 가독성을 높이세요.`;
+        const formattingRules = `[규칙] 하이픈(-) 사용을 금지합니다. 단일 달러기호($) 금지(수식에만 $$ 허용). 가독성을 위해 핵심 개념어 앞 2글자는 반드시 **볼드체** 처리하세요.`;
 
         async function callGeminiAPI(apiKey, prompt, files = [], loaderId = null) {
             let requestParts = [{ text: prompt }];
@@ -734,6 +803,7 @@
                 }
 
                 resultBox.innerHTML = marked.parse(aiText);
+                applyTableWrapper(resultBox); // 🔥 표 가로 스크롤 적용
                 resultWrapper.style.display = 'block';
                 if (window.MathJax) MathJax.typesetPromise([resultBox]);
                 
@@ -833,6 +903,7 @@
                 document.querySelectorAll('.menu-item, .page-section').forEach(el => el.classList.remove('active'));
                 document.getElementById('page-concept').classList.add('active'); 
                 document.getElementById('conceptResult').innerHTML = marked.parse(item.content);
+                applyTableWrapper(document.getElementById('conceptResult')); // 🔥 표 가로 스크롤 적용
                 document.getElementById('conceptResultWrapper').style.display = 'block';
                 currentContext = item.content; currentRawMarkdown = item.content;
                 if (window.MathJax) MathJax.typesetPromise([document.getElementById('conceptResult')]);
@@ -885,6 +956,7 @@
             try {
                 const aiText = await callGeminiAPI(apiKey, prompt, [], loaderId);
                 resultBox.innerHTML = coverHtml + `<div style="padding:0;">` + marked.parse(aiText) + `</div>`;
+                applyTableWrapper(resultBox); // 🔥 표 가로 스크롤 적용
                 resultWrapper.style.display = 'block';
                 if (window.MathJax) MathJax.typesetPromise([resultBox]);
                 saveHistory(`[저장] ${type === 'book' ? '단권화' : type === 'exam' ? '모의고사' : '고난도 융합'}`, [], aiText);
@@ -922,7 +994,7 @@
             document.getElementById('oxAnswerArea').style.display = 'block';
             document.getElementById('oxAnswerContent').innerHTML = marked.parse(oxAnswerCache);
             document.querySelector('#oxPlayArea .btn-primary').style.display = 'none';
-            markStreak(); // 문제 풀이 완료 후 잔디 심기
+            markStreak();
         }
         function closeOXModal() { document.getElementById('oxModal').style.display = 'none'; document.querySelector('#oxPlayArea .btn-primary').style.display = 'block'; }
     </script>
