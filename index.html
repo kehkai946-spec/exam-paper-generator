@@ -3,14 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>단권화 스터디 다이어리 V20 - Flawless Native PDF</title>
+    <title>단권화 스터디 다이어리 V21 - Direct PDF Edition</title>
     
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- 필수 외부 모듈 -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
 
     <style>
@@ -98,6 +100,9 @@
         .pdf-actions { display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
         .document-view { background: white; padding: 50px 60px; border-radius: var(--radius-box); border: 1px solid var(--border-soft); box-shadow: var(--shadow-fluffy); font-size: 1.05rem; color: #1E293B; }
         
+        /* 🔥 PDF 출력 시 줄 잘림 현상 방지를 위한 강력한 CSS 속성 */
+        .document-view h2, .document-view h3, .document-view p, .document-view blockquote, .document-view ul, .document-view li { page-break-inside: avoid; break-inside: avoid; }
+
         .document-view h2 { color: var(--text-main); margin: 40px 0 20px; font-weight: 800; font-size: 1.6rem; border-bottom: 3px solid var(--accent-primary); padding-bottom: 10px; display: inline-block; }
         .document-view h3 { color: var(--accent-blue); margin: 30px 0 15px; font-weight: 700; font-size: 1.3rem; }
         .document-view p { margin-bottom: 18px; line-height: 1.8; }
@@ -110,14 +115,16 @@
         .cloze-blank { background: #1E293B !important; color: #1E293B !important; border-radius: 4px; padding: 2px 6px; cursor: pointer; user-select: none; }
         .cloze-blank:hover { background: var(--accent-primary) !important; color: white !important; }
 
-        .document-view table { width: 100%; border-collapse: collapse; margin: 30px 0; border: 1px solid #CBD5E1; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+        /* 가독성 극대화 및 테이블 줄바꿈 방지 */
+        .document-view table { width: 100%; border-collapse: collapse; margin: 30px 0; border: 1px solid #CBD5E1; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.02); page-break-inside: auto; break-inside: auto; }
+        .document-view tr { page-break-inside: avoid; break-inside: avoid; }
         .document-view th, .document-view td { border: 1px solid #E2E8F0; padding: 20px; text-align: left; vertical-align: top; word-break: keep-all; }
         .document-view th { background-color: #F8FAFC; color: var(--text-main); font-weight: 800; font-size: 1.1rem; border-bottom: 2px solid #CBD5E1; }
         .document-view tr:nth-child(even) td { background-color: #FAFAFA; }
         .document-view td:first-child { width: 28%; font-weight: 700; color: var(--accent-blue); background-color: #F8FAFC; border-right: 2px solid #E2E8F0; }
         .document-view td:nth-child(2) { width: 72%; }
 
-        .book-cover { text-align: center; padding: 150px 40px; background: linear-gradient(135deg, #F8FAFC, #F1F5F9); border: 2px solid #E2E8F0; border-radius: 16px; margin-bottom: 40px; }
+        .book-cover { text-align: center; padding: 150px 40px; background: linear-gradient(135deg, #F8FAFC, #F1F5F9); border: 2px solid #E2E8F0; border-radius: 16px; margin-bottom: 40px; page-break-after: always; break-after: page; }
         .book-title { font-size: 3rem; font-weight: 900; color: var(--text-main); margin-bottom: 20px; }
         .book-subtitle { font-size: 1.5rem; color: var(--accent-blue); font-weight: 700; }
         .book-date { margin-top: 50px; font-weight: 600; color: var(--text-sub); }
@@ -154,28 +161,6 @@
         .ox-header h2 { color: var(--accent-ox); font-size: 2rem; font-weight: 900; margin-bottom: 10px; }
         .ox-body { font-size: 1.1rem; line-height: 1.8; color: var(--text-main); }
         .ox-body h3 { color: #E11D48; border-bottom: 2px solid #E11D48; padding-bottom: 5px; margin: 30px 0 15px; }
-
-        /* 🔥 궁극의 PDF 레이아웃 보정 (백지화, 페이지 잘림 원천 차단) */
-        @media print {
-            @page { margin: 15mm 10mm; }
-            body { background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-            
-            /* 인쇄 시 불필요한 UI 완벽 숨김 */
-            .no-print, .sidebar, .mobile-header, .panel, .qna-section, .pdf-actions { display: none !important; }
-            
-            /* 컨테이너 여백 리셋 */
-            .app-container, .main-content { display: block; width: 100%; max-width: 100%; padding: 0; margin: 0; box-shadow: none; }
-            .document-wrapper { display: block !important; margin: 0; padding: 0; }
-            .document-view { box-shadow: none !important; border: none !important; padding: 0 !important; }
-            
-            /* 내용물(텍스트, 표, 제목) 페이지 잘림 100% 방어 */
-            h2, h3, p, li, blockquote { page-break-inside: avoid; break-inside: avoid; }
-            tr, td, th { page-break-inside: avoid; break-inside: avoid; }
-            table { page-break-inside: auto; break-inside: auto; }
-            
-            /* 책 표지는 한 장을 완전히 차지하게 강제 분리 */
-            .book-cover { page-break-after: always; break-after: page; padding: 300px 40px !important; }
-        }
 
         @media (max-width: 1024px) {
             .mobile-header { display: flex; }
@@ -220,7 +205,6 @@
 
         <main class="main-content" onclick="closeSidebarOutside()">
             
-            <!-- 코넬 탭 -->
             <section id="page-concept" class="page-section active">
                 <div class="page-header">
                     <div class="page-header-left">
@@ -270,8 +254,10 @@
                     <div class="pdf-actions no-print">
                         <button class="btn-tts" id="ttsBtnConcept" onclick="toggleTTS('conceptResult', 'ttsBtnConcept')"><i class="fa-solid fa-headphones"></i> 오디오 브리핑 듣기</button>
                         <button class="btn-cloze" onclick="toggleCloze(this)"><i class="fa-solid fa-eye-slash"></i> 암기 모드 (빈칸 뚫기)</button>
-                        <button class="btn-pdf" onclick="downloadPDF('맞춤정리노트')"><i class="fa-solid fa-file-pdf"></i> PDF 내보내기</button>
+                        <!-- 🔥 인쇄창 없는 진짜 PDF 다운로드 연결 -->
+                        <button class="btn-pdf" onclick="downloadPDF('pdfConceptArea', '맞춤정리노트')"><i class="fa-solid fa-file-pdf"></i> PDF 내보내기</button>
                     </div>
+                    <!-- PDF에 담길 영역 -->
                     <div id="pdfConceptArea">
                         <div id="conceptResult" class="document-view"></div>
                     </div>
@@ -289,7 +275,6 @@
                 </div>
             </section>
 
-            <!-- OMR 탭 -->
             <section id="page-grading" class="page-section">
                 <div class="page-header">
                     <div class="page-header-left">
@@ -326,7 +311,7 @@
                     <div class="pdf-actions no-print">
                         <button class="btn-tts" id="ttsBtnGrade" onclick="toggleTTS('gradeResult', 'ttsBtnGrade')"><i class="fa-solid fa-headphones"></i> 오디오 브리핑 듣기</button>
                         <button class="btn-cloze" onclick="toggleCloze(this)"><i class="fa-solid fa-eye-slash"></i> 암기 모드 (빈칸 뚫기)</button>
-                        <button class="btn-pdf" onclick="downloadPDF('오답분석리포트')"><i class="fa-solid fa-file-pdf"></i> PDF 내보내기</button>
+                        <button class="btn-pdf" onclick="downloadPDF('pdfGradeArea', '오답분석리포트')"><i class="fa-solid fa-file-pdf"></i> PDF 내보내기</button>
                     </div>
                     <div id="pdfGradeArea">
                         <div id="gradeResult" class="document-view"></div>
@@ -345,7 +330,6 @@
                 </div>
             </section>
 
-            <!-- 보관함 탭 -->
             <section id="page-archive" class="page-section">
                 <div class="page-header">
                     <div class="page-header-icon" style="background: #D4A373;"><i class="fa-solid fa-box-archive"></i></div>
@@ -358,7 +342,6 @@
                 </div>
             </section>
 
-            <!-- 지식 지도 탭 -->
             <section id="page-knowledgetree" class="page-section">
                 <div class="page-header">
                     <div class="page-header-icon" style="background: #8B5CF6;"><i class="fa-solid fa-network-wired"></i></div>
@@ -370,7 +353,6 @@
                 <div id="mermaidTree"></div>
             </section>
 
-            <!-- 문제집 출판 탭 -->
             <section id="page-unified" class="page-section">
                 <div class="page-header">
                     <div class="page-header-icon" style="background: linear-gradient(135deg, #FFD166, #FF9F1C);"><i class="fa-solid fa-book-journal-whills"></i></div>
@@ -392,8 +374,7 @@
                 <div id="unifiedResultWrapper" class="document-wrapper">
                     <div class="pdf-actions no-print">
                         <button class="btn-tts" id="ttsBtnUnified" onclick="toggleTTS('unifiedResult', 'ttsBtnUnified')"><i class="fa-solid fa-headphones"></i> 오디오 브리핑 듣기</button>
-                        <!-- 🔥 단권화 인쇄 호출 -->
-                        <button class="btn-pdf" onclick="downloadPDF('나만의_마스터자료')"><i class="fa-solid fa-file-pdf"></i> 📚 PDF 다운로드</button>
+                        <button class="btn-pdf" onclick="downloadPDF('pdfBookArea', '나만의_마스터자료')"><i class="fa-solid fa-file-pdf"></i> 📚 PDF 다운로드</button>
                     </div>
                     <div id="pdfBookArea">
                         <div id="unifiedResult" class="document-view" style="padding: 0;"></div>
@@ -404,7 +385,7 @@
         </main>
     </div>
 
-    <!-- 지옥의 OX 서바이벌 모달 UI -->
+    <!-- OX 서바이벌 모달 UI -->
     <div id="oxModal" class="ox-modal">
         <div class="ox-modal-content">
             <i class="fa-solid fa-circle-xmark ox-close" onclick="closeOXModal()"></i>
@@ -511,13 +492,39 @@
             });
         }
 
-        // 🔥 궁극의 네이티브 PDF 인쇄 엔진 (백지화 및 줄잘림 원천 차단)
-        function downloadPDF(fileName) {
-            const originalTitle = document.title;
-            document.title = fileName; // 저장될 PDF 파일명
-            window.scrollTo(0, 0); // 화면 최상단 강제 고정
-            window.print(); // 네이티브 인쇄 다이얼로그 호출
-            setTimeout(() => { document.title = originalTitle; }, 1000);
+        // 🔥 백지화 및 페이지 잘림 완벽 방어 PDF 다운로드 엔진 (html2pdf)
+        async function downloadPDF(elementId, fileName) {
+            const element = document.getElementById(elementId);
+            
+            // 수식이나 폰트가 렌더링될 시간 확보
+            await document.fonts.ready;
+            
+            // 불필요한 UI(챗봇 등) 다운로드 직전에 숨기기
+            const qnaSect = element.parentNode.querySelector('.qna-section');
+            if(qnaSect) qnaSect.style.display = 'none';
+
+            // 🔥 아이패드나 모바일 기기일 경우 캔버스 해상도(scale)를 낮춰서 메모리 펑크 방지
+            const isMobile = window.innerWidth <= 1024;
+            
+            const opt = {
+                margin:       [15, 10, 15, 10], 
+                filename:     `${fileName}.pdf`,
+                image:        { type: 'jpeg', quality: 0.95 },
+                html2canvas:  { 
+                    scale: isMobile ? 1 : 2, // 모바일에서는 1배율로 내려서 백지화 차단!
+                    useCORS: true, 
+                    scrollY: 0,
+                    logging: false
+                },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                // 페이지 경계선에서 요소들이 절단되지 않도록 통째로 다음장으로 넘김
+                pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] } 
+            };
+            
+            html2pdf().set(opt).from(element).save().then(() => {
+                // 다운로드 후 숨겼던 UI 다시 보이기
+                if(qnaSect) qnaSect.style.display = 'block';
+            });
         }
 
         function toggleCloze(btn) {
@@ -565,8 +572,9 @@
         // 🔥 프롬프트 공통 포맷 보호 규정
         const formattingRules = `
 [마크다운 및 렌더링 절대 준수 규칙]
-1. 글머리 기호나 리스트 작성 시 하이픈(-) 사용을 금지합니다. 대신 별표(*)나 숫자(1. 2.)를 사용하세요.
-2. 텍스트 내에서 단일 달러 기호($)를 절대 사용하지 마세요. 수학 수식에만 이중 달러 기호($$수식$$)를 허용합니다.`;
+1. 글머리 기호나 리스트 작성 시 하이픈(-) 사용을 금지합니다. 대신 별표(*)나 숫자(1. 2.)를 사용하세요. 표 안에서도 마찬가지입니다.
+2. 텍스트 내에서 단일 달러 기호($)를 절대 사용하지 마세요. 수학 수식에만 이중 달러 기호($$수식$$)를 허용합니다.
+3. 표(Table) 작성 시 한 행(Row)의 내용이 너무 길어지지 않게 여러 개의 행으로 쪼개서 작성하세요. 내용이 길면 PDF 변환 시 잘립니다.`;
 
         async function callGeminiAPI(apiKey, prompt, files = [], loaderId = null) {
             let requestParts = [{ text: prompt }];
