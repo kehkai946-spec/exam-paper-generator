@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html lang="ko" data-theme="light">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>단권화 스터디 다이어리 V30 - Ultimate Debug Edition</title>
+    <title>단권화 스터디 다이어리 V17 - The Ultimate AI Tutor</title>
     
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- 🚀 수만 줄의 외부 모듈을 단 한 줄로 끌어다 씁니다 (마크다운, 수식, PDF, 마인드맵) -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -15,757 +16,593 @@
     <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
 
     <style>
-        :root[data-theme="light"] {
-            --bg-body: #F4F7FA; --bg-surface: #FFFFFF; --text-main: #1E293B; --text-sub: #64748B;
-            --accent-primary: #3B82F6; --accent-blue: #3B82F6; --accent-mint: #10B981; --accent-danger: #EF4444; --accent-special: #8B5CF6;
-            --border-soft: #E2E8F0; --shadow-fluffy: 0 10px 25px rgba(0, 0, 0, 0.04); --radius-box: 16px; --radius-btn: 10px;
-            --table-head: #F8FAFC; --table-row: #FFFFFF; --chat-bg: #F8FAFC;
-        }
-        :root[data-theme="dark"] {
-            --bg-body: #0F172A; --bg-surface: #1E293B; --text-main: #F8FAFC; --text-sub: #94A3B8;
-            --accent-primary: #3B82F6; --accent-blue: #3B82F6; --accent-mint: #10B981; --accent-danger: #EF4444; --accent-special: #8B5CF6;
-            --border-soft: #334155; --shadow-fluffy: 0 10px 30px rgba(0, 0, 0, 0.4); --radius-box: 16px; --radius-btn: 10px;
-            --table-head: #0F172A; --table-row: #1E293B; --chat-bg: #0F172A;
-        }
-        :root[data-theme="warmwood"] {
-            --bg-body: #FDFBF7; --bg-surface: #F4EFE6; --text-main: #3E3124; --text-sub: #7A6953;
-            --accent-primary: #8B5A2B; --accent-blue: #607D8B; --accent-mint: #6B8E23; --accent-danger: #C0392B; --accent-special: #D35400;
-            --border-soft: #E6DBCB; --shadow-fluffy: 0 10px 25px rgba(139, 90, 43, 0.05); --radius-box: 16px; --radius-btn: 10px;
-            --table-head: #EBE3D5; --table-row: #F4EFE6; --chat-bg: #FDFBF7;
-        }
-        :root[data-theme="pastel"] {
-            --bg-body: #FFF5F8; --bg-surface: #FFFFFF; --text-main: #4A4A4A; --text-sub: #888888;
-            --accent-primary: #FFA6C9; --accent-blue: #86B6F6; --accent-mint: #B4E380; --accent-danger: #FF8BA7; --accent-special: #B1AFFF;
-            --border-soft: #FFE1E8; --shadow-fluffy: 0 10px 25px rgba(255, 166, 201, 0.1); --radius-box: 24px; --radius-btn: 14px;
-            --table-head: #FFF0F5; --table-row: #FFFFFF; --chat-bg: #FFF5F8;
-        }
-        :root[data-theme="paper"] {
-            --bg-body: #F4F1EA; --bg-surface: #FAF8F5; --text-main: #2C2C2C; --text-sub: #666666;
-            --accent-primary: #A63A28; --accent-blue: #3A5F7A; --accent-mint: #4A7A59; --accent-danger: #B22222; --accent-special: #800020;
-            --border-soft: #DED9C9; --shadow-fluffy: 0 5px 15px rgba(0, 0, 0, 0.03); --radius-box: 8px; --radius-btn: 6px;
-            --table-head: #EAE6D8; --table-row: #FAF8F5; --chat-bg: #F4F1EA;
-        }
-        :root[data-theme="sepianight"] {
-            --bg-body: #2C241E; --bg-surface: #3E3228; --text-main: #E8E3D9; --text-sub: #A89F91;
-            --accent-primary: #D4A373; --accent-blue: #A3B18A; --accent-mint: #CCD5AE; --accent-danger: #E07A5F; --accent-special: #F4A261;
-            --border-soft: #5C4D3C; --shadow-fluffy: 0 10px 30px rgba(0, 0, 0, 0.5); --radius-box: 12px; --radius-btn: 8px;
-            --table-head: #2C241E; --table-row: #3E3228; --chat-bg: #2C241E;
-        }
-        :root[data-theme="mintchoco"] {
-            --bg-body: #F0FDF4; --bg-surface: #FFFFFF; --text-main: #1F2937; --text-sub: #4B5563;
-            --accent-primary: #0D9488; --accent-blue: #0284C7; --accent-mint: #059669; --accent-danger: #E11D48; --accent-special: #7C3AED;
-            --border-soft: #CCFBF1; --shadow-fluffy: 0 10px 25px rgba(13, 148, 136, 0.1); --radius-box: 16px; --radius-btn: 10px;
-            --table-head: #ECFDF5; --table-row: #FFFFFF; --chat-bg: #F0FDF4;
-        }
-        :root[data-theme="midnightblue"] {
-            --bg-body: #082F49; --bg-surface: #0C4A6E; --text-main: #F0F9FF; --text-sub: #BAE6FD;
-            --accent-primary: #38BDF8; --accent-blue: #7DD3FC; --accent-mint: #34D399; --accent-danger: #F43F5E; --accent-special: #A78BFA;
-            --border-soft: #0284C7; --shadow-fluffy: 0 10px 30px rgba(0, 0, 0, 0.4); --radius-box: 16px; --radius-btn: 10px;
-            --table-head: #082F49; --table-row: #0C4A6E; --chat-bg: #082F49;
-        }
-        :root[data-theme="cherryblossom"] {
-            --bg-body: #FFF1F2; --bg-surface: #FFE4E6; --text-main: #881337; --text-sub: #BE123C;
-            --accent-primary: #E11D48; --accent-blue: #2563EB; --accent-mint: #059669; --accent-danger: #F43F5E; --accent-special: #9333EA;
-            --border-soft: #FECDD3; --shadow-fluffy: 0 10px 25px rgba(225, 29, 72, 0.15); --radius-box: 20px; --radius-btn: 12px;
-            --table-head: #FFE4E6; --table-row: #FFF1F2; --chat-bg: #FFF1F2;
+        :root {
+            --bg-body: #F8FAFC; --bg-surface: #FFFFFF;
+            --text-main: #1E293B; --text-sub: #64748B;
+            --accent-primary: #FF8BA7; --accent-secondary: #FFC6C7; 
+            --accent-blue: #3B82F6; --accent-mint: #10B981; --accent-boss: #E11D48; --accent-ox: #8B5CF6;
+            --border-soft: #E2E8F0; --shadow-fluffy: 0 10px 30px rgba(0, 0, 0, 0.05);
+            --radius-box: 20px; --radius-btn: 12px;
         }
         
-        * { box-sizing: border-box; margin: 0; padding: 0; transition: background-color 0.3s, color 0.3s, border-color 0.3s; }
-        body { font-family: 'Pretendard', sans-serif; background-color: var(--bg-body); color: var(--text-main); display: flex; flex-direction: column; min-height: 100dvh; overflow-x: hidden; line-height: 1.6; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Pretendard', sans-serif; background-color: var(--bg-body); color: var(--text-main); display: flex; flex-direction: column; min-height: 100dvh; overflow-x: hidden; line-height: 1.7; letter-spacing: -0.02em; }
         
-        body.zen-mode .sidebar, body.zen-mode .mobile-header, body.zen-mode .panel:not(.zen-exempt), body.zen-mode .page-header-left, body.zen-mode .toolbar-chips .chip:not(.zen-btn) { display: none !important; }
-        body.zen-mode .app-container { max-width: 1000px; margin: 0 auto; }
-        body.zen-mode .main-content { padding: 20px; }
-        body.zen-mode .document-view { box-shadow: none; border: 1px solid transparent; background: transparent; font-size: 1.1rem; }
-        body.zen-mode .floating-widget { opacity: 0.3; transition: 0.3s; }
-        body.zen-mode .floating-widget:hover { opacity: 1; }
-
         .mobile-header { display: none; background: var(--bg-surface); padding: 16px 24px; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-soft); position: sticky; top: 0; z-index: 100; }
         .mobile-header h1 { font-size: 1.2rem; font-weight: 800; color: var(--accent-primary); }
         .menu-toggle { background: none; border: none; font-size: 1.4rem; color: var(--accent-primary); cursor: pointer; }
 
-        .app-container { display: flex; flex: 1; position: relative; max-width: 1500px; margin: 0 auto; width: 100%; transition: 0.3s; }
+        .app-container { display: flex; flex: 1; position: relative; max-width: 1400px; margin: 0 auto; width: 100%; }
 
-        .sidebar { width: 260px; background: var(--bg-surface); border-right: 1px solid var(--border-soft); display: flex; flex-direction: column; padding: 30px 0; z-index: 50; transition: 0.3s; }
-        .brand { padding: 0 30px 30px; font-size: 1.2rem; font-weight: 800; color: var(--accent-primary); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+        .sidebar { width: 280px; background: var(--bg-surface); border-right: 1px solid var(--border-soft); display: flex; flex-direction: column; padding: 32px 0; transition: transform 0.3s ease; z-index: 50; }
+        .brand { padding: 0 32px 32px; font-size: 1.4rem; font-weight: 800; color: var(--accent-primary); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
         
-        .menu-group { margin-bottom: 20px; }
-        .menu-label { padding: 0 30px; font-size: 0.75rem; font-weight: 700; color: var(--text-sub); margin-bottom: 8px; letter-spacing: 0.05em; }
-        .menu-item { padding: 12px 30px; cursor: pointer; display: flex; align-items: center; gap: 12px; font-weight: 600; color: var(--text-main); font-size: 0.95rem; position: relative; }
-        .menu-item:hover { color: var(--accent-blue); }
-        .menu-item.active { color: var(--accent-blue); background: rgba(59, 130, 246, 0.05); font-weight: 700; }
-        .menu-item.active::before { content: ''; position: absolute; left: 0; top: 20%; height: 60%; width: 4px; background: var(--accent-blue); border-radius: 0 4px 4px 0; }
+        .menu-group { margin-bottom: 24px; }
+        .menu-label { padding: 0 32px; font-size: 0.8rem; font-weight: 700; color: var(--accent-blue); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
+        .menu-item { padding: 14px 32px; cursor: pointer; display: flex; align-items: center; gap: 14px; font-weight: 600; color: var(--text-sub); transition: 0.2s; font-size: 1rem; position: relative; }
+        .menu-item:hover { color: var(--accent-primary); background: #FFF5F7; }
+        .menu-item.active { color: var(--accent-primary); background: #FFF0F3; font-weight: 700; }
+        .menu-item.active::before { content: ''; position: absolute; left: 0; top: 15%; height: 70%; width: 4px; background: var(--accent-primary); border-radius: 0 10px 10px 0; }
+        .menu-item i { font-size: 1.1rem; width: 22px; text-align: center; }
         
-        .settings-section { margin-top: auto; padding: 20px 30px; border-top: 1px solid var(--border-soft); }
-        .settings-section select, .settings-section input { width: 100%; padding: 10px 14px; border: 1px solid var(--border-soft); border-radius: var(--radius-btn); font-size: 0.85rem; background: var(--bg-body); color: var(--text-main); outline: none; margin-bottom: 10px; }
-        .settings-section input:focus, .settings-section select:focus { border-color: var(--accent-blue); }
+        .settings-section { margin-top: auto; padding: 24px 32px; border-top: 1px solid var(--border-soft); background: #F8FAFC; }
+        .settings-section input { width: 100%; padding: 12px 16px; border: 1px solid #CBD5E1; border-radius: var(--radius-btn); font-size: 0.9rem; background: white; outline: none; }
+        .settings-section input:focus { border-color: var(--accent-blue); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
 
-        .floating-widget { position: fixed; bottom: 30px; right: 30px; width: 220px; background: var(--bg-surface); padding: 15px; border-radius: 16px; border: 1px solid var(--border-soft); box-shadow: var(--shadow-fluffy); z-index: 1000; cursor: grab; user-select: none; }
-        .floating-widget:active { cursor: grabbing; }
-        .widget-drag-handle { width: 100%; height: 15px; display: flex; justify-content: center; align-items: center; margin-bottom: 5px; color: var(--text-sub); }
-        .timer-time { font-size: 2rem; font-weight: 900; margin-bottom: 10px; font-variant-numeric: tabular-nums; text-align: center; color: var(--accent-blue); }
-        .timer-controls { display: flex; justify-content: center; gap: 8px; }
-        .timer-controls button { background: var(--bg-body); border: 1px solid var(--border-soft); color: var(--text-main); padding: 8px 15px; border-radius: 8px; cursor: pointer; font-size: 1rem; transition: 0.2s; }
-        .timer-controls button:hover { background: var(--accent-blue); color: white; border-color: var(--accent-blue); }
-        .btn-bgm { margin-top: 10px; width: 100%; padding: 8px; font-size: 0.85rem; background: transparent; border: 1px dashed var(--text-sub); color: var(--text-sub); border-radius: 8px; cursor: pointer; transition: 0.2s; }
-        .btn-bgm:hover { background: var(--bg-body); color: var(--text-main); border-color: var(--text-main); }
-        .btn-bgm.playing { background: var(--accent-special); color: white; border-color: var(--accent-special); border-style: solid; }
-
-        .main-wrapper { flex: 1; display: flex; overflow: hidden; }
-        .pdf-viewer-container { display: none; width: 45%; border-right: 1px solid var(--border-soft); background: #222; z-index: 10; }
-        .pdf-viewer-container iframe { width: 100%; height: 100%; border: none; }
-        
-        /* 🚨 iOS 사파리 렌더링 최적화를 위해 overflow-y를 통제 가능하게 세팅 */
-        .main-content { flex: 1; padding: 35px 50px; width: 100%; overflow-y: auto; height: 100dvh; transition: 0.3s; }
-        
-        .page-section { display: none; animation: slideUp 0.3s ease-out; }
+        .main-content { flex: 1; padding: 40px; max-width: 950px; width: 100%; margin: 0 auto; }
+        .page-section { display: none; animation: slideUp 0.4s ease-out; }
         .page-section.active { display: block; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        .page-header { margin-bottom: 25px; display: flex; align-items: center; justify-content: space-between; }
-        .page-title { font-size: 1.5rem; font-weight: 800; display: flex; align-items: center; gap: 12px; }
-        .page-title i { color: var(--accent-primary); }
+        .page-header { margin-bottom: 30px; display: flex; align-items: center; justify-content: space-between; }
+        .page-header-left { display: flex; align-items: center; gap: 18px; }
+        .page-header-icon { background: var(--accent-primary); color: white; width: 54px; height: 54px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; box-shadow: 0 4px 15px rgba(255, 139, 167, 0.3); }
+        .page-title { font-size: 1.6rem; font-weight: 800; color: var(--text-main); margin-bottom: 4px; }
+        .page-desc { color: var(--text-sub); font-size: 0.95rem; font-weight: 500; }
         
-        .header-actions { display: flex; gap: 10px; }
-        .icon-btn { background: var(--bg-surface); border: 1px solid var(--border-soft); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-main); cursor: pointer; transition: 0.2s; }
-        .icon-btn:hover { background: var(--accent-blue); color: white; border-color: var(--accent-blue); }
-
-        .panel { background: var(--bg-surface); padding: 30px; border-radius: var(--radius-box); box-shadow: var(--shadow-fluffy); border: 1px solid var(--border-soft); margin-bottom: 20px; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
-        .form-group label { display: block; font-weight: 700; margin-bottom: 8px; font-size: 0.9rem; color: var(--text-main); }
+        .panel { background: var(--bg-surface); padding: 35px; border-radius: var(--radius-box); box-shadow: var(--shadow-fluffy); border: 1px solid var(--border-soft); margin-bottom: 25px; position: relative; }
+        .form-group { margin-bottom: 25px; }
+        .form-group label { display: flex; font-weight: 700; margin-bottom: 10px; font-size: 0.95rem; color: var(--text-main); align-items: center; gap: 8px; }
+        input[type="text"], textarea, select { width: 100%; padding: 15px 18px; border: 1px solid #CBD5E1; border-radius: var(--radius-btn); font-family: inherit; font-size: 1rem; background: #F8FAFC; transition: all 0.2s; resize: vertical; line-height: 1.6; }
+        input:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent-blue); background: #FFF; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); }
         
-        input[type="text"], textarea, select { width: 100%; padding: 14px 16px; border: 1px solid var(--border-soft); border-radius: var(--radius-btn); font-family: inherit; font-size: 0.95rem; background: var(--bg-body); color: var(--text-main); outline: none; overflow: hidden; resize: none; }
-        input:focus, textarea:focus, select:focus { border-color: var(--accent-blue); background: var(--bg-surface); }
-        
-        .upload-zone { border: 2px dashed var(--text-sub); background: var(--bg-body); padding: 25px 15px; text-align: center; border-radius: var(--radius-btn); cursor: pointer; position: relative; transition: 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
-        .upload-zone.dragover { border-color: var(--accent-blue); background: rgba(59, 130, 246, 0.05); }
+        .upload-zone { border: 2px dashed #94A3B8; background: #F8FAFC; padding: 30px 20px; text-align: center; border-radius: var(--radius-btn); cursor: pointer; position: relative; transition: all 0.3s; }
+        .upload-zone:hover { background: #F1F5F9; border-color: var(--accent-blue); }
         .upload-zone input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
-        .upload-zone i { font-size: 1.8rem; color: var(--text-sub); }
-        .upload-text { font-size: 0.9rem; font-weight: 600; color: var(--text-sub); }
-        .preview-area { display: none; margin-top: 10px; font-size: 0.85rem; color: white; padding: 8px; border-radius: 6px; text-align: center; font-weight: 700; }
+        .upload-zone i { font-size: 2rem; color: #94A3B8; margin-bottom: 10px; transition: 0.3s; }
+        .upload-zone:hover i { color: var(--accent-blue); transform: translateY(-3px); }
+        .upload-text { font-size: 0.95rem; font-weight: 600; color: var(--text-sub); }
+        .preview-area { display: none; margin-top: 10px; font-size: 0.9rem; color: white; background: var(--accent-blue); padding: 10px; border-radius: 8px; text-align: center; font-weight: 700; }
 
-        .btn-primary { background: var(--text-main); color: var(--bg-surface); border: none; padding: 16px; border-radius: var(--radius-btn); font-size: 1rem; font-weight: 700; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; }
-        .btn-primary:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
+        .btn-primary { background: var(--text-main); color: white; border: none; padding: 18px 25px; border-radius: var(--radius-btn); font-size: 1.1rem; font-weight: 700; cursor: pointer; width: 100%; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
         
-        .loader { display: none; text-align: center; padding: 20px; font-size: 0.95rem; font-weight: 700; color: var(--accent-blue); }
-        .spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid var(--border-soft); border-radius: 50%; border-top-color: currentColor; animation: spin 0.8s linear infinite; margin-right: 8px; vertical-align: middle; }
+        .btn-pdf { background: white; color: var(--text-main); border: 1px solid #CBD5E1; padding: 10px 18px; border-radius: 8px; font-size: 0.95rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .btn-pdf:hover { background: #F8FAFC; border-color: #94A3B8; }
+        
+        .btn-cloze { background: #1E293B; color: white; border: none; padding: 10px 18px; border-radius: 8px; font-size: 0.95rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .btn-cloze:hover { background: var(--accent-primary); }
+
+        /* 🔥 TTS 및 OX 버튼 추가 */
+        .btn-tts { background: var(--accent-blue); color: white; border: none; padding: 10px 18px; border-radius: 8px; font-size: 0.95rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s; box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3); }
+        .btn-tts:hover { background: #2563EB; }
+        .btn-tts.playing { background: #EF4444; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3); animation: pulse 1.5s infinite; }
+
+        .btn-ox { background: var(--accent-ox); color: white; border: none; padding: 10px 18px; border-radius: 8px; font-size: 0.95rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s; box-shadow: 0 4px 10px rgba(139, 92, 246, 0.3); margin-top: 10px;}
+        .btn-ox:hover { background: #7C3AED; transform: translateY(-2px); }
+
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
+
+        .loader { display: none; text-align: center; padding: 30px; font-size: 1rem; font-weight: 700; }
+        .spinner { display: inline-block; width: 24px; height: 24px; border: 3px solid #E2E8F0; border-radius: 50%; border-top-color: currentColor; animation: spin 0.8s ease-in-out infinite; margin-right: 10px; vertical-align: middle; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        .document-wrapper { display: none; margin-top: 20px; }
-        .toolbar-chips { display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
-        .chip { background: var(--bg-surface); border: 1px solid var(--border-soft); color: var(--text-main); padding: 8px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: 0.2s; }
-        .chip:hover { background: var(--bg-body); border-color: var(--text-sub); }
-        .chip.active { background: var(--text-main); color: var(--bg-surface); border-color: var(--text-main); }
+        .document-wrapper { display: none; position: relative; margin-top: 30px; }
+        .pdf-actions { display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+        .document-view { background: white; padding: 50px 60px; border-radius: var(--radius-box); border: 1px solid var(--border-soft); box-shadow: var(--shadow-fluffy); font-size: 1.05rem; color: #1E293B; }
         
-        .document-view { background: var(--bg-surface); padding: 50px; border-radius: var(--radius-box); border: 1px solid var(--border-soft); box-shadow: var(--shadow-fluffy); font-size: 1.05rem; color: var(--text-main); transition: 0.3s; }
-        .document-view.focus-mode p, .document-view.focus-mode li, .document-view.focus-mode table { opacity: 0.2; transition: 0.3s; }
-        .document-view.focus-mode p:hover, .document-view.focus-mode li:hover, .document-view.focus-mode table:hover { opacity: 1; transform: scale(1.02); background: var(--bg-body); border-radius: 8px; z-index: 10; position: relative; padding: 5px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .document-view h2 { color: var(--text-main); margin: 40px 0 20px; font-weight: 800; font-size: 1.6rem; border-bottom: 3px solid var(--accent-primary); padding-bottom: 10px; display: inline-block; }
+        .document-view h3 { color: var(--accent-blue); margin: 30px 0 15px; font-weight: 700; font-size: 1.3rem; }
+        .document-view p { margin-bottom: 18px; line-height: 1.8; }
+        .document-view ul, .document-view ol { margin-bottom: 20px; padding-left: 25px; line-height: 1.8; }
+        .document-view li { margin-bottom: 8px; }
+        
+        /* 🔥 함정 레이더 특별 디자인 */
+        .document-view blockquote { border-left: 5px solid #EF4444; background: #FEF2F2; padding: 15px 20px; margin: 20px 0; border-radius: 0 12px 12px 0; font-weight: 600; color: #991B1B; }
 
-        .document-view h2 { margin: 30px 0 15px; font-weight: 800; font-size: 1.4rem; border-bottom: 2px solid var(--border-soft); padding-bottom: 8px; page-break-inside: avoid; }
-        .document-view h3 { color: var(--accent-blue); margin: 20px 0 10px; font-weight: 700; font-size: 1.1rem; page-break-inside: avoid; }
-        .document-view p, .document-view li { margin-bottom: 10px; line-height: 1.7; page-break-inside: avoid; }
-        .document-view blockquote { border-left: 5px solid var(--accent-danger); background: rgba(239, 68, 68, 0.05); padding: 15px 20px; margin: 20px 0; border-radius: 0 12px 12px 0; font-weight: 600; color: var(--accent-danger); page-break-inside: avoid; }
-        
-        /* 🚨 파란색 드래그 현상 100% 삭제 (배경색 없음, 깔끔한 Bold 강조 색상) */
-        .document-view strong { color: var(--accent-primary); font-weight: 800; background: none !important; }
-        
-        .cloze-blank { background: var(--text-main) !important; color: var(--text-main) !important; border-radius: 4px; padding: 2px 6px; cursor: pointer; }
-        
-        .table-responsive { width: 100%; overflow-x: auto; margin: 20px 0; border: 1px solid var(--border-soft); border-radius: 12px; background: var(--table-row); -webkit-overflow-scrolling: touch; }
-        .document-view table { width: 100%; border-collapse: collapse; min-width: 650px; margin: 0; border: none; }
-        .document-view th, .document-view td { padding: 16px; border: 1px solid var(--border-soft); word-break: break-word; line-height: 1.6; font-size: 0.95rem; }
-        .document-view th { background: var(--table-head); font-weight: 800; border-top: none; }
-        .document-view td:first-child { width: 25%; font-weight: 700; color: var(--accent-blue); background: var(--table-head); border-left: none; }
-        .document-view tr:last-child td { border-bottom: none; }
-        .document-view tr td:last-child, .document-view tr th:last-child { border-right: none; }
+        .document-view strong { color: #0F172A; font-weight: 800; background: linear-gradient(180deg, rgba(255,255,255,0) 60%, rgba(255, 139, 167, 0.2) 40%); transition: 0.3s; }
+        .cloze-blank { background: #1E293B !important; color: #1E293B !important; border-radius: 4px; padding: 2px 6px; cursor: pointer; user-select: none; }
+        .cloze-blank:hover { background: var(--accent-primary) !important; color: white !important; }
 
-        .book-cover { text-align: center; padding: 150px 40px; background: linear-gradient(135deg, var(--table-head), var(--bg-body)); border: 2px solid var(--border-soft); border-radius: 16px; margin-bottom: 40px; page-break-after: always; break-after: page; }
-        .mock-exam-title { text-align: center; font-size: 2rem; font-weight: 900; margin: 40px 0; border-bottom: 4px solid var(--text-main); padding-bottom: 20px; page-break-after: always; break-after: page; }
+        .document-view table { width: 100%; border-collapse: collapse; margin: 30px 0; border: 1px solid #CBD5E1; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+        .document-view th, .document-view td { border: 1px solid #E2E8F0; padding: 20px; text-align: left; vertical-align: top; }
+        .document-view th { background-color: #F8FAFC; color: var(--text-main); font-weight: 800; font-size: 1.1rem; border-bottom: 2px solid #CBD5E1; }
+        .document-view tr:nth-child(even) td { background-color: #FAFAFA; }
+        .document-view td:first-child { width: 28%; font-weight: 700; color: var(--accent-blue); background-color: #F8FAFC; border-right: 2px solid #E2E8F0; }
+        .document-view td:nth-child(2) { width: 72%; }
+
+        .book-cover { text-align: center; padding: 120px 40px; background: linear-gradient(135deg, #F8FAFC, #F1F5F9); border: 2px solid #E2E8F0; border-radius: 16px; margin-bottom: 40px; }
+        .book-title { font-size: 3rem; font-weight: 900; color: var(--text-main); margin-bottom: 20px; }
+        .book-subtitle { font-size: 1.5rem; color: var(--accent-blue); font-weight: 700; }
+        .book-date { margin-top: 50px; font-weight: 600; color: var(--text-sub); }
+
+        .archive-item { padding: 20px; border: 1px solid var(--border-soft); border-radius: var(--radius-box); margin-bottom: 15px; display: flex; align-items: flex-start; justify-content: space-between; background: white; transition: 0.3s; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        .archive-item:hover { border-color: var(--accent-blue); transform: translateY(-3px); box-shadow: 0 8px 20px rgba(59, 130, 246, 0.1); }
         
-        .dashboard-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
-        #mermaidTree { background: var(--bg-surface); padding: 20px; border-radius: var(--radius-box); border: 1px solid var(--border-soft); min-height: 250px; display: flex; justify-content: center; align-items: center; overflow-x: auto; }
-        .search-bar { position: relative; margin-bottom: 15px; }
-        .search-bar i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-sub); }
-        .search-bar input { padding-left: 40px; border-radius: 30px; }
+        .omr-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; background: #F8FAFC; padding: 25px; border-radius: 16px; border: 1px solid #E2E8F0; margin-top: 10px; }
+        .omr-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 15px; background: white; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .omr-qnum { font-weight: 800; font-size: 1.1rem; color: var(--text-main); width: 35px; }
+        .omr-bubbles { display: flex; gap: 10px; }
+        .omr-bubble { width: 34px; height: 34px; border-radius: 50%; border: 2px solid #CBD5E1; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.05rem; color: #94A3B8; font-weight: 700; transition: all 0.2s; background: white; }
+        .omr-bubble:hover { border-color: var(--accent-blue); color: var(--accent-blue); transform: scale(1.1); }
+        .omr-bubble.selected { background-color: var(--accent-blue); border-color: var(--accent-blue); color: white; box-shadow: 0 4px 10px rgba(59, 130, 246, 0.4); }
+        .omr-controls { display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px; }
+        .btn-small { background: white; border: 2px solid var(--border-soft); padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: 600; color: var(--text-sub); transition: 0.2s; }
         
-        .archive-item { padding: 15px 20px; border: 1px solid var(--border-soft); border-radius: var(--radius-btn); margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; background: var(--bg-surface); cursor: pointer; transition: 0.2s; }
-        .archive-item:hover { border-color: var(--accent-blue); }
-        .archive-title { font-weight: 700; font-size: 1rem; margin-bottom: 4px; }
-        .tag-badge { background: var(--bg-body); color: var(--text-sub); padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; margin-right: 5px; border: 1px solid var(--border-soft); }
-
-        .streak-container { background: var(--bg-surface); padding: 20px; border-radius: var(--radius-box); border: 1px solid var(--border-soft); margin-bottom: 20px; }
-        .streak-title { font-size: 1rem; font-weight: 800; color: var(--text-main); margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
-        .streak-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(18px, 1fr)); gap: 4px; }
-        .streak-box { width: 18px; height: 18px; border-radius: 4px; background: var(--bg-body); border: 1px solid var(--border-soft); }
-        .streak-box.active { background: var(--accent-mint); border-color: var(--accent-mint); box-shadow: 0 0 5px rgba(16, 185, 129, 0.3); }
-
-        .omr-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; background: var(--bg-body); padding: 20px; border-radius: 12px; }
-        .omr-row { display: flex; align-items: center; justify-content: space-between; background: var(--bg-surface); padding: 5px 15px; border-radius: 8px; border: 1px solid var(--border-soft); }
-        .omr-bubble { width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--border-soft); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.9rem; color: var(--text-sub); font-weight: 700; }
-        .omr-bubble.selected { background: var(--accent-blue); color: white; border-color: var(--accent-blue); }
-
-        .chat-box { background: var(--chat-bg); border: 1px solid var(--border-soft); border-radius: 12px; padding: 15px; max-height: 300px; overflow-y: auto; margin: 15px 0; display: flex; flex-direction: column; gap: 10px; }
-        .chat-msg { padding: 10px 15px; border-radius: 12px; max-width: 85%; font-size: 0.9rem; }
+        .qna-section { margin-top: 40px; padding-top: 30px; border-top: 2px dashed #E2E8F0; }
+        .qna-title { font-size: 1.3rem; font-weight: 800; color: var(--text-main); margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        .chat-box { background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 16px; padding: 20px; max-height: 400px; overflow-y: auto; margin-bottom: 15px; display: flex; flex-direction: column; gap: 15px; }
+        .chat-msg { padding: 12px 18px; border-radius: 16px; max-width: 85%; font-size: 0.95rem; line-height: 1.5; }
         .msg-user { background: var(--accent-blue); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
-        .msg-ai { background: var(--bg-surface); border: 1px solid var(--border-soft); align-self: flex-start; border-bottom-left-radius: 4px; }
-        
-        .ox-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0, 0.6); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(3px); }
-        .ox-modal-content { background: var(--bg-surface); width: 90%; max-width: 800px; max-height: 85vh; overflow-y: auto; border-radius: var(--radius-box); padding: 40px; position: relative; box-shadow: var(--shadow-fluffy); border: 1px solid var(--border-soft); }
-        .ox-close { position: absolute; top: 20px; right: 25px; font-size: 1.8rem; color: var(--text-sub); cursor: pointer; transition: 0.2s; }
-        .ox-header h2 { color: var(--accent-special); font-size: 2rem; font-weight: 900; margin-bottom: 20px; text-align: center; }
+        .msg-ai { background: white; color: var(--text-main); border: 1px solid #E2E8F0; align-self: flex-start; border-bottom-left-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .chat-input-area { display: flex; gap: 10px; }
+        .chat-input-area input { flex: 1; margin: 0; background: white; }
 
-        @media print { .no-print { display: none !important; } }
+        #mermaidTree { background: white; padding: 30px; border-radius: 16px; border: 1px solid #E2E8F0; box-shadow: var(--shadow-fluffy); overflow: hidden; display: flex; justify-content: center; align-items: center; min-height: 400px; }
+
+        /* 🔥 지옥의 OX 서바이벌 모달 UI */
+        .ox-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.8); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+        .ox-modal-content { background: white; width: 90%; max-width: 800px; max-height: 85vh; overflow-y: auto; border-radius: 24px; padding: 40px; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
+        .ox-close { position: absolute; top: 20px; right: 25px; font-size: 1.8rem; color: #94A3B8; cursor: pointer; transition: 0.2s; }
+        .ox-close:hover { color: #EF4444; }
+        .ox-header { text-align: center; margin-bottom: 30px; }
+        .ox-header h2 { color: var(--accent-ox); font-size: 2rem; font-weight: 900; margin-bottom: 10px; }
+        .ox-body { font-size: 1.1rem; line-height: 1.8; color: var(--text-main); }
+        .ox-body h3 { color: #E11D48; border-bottom: 2px solid #E11D48; padding-bottom: 5px; margin: 30px 0 15px; }
 
         @media (max-width: 1024px) {
             .mobile-header { display: flex; }
-            .sidebar { position: fixed; left: -260px; top: 0; height: 100%; box-shadow: 10px 0 30px rgba(0,0,0,0.3); }
-            .sidebar.open { transform: translateX(260px); }
+            .sidebar { position: fixed; left: -280px; top: 0; height: 100%; box-shadow: 10px 0 30px rgba(0,0,0,0.1); }
+            .sidebar.open { transform: translateX(280px); }
             .main-content { padding: 20px; }
-            .pdf-viewer-container { display: none !important; }
+            .document-view { padding: 30px 20px; }
             .omr-container { grid-template-columns: 1fr; }
-            .floating-widget { bottom: 15px; right: 15px; width: 180px; padding: 10px; }
-            .timer-time { font-size: 1.5rem; }
-            .document-view { padding: 20px; } 
+            .pdf-actions { justify-content: center; }
         }
     </style>
 </head>
 <body>
 
     <header class="mobile-header no-print">
-        <h1><i class="fa-solid fa-book-open"></i> Study Diary</h1>
-        <div class="header-actions">
-            <button class="menu-toggle" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
-        </div>
+        <h1><i class="fa-solid fa-book-heart"></i> Study Diary</h1>
+        <button class="menu-toggle" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
     </header>
 
     <div class="app-container">
         <nav class="sidebar no-print" id="sidebar">
-            <div class="brand"><i class="fa-solid fa-book-open" style="color:var(--accent-blue)"></i> V30 Debug</div>
+            <div class="brand"><i class="fa-solid fa-book-open-reader"></i> Study Diary</div>
             
             <div class="menu-group">
-                <div class="menu-label">생성 (Create)</div>
-                <div class="menu-item active" onclick="navTo('concept')"><i class="fa-solid fa-file-pdf"></i> PDF 개념 요약</div>
-                <div class="menu-item" onclick="navTo('grading')"><i class="fa-solid fa-marker"></i> OMR & 오답 해설</div>
+                <div class="menu-label">✏️ Create</div>
+                <div class="menu-item active" onclick="navTo('concept')"><i class="fa-solid fa-shapes"></i> 코넬 정리 & 함정 레이더</div>
+                <div class="menu-item" onclick="navTo('grading')"><i class="fa-solid fa-marker"></i> OMR & 오답 분석</div>
             </div>
 
             <div class="menu-group">
-                <div class="menu-label">관리 (Manage)</div>
-                <div class="menu-item" onclick="navTo('dashboard')"><i class="fa-solid fa-chart-pie"></i> 단원별 지식 맵</div>
-                <div class="menu-item" onclick="navTo('unified')"><i class="fa-solid fa-layer-group"></i> 단권화 & 모의고사 생성</div>
-            </div>
-
-            <div class="menu-group">
-                <div class="menu-label" style="color:var(--accent-danger)">훈련 (Training)</div>
-                <div class="menu-item" onclick="navTo('training')"><i class="fa-solid fa-dumbbell"></i> 오답 선지 OX 훈련</div>
+                <div class="menu-label">📚 Library</div>
+                <div class="menu-item" onclick="navTo('archive')"><i class="fa-solid fa-box-archive"></i> 기록 보관함 & OX 서바이벌</div>
+                <div class="menu-item" onclick="navTo('knowledgetree')"><i class="fa-solid fa-network-wired"></i> 나의 지식 지도</div>
+                <div class="menu-item" onclick="navTo('unified')"><i class="fa-solid fa-book-journal-whills"></i> 문제집 출판 (보스전)</div>
             </div>
 
             <div class="settings-section">
-                <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-sub); margin-bottom: 6px; display: block;">테마 색상 선택</label>
-                <select id="themeSelector" onchange="changeTheme(this.value)">
-                    <option value="light">밝은 기본 (Light)</option>
-                    <option value="dark">어두운 기본 (Dark)</option>
-                    <option value="warmwood">웜 우드 (Warm Wood)</option>
-                    <option value="pastel">코지 파스텔 (Cozy Pastel)</option>
-                    <option value="paper">클래식 종이 (Classic Paper)</option>
-                    <option value="sepianight">세피아 나이트 (Sepia Night)</option>
-                    <option value="mintchoco">민트 초코 (Mint Choco)</option>
-                    <option value="midnightblue">미드나잇 블루 (Midnight Blue)</option>
-                    <option value="cherryblossom">체리 블라썸 (Cherry Blossom)</option>
-                </select>
-                <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-sub); margin-bottom: 6px; display: block;">Gemini API Key</label>
+                <label style="font-size: 0.8rem; font-weight: 700; color: var(--accent-blue); margin-bottom: 8px; display: block;">Gemini API Key</label>
                 <input type="password" id="sysApiKey" placeholder="API Key 입력" onchange="saveApiKey()">
             </div>
         </nav>
 
-        <div class="main-wrapper">
-            <div class="pdf-viewer-container no-print" id="pdfViewerPanel">
-                <iframe id="pdfIframe"></iframe>
-            </div>
-
-            <main class="main-content" onclick="closeSidebarOutside()">
-                
-                <div class="page-header no-print">
-                    <div class="page-title" id="pageTitleText"><i class="fa-solid fa-file-pdf"></i> PDF 개념 요약</div>
-                    <div class="header-actions">
-                        <button class="icon-btn" title="전체화면 집중 모드" onclick="toggleZenMode()"><i class="fa-solid fa-expand"></i></button>
+        <main class="main-content" onclick="closeSidebarOutside()">
+            
+            <section id="page-concept" class="page-section active">
+                <div class="page-header">
+                    <div class="page-header-left">
+                        <div class="page-header-icon" style="background: var(--accent-mint);"><i class="fa-solid fa-book-open"></i></div>
+                        <div>
+                            <h2 class="page-title">코넬 정리노트 & 함정 레이더</h2>
+                            <p class="page-desc">내용 생략 없이 완벽하게 구조화하고 출제자의 오답 함정을 예측합니다.</p>
+                        </div>
                     </div>
                 </div>
-
-                <section id="page-concept" class="page-section active">
-                    <div class="panel no-print">
-                        <div class="grid-2">
-                            <div class="form-group">
-                                <label>교재 PDF 첨부 (Drag & Drop)</label>
-                                <div class="upload-zone" id="conceptDropZone" onclick="document.getElementById('conceptFile').click()">
-                                    <i class="fa-solid fa-cloud-arrow-up" style="color:var(--accent-blue)"></i>
-                                    <div class="upload-text">파일을 끌어다 놓으세요</div>
-                                    <input type="file" id="conceptFile" accept=".pdf,image/*,.txt" onchange="handleFile('conceptFile', 'conceptPreview')">
-                                </div>
-                                <div id="conceptPreview" class="preview-area" style="background:var(--accent-blue)"></div>
-                            </div>
-                            <div class="form-group">
-                                <label>레이아웃 & 태그</label>
-                                <select id="conceptFormat" style="margin-bottom:15px;">
-                                    <option value="auto">🤖 AI 자동 맞춤형</option>
-                                    <option value="cornell">📋 표 형식 (코넬 노트)</option>
-                                    <option value="bullet">📝 텍스트 형식 (개조식)</option>
-                                </select>
-                                <input type="text" id="conceptTags" placeholder="태그 (비워두면 AI 자동 생성)">
-                            </div>
+                <div class="panel no-print">
+                    <div class="form-group">
+                        <label><i class="fa-solid fa-tags"></i> 태그 (과목/단원)</label>
+                        <input type="text" id="conceptTags" placeholder="예: 국어, 문학분석">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fa-solid fa-align-left"></i> 요약 및 분석할 텍스트 원본 (필수)</label>
+                        <textarea id="conceptPrompt" rows="8" placeholder="여기에 정리하고 싶은 긴 글, 교과서 본문 등을 복사해서 붙여넣으세요. AI가 내용을 절대 생략하지 않고 빵빵하게 분석합니다."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fa-solid fa-image"></i> 교재 사진이나 PDF 첨부 (선택)</label>
+                        <div class="upload-zone" style="border-color: var(--accent-mint);">
+                            <i class="fa-solid fa-cloud-arrow-up" style="color: var(--accent-mint);"></i>
+                            <div class="upload-text">사진이나 PDF 첨부 (20MB 이하 권장)</div>
+                            <input type="file" id="conceptFile" accept="image/*,.pdf,.txt" onchange="handleFile('conceptFile', 'conceptPreview')">
                         </div>
-                        <div class="form-group" style="display:flex; gap:10px; align-items:flex-end;">
-                            <div style="flex:1;">
-                                <label>요약 지시사항 (음성 지원)</label>
-                                <textarea id="conceptPrompt" rows="1" style="min-height:45px;" oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'" placeholder="요약할 내용이나 지시사항을 적어주세요."></textarea>
-                            </div>
-                            <button class="icon-btn" style="background:var(--accent-danger); color:white; border:none; width:45px; height:45px; flex-shrink:0;" id="micBtn" onclick="toggleSpeechRecognition()"><i class="fa-solid fa-microphone"></i></button>
-                        </div>
-                        
-                        <div class="grid-2">
-                            <button class="btn-primary" style="background:var(--accent-blue);" onclick="executeAI('concept', 'note')">노트 생성</button>
-                            <button class="btn-primary" style="background:var(--text-main);" onclick="executeAI('concept', 'curriculum')">진도표 생성</button>
-                        </div>
-                        <div id="conceptLoader" class="loader"><div class="spinner"></div>문서를 분석하고 있습니다...</div>
+                        <div id="conceptPreview" class="preview-area" style="background: var(--accent-mint); color: white;"></div>
+                    </div>
+                    <button class="btn-primary" style="background: var(--accent-mint);" onclick="executeAI('concept')">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> 100점 방어 코넬 노트 생성하기
+                    </button>
+                    <div id="conceptLoader" class="loader" style="color:var(--accent-mint)"><div class="spinner" style="border-top-color:currentColor"></div>자료를 깊이 있게 분석하여 노트를 작성 중입니다...</div>
+                </div>
+                
+                <div id="conceptResultWrapper" class="document-wrapper">
+                    <!-- 🔥 TTS, 백지 복습, PDF 다운로드 툴바 -->
+                    <div class="pdf-actions no-print">
+                        <button class="btn-tts" id="ttsBtnConcept" onclick="toggleTTS('conceptResult', 'ttsBtnConcept')"><i class="fa-solid fa-headphones"></i> 오디오 브리핑 듣기</button>
+                        <button class="btn-cloze" onclick="toggleCloze(this)"><i class="fa-solid fa-eye-slash"></i> 암기 모드 (빈칸 뚫기)</button>
+                        <button class="btn-pdf" onclick="downloadPDF('pdfConceptArea', '코넬정리노트')"><i class="fa-solid fa-file-pdf"></i> PDF 내보내기</button>
+                    </div>
+                    <div id="pdfConceptArea">
+                        <div id="conceptResult" class="document-view"></div>
                     </div>
                     
-                    <div id="conceptResultWrapper" class="document-wrapper">
-                        <div class="toolbar-chips no-print">
-                            <div class="chip" onclick="toggleFocusMode('conceptResult')"><i class="fa-solid fa-eye-low-vision"></i> 포커스 모드</div>
-                            <div class="chip" id="ttsBtnConcept" onclick="toggleTTS('conceptResult', 'ttsBtnConcept')"><i class="fa-solid fa-headphones"></i> 소리내어 읽기</div>
-                            <div class="chip" onclick="toggleCloze(this)"><i class="fa-solid fa-eye-slash"></i> 빈칸 암기</div>
-                            <div class="chip" onclick="copyNotionMarkdown('conceptResult')"><i class="fa-brands fa-neos"></i> 텍스트 복사</div>
-                            <div class="chip active zen-btn" onclick="downloadPDF('conceptResult', '스마트정리노트')"><i class="fa-solid fa-file-pdf"></i> 파일로 저장</div>
+                    <div class="qna-section no-print" id="qnaConcept">
+                        <div class="qna-title"><i class="fa-solid fa-chalkboard-user"></i> AI 선생님 1:1 과외 (질문하기)</div>
+                        <div class="chat-box" id="chatBoxConcept">
+                            <div class="chat-msg msg-ai">작성된 노트 내용 중 이해가 안 가거나 추가로 궁금한 점이 있다면 편하게 물어보세요!</div>
                         </div>
-                        
-                        <div id="conceptResult" class="document-view"></div>
-                        
-                        <div class="qna-section no-print">
-                            <div class="chat-box" id="chatBoxConcept">
-                                <div class="chat-msg msg-ai">노트에 대해 궁금한 점을 질문해 주세요.</div>
-                            </div>
-                            <div class="chat-input-area">
-                                <input type="text" id="chatInputConcept" placeholder="질문을 입력하세요..." onkeypress="if(event.key === 'Enter') askTutor('concept')">
-                                <button class="btn-primary" style="width:60px; padding:0; border-radius:8px;" onclick="askTutor('concept')"><i class="fa-solid fa-paper-plane"></i></button>
-                            </div>
+                        <div class="chat-input-area">
+                            <input type="text" id="chatInputConcept" placeholder="예: 빈칸 뚫린 내용 중에 'A이론' 예시 좀 들어줘." onkeypress="if(event.key === 'Enter') askTutor('concept')">
+                            <button class="btn-pdf" style="background: var(--text-main); color: white; border: none;" onclick="askTutor('concept')"><i class="fa-solid fa-paper-plane"></i> 전송</button>
                         </div>
                     </div>
-                </section>
+                </div>
+            </section>
 
-                <section id="page-grading" class="page-section">
-                    <div class="panel no-print">
-                        <div class="grid-2">
-                            <div class="form-group">
-                                <label>문제지 첨부</label>
-                                <div class="upload-zone" id="gradeDropZone" onclick="document.getElementById('gradeQuestFile').click()">
-                                    <i class="fa-solid fa-file-image"></i>
-                                    <div class="upload-text">파일을 끌어다 놓으세요</div>
-                                    <input type="file" id="gradeQuestFile" accept="image/*,.pdf" onchange="handleFile('gradeQuestFile', 'gradeQuestPreview')">
-                                </div>
-                                <div id="gradeQuestPreview" class="preview-area" style="background:var(--accent-blue)"></div>
-                            </div>
-                            <div class="form-group">
-                                <label>태그 (선택)</label>
-                                <input type="text" id="gradeTags" placeholder="예: 9월 모의고사">
-                            </div>
+            <section id="page-grading" class="page-section">
+                <div class="page-header">
+                    <div class="page-header-left">
+                        <div class="page-header-icon" style="background: var(--accent-blue);"><i class="fa-solid fa-marker"></i></div>
+                        <div>
+                            <h2 class="page-title">OMR & 오답 심층 분석</h2>
+                            <p class="page-desc">시험지를 올리고 OMR에 마킹하면 약점 보완 리포트를 제공합니다.</p>
                         </div>
-                        <div class="form-group">
-                            <label>OMR 마킹</label>
-                            <div id="visualOMR" class="omr-container"></div>
-                            <div style="text-align:right; margin-top:10px;"><a href="#" onclick="clearOMR()" style="color:var(--text-sub); font-size:0.85rem;">마킹 초기화</a></div>
-                            <input type="hidden" id="omrAnswers">
-                        </div>
-                        <div class="grid-2">
-                            <button class="btn-primary" style="background:var(--accent-blue);" onclick="executeAI('grading', 'score')">가채점 분석</button>
-                            <button class="btn-primary" style="background:var(--accent-danger);" onclick="executeAI('grading', 'firstaid')">최다 오답 개념 초압축 노트</button>
-                        </div>
-                        <div id="gradeLoader" class="loader"><div class="spinner"></div>오답을 분석 중입니다...</div>
                     </div>
-
-                    <div id="gradeResultWrapper" class="document-wrapper">
-                        <div class="toolbar-chips no-print">
-                            <div class="chip" onclick="toggleFocusMode('gradeResult')"><i class="fa-solid fa-eye-low-vision"></i> 포커스 모드</div>
-                            <div class="chip" id="ttsBtnGrade" onclick="toggleTTS('gradeResult', 'ttsBtnGrade')"><i class="fa-solid fa-headphones"></i> 소리내어 읽기</div>
-                            <div class="chip" onclick="toggleCloze(this)"><i class="fa-solid fa-eye-slash"></i> 빈칸 암기</div>
-                            <div class="chip active zen-btn" onclick="downloadPDF('gradeResult', '오답분석리포트')"><i class="fa-solid fa-file-pdf"></i> 파일로 저장</div>
+                </div>
+                <div class="panel no-print">
+                    <div class="form-group">
+                        <label><i class="fa-solid fa-image"></i> 객관식 문제지 / 모의고사 (PDF 또는 사진)</label>
+                        <div class="upload-zone" style="border-color: var(--accent-blue);"><input type="file" id="gradeQuestFile" accept="image/*,.pdf" onchange="handleFile('gradeQuestFile', 'gradeQuestPreview')"><div class="upload-text">문제지 첨부</div></div>
+                        <div id="gradeQuestPreview" class="preview-area"></div>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fa-solid fa-list-ol"></i> 나의 OMR 마킹 (터치하여 정답 입력)</label>
+                        <div id="visualOMR" class="omr-container"></div>
+                        <div class="omr-controls">
+                            <button class="btn-small" onclick="clearOMR()"><i class="fa-solid fa-rotate-right"></i> 마킹 초기화</button>
                         </div>
+                        <input type="text" id="omrAnswers" readonly placeholder="마킹을 하시면 이곳에 자동으로 기록됩니다." style="margin-top: 15px; border:none; background:transparent; font-weight:bold; color:var(--accent-blue);">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fa-solid fa-tags"></i> 태그 (선택)</label>
+                        <input type="text" id="gradeTags" placeholder="예: 모의고사, 국어">
+                    </div>
+                    <button class="btn-primary" style="background: var(--accent-blue);" onclick="executeAI('grading')"><i class="fa-solid fa-magnifying-glass-chart"></i> 가채점 및 약점 하이라이트 시작</button>
+                    <div id="gradeLoader" class="loader" style="color:var(--accent-blue)"><div class="spinner" style="border-top-color:currentColor"></div>오답 원인을 심층 분석 중입니다...</div>
+                </div>
+
+                <div id="gradeResultWrapper" class="document-wrapper">
+                    <div class="pdf-actions no-print">
+                        <button class="btn-tts" id="ttsBtnGrade" onclick="toggleTTS('gradeResult', 'ttsBtnGrade')"><i class="fa-solid fa-headphones"></i> 오디오 브리핑 듣기</button>
+                        <button class="btn-cloze" onclick="toggleCloze(this)"><i class="fa-solid fa-eye-slash"></i> 암기 모드 (빈칸 뚫기)</button>
+                        <button class="btn-pdf" onclick="downloadPDF('pdfGradeArea', '오답분석리포트')"><i class="fa-solid fa-file-pdf"></i> PDF 내보내기</button>
+                    </div>
+                    <div id="pdfGradeArea">
                         <div id="gradeResult" class="document-view"></div>
                     </div>
-                </section>
+                    
+                    <div class="qna-section no-print" id="qnaGrade">
+                        <div class="qna-title"><i class="fa-solid fa-chalkboard-user"></i> AI 선생님 1:1 과외</div>
+                        <div class="chat-box" id="chatBoxGrade">
+                            <div class="chat-msg msg-ai">채점 결과나 오답 분석에 대해 궁금한 점이 있나요?</div>
+                        </div>
+                        <div class="chat-input-area">
+                            <input type="text" id="chatInputGrade" placeholder="질문을 입력하세요..." onkeypress="if(event.key === 'Enter') askTutor('grade')">
+                            <button class="btn-pdf" style="background: var(--text-main); color: white; border: none;" onclick="askTutor('grade')"><i class="fa-solid fa-paper-plane"></i> 전송</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-                <section id="page-dashboard" class="page-section">
-                    <div class="streak-container no-print">
-                        <div class="streak-title"><i class="fa-solid fa-fire" style="color:var(--accent-special);"></i> 최근 학습 기록</div>
-                        <div class="streak-grid" id="streakGrid"></div>
+            <section id="page-archive" class="page-section">
+                <div class="page-header">
+                    <div class="page-header-icon" style="background: #D4A373;"><i class="fa-solid fa-box-archive"></i></div>
+                    <div>
+                        <h2 class="page-title">나만의 기록 보관함</h2>
                     </div>
-                    <div class="dashboard-grid">
-                        <div class="panel no-print" style="padding:20px;">
-                            <label style="font-weight:700; margin-bottom:15px; display:block; color:var(--text-main);"><i class="fa-solid fa-network-wired"></i> 단원별 지식 맵</label>
-                            <div id="mermaidTree"></div>
-                        </div>
-                        <div class="panel no-print" style="padding:20px; background:transparent; border:none; box-shadow:none;">
-                            <div class="search-bar">
-                                <i class="fa-solid fa-magnifying-glass"></i>
-                                <input type="text" id="archiveSearch" placeholder="저장된 노트를 검색하세요..." onkeyup="filterHistory()">
-                            </div>
-                            <div id="historyList">기록이 없습니다.</div>
-                        </div>
-                    </div>
-                </section>
+                </div>
+                <div class="panel no-print" style="background: transparent; border: none; box-shadow: none; padding: 0;">
+                    <div id="historyList">기록이 없습니다.</div>
+                </div>
+            </section>
 
-                <section id="page-training" class="page-section">
-                    <div class="panel no-print">
-                        <p style="margin-bottom:15px; font-weight:700; color:var(--text-main);">🎯 훈련할 노트를 보관함에서 선택하세요</p>
-                        <div id="trainingSelectionList" style="max-height:200px; overflow-y:auto; margin-bottom: 20px; border:1px solid var(--border-soft); border-radius:12px; padding:10px;"></div>
-                        
-                        <div style="display:flex; gap:10px;">
-                            <button class="btn-primary" style="background:var(--accent-special);" onclick="startTraining('ox')"><i class="fa-solid fa-gamepad"></i> 오답 선지 OX 훈련</button>
-                            <button class="btn-primary" style="background:var(--text-main); opacity:0.5;" onclick="alert('다음 업데이트를 기대해주세요!')"><i class="fa-solid fa-list-check"></i> 다중 선택지 훈련 (예정)</button>
-                        </div>
+            <section id="page-knowledgetree" class="page-section">
+                <div class="page-header">
+                    <div class="page-header-icon" style="background: #8B5CF6;"><i class="fa-solid fa-network-wired"></i></div>
+                    <div>
+                        <h2 class="page-title">나의 지식 지도 (마인드맵)</h2>
+                        <p class="page-desc">보관함에 쌓인 학습 기록을 분석하여 지식 구조를 시각화합니다.</p>
                     </div>
-                </section>
+                </div>
+                <div id="mermaidTree"></div>
+            </section>
 
-                <section id="page-unified" class="page-section">
-                    <div class="panel no-print">
-                        <p style="margin-bottom:15px; font-weight:700; color:var(--text-main);">📝 묶을 노트를 선택하세요 (2~3개 권장)</p>
-                        <div id="unifiedSelectionList" style="max-height:250px; overflow-y:auto; margin-bottom: 20px; border:1px solid var(--border-soft); border-radius:12px; padding:10px;"></div>
-                        
-                        <div class="grid-2">
-                            <button class="btn-primary" style="background:var(--accent-blue);" onclick="executeUnifiedNote('book')">단권화 노트 병합</button>
-                            <button class="btn-primary" style="background:var(--accent-danger);" onclick="executeUnifiedNote('boss')">다단원 융합 고난도 출제</button>
-                        </div>
-                        <button class="btn-primary" style="background:var(--text-main); margin-top:15px;" onclick="executeUnifiedNote('exam')">실전 모의고사 생성</button>
-                        <div id="unifiedLoader" class="loader"><div class="spinner"></div>서버에 요청 중입니다...</div>
+            <section id="page-unified" class="page-section">
+                <div class="page-header">
+                    <div class="page-header-icon" style="background: linear-gradient(135deg, #FFD166, #FF9F1C);"><i class="fa-solid fa-book-journal-whills"></i></div>
+                    <div>
+                        <h2 class="page-title">문제집 출판 & 융합 킬러 문항 (Boss Fight)</h2>
+                        <p class="page-desc">노트를 전자책으로 묶거나, 여러 단원을 융합한 최고난도 문제를 생성합니다.</p>
                     </div>
-                    <div id="unifiedResultWrapper" class="document-wrapper">
-                        <div class="toolbar-chips no-print">
-                            <div class="chip active zen-btn" onclick="downloadPDF('unifiedResult', '나만의_마스터자료')"><i class="fa-solid fa-file-pdf"></i> 파일로 다운로드</div>
-                        </div>
+                </div>
+                <div class="panel no-print">
+                    <p style="margin-bottom:15px; font-weight:700; color:var(--text-main);">📝 병합할 노트를 선택해주세요 (한 번에 2~3개 권장)</p>
+                    <div id="unifiedSelectionList" style="max-height:300px; overflow-y:auto; margin-bottom: 25px; padding-right: 10px;"></div>
+                    
+                    <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                        <button class="btn-primary" style="background: #FF9F1C; flex: 1;" onclick="executeUnifiedNote()"><i class="fa-solid fa-layer-group"></i> 전자책 출판하기</button>
+                        <!-- 🔥 융합 킬러 문항 생성 버튼 -->
+                        <button class="btn-primary" style="background: var(--accent-boss); flex: 1;" onclick="executeBossFight()"><i class="fa-solid fa-skull"></i> 융합 킬러 문항 생성 (Boss Fight)</button>
+                    </div>
+                    <div id="unifiedLoader" class="loader" style="color:#FF9F1C"><div class="spinner" style="border-top-color:currentColor"></div>서버에 요청 중입니다...</div>
+                </div>
+                <div id="unifiedResultWrapper" class="document-wrapper">
+                    <div class="pdf-actions no-print">
+                        <button class="btn-tts" id="ttsBtnUnified" onclick="toggleTTS('unifiedResult', 'ttsBtnUnified')"><i class="fa-solid fa-headphones"></i> 오디오 브리핑 듣기</button>
+                        <button class="btn-pdf" onclick="downloadPDF('pdfBookArea', '나만의_마스터자료')"><i class="fa-solid fa-file-pdf"></i> 📚 PDF 다운로드</button>
+                    </div>
+                    <div id="pdfBookArea">
                         <div id="unifiedResult" class="document-view" style="padding: 0;"></div>
                     </div>
-                </section>
+                </div>
+            </section>
 
-            </main>
-        </div>
+        </main>
     </div>
 
-    <div class="floating-widget no-print" id="floatingTimer">
-        <div class="widget-drag-handle"><i class="fa-solid fa-grip-lines"></i></div>
-        <div class="timer-time" id="timerDisplay">25:00</div>
-        <div class="timer-controls">
-            <button onclick="startTimer()"><i class="fa-solid fa-play"></i></button>
-            <button onclick="pauseTimer()"><i class="fa-solid fa-pause"></i></button>
-            <button onclick="resetTimer()"><i class="fa-solid fa-rotate-right"></i></button>
-        </div>
-        <audio id="bgm" loop><source src="https://assets.mixkit.co/sfx/preview/mixkit-campfire-crackles-1330.mp3" type="audio/mpeg"></audio>
-        <button class="btn-bgm" id="bgmBtn" onclick="toggleBGM()"><i class="fa-solid fa-fire"></i> 집중 소음</button>
-    </div>
-
+    <!-- 🔥 지옥의 OX 서바이벌 모달 UI -->
     <div id="oxModal" class="ox-modal">
         <div class="ox-modal-content">
             <i class="fa-solid fa-circle-xmark ox-close" onclick="closeOXModal()"></i>
             <div class="ox-header">
-                <h2 style="color:var(--accent-special); font-weight:900;"><i class="fa-solid fa-gamepad"></i> 오답 선지 OX 훈련</h2>
+                <h2><i class="fa-solid fa-gamepad"></i> 지옥의 OX 서바이벌</h2>
+                <p>가장 매력적인 오답 함정들을 피해 살아남으세요!</p>
             </div>
-            <div id="oxLoader" class="loader" style="color:var(--accent-special); display:none;"><div class="spinner" style="border-top-color:currentColor"></div>출제 중...</div>
+            <div id="oxLoader" class="loader" style="color:var(--accent-ox); display:none;"><div class="spinner" style="border-top-color:currentColor"></div>출제자가 악랄한 함정 선지를 만드는 중입니다...</div>
+            
             <div id="oxPlayArea" style="display:none;">
-                <div id="oxQuestionContent" style="font-size:1.05rem; line-height:1.8;"></div>
-                <button class="btn-primary" style="background:var(--accent-special); margin-top:30px;" onclick="revealOXAnswer()">정답 확인</button>
+                <div id="oxQuestionContent" class="ox-body"></div>
+                <button class="btn-primary" style="background: var(--accent-ox); margin-top: 30px;" onclick="revealOXAnswer()"><i class="fa-solid fa-unlock-keyhole"></i> 정답 및 끔찍한 함정 해설 보기</button>
             </div>
-            <div id="oxAnswerArea" style="display:none; margin-top:20px; padding-top:20px; border-top:1px solid var(--border-soft);">
-                <div id="oxAnswerContent" style="font-size:1.05rem; line-height:1.8;"></div>
+
+            <div id="oxAnswerArea" style="display:none; margin-top: 30px;">
+                <div id="oxAnswerContent" class="ox-body"></div>
             </div>
         </div>
     </div>
 
     <script>
-        mermaid.initialize({ startOnLoad: false, theme: 'base' });
-
-        function dragElement(elmnt) {
-            var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-            if (elmnt.querySelector(".widget-drag-handle")) { elmnt.querySelector(".widget-drag-handle").onmousedown = dragMouseDown; } 
-            else { elmnt.onmousedown = dragMouseDown; }
-            function dragMouseDown(e) { e = e || window.event; e.preventDefault(); pos3 = e.clientX; pos4 = e.clientY; document.onmouseup = closeDragElement; document.onmousemove = elementDrag; }
-            function elementDrag(e) { e = e || window.event; e.preventDefault(); pos1 = pos3 - e.clientX; pos2 = pos4 - e.clientY; pos3 = e.clientX; pos4 = e.clientY; elmnt.style.top = (elmnt.offsetTop - pos2) + "px"; elmnt.style.left = (elmnt.offsetLeft - pos1) + "px"; elmnt.style.bottom = "auto"; elmnt.style.right = "auto"; }
-            function closeDragElement() { document.onmouseup = null; document.onmousemove = null; }
-        }
-
-        function setupDragAndDrop(zoneId, inputId) {
-            const zone = document.getElementById(zoneId); const input = document.getElementById(inputId);
-            if(!zone || !input) return;
-            zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('dragover'); });
-            zone.addEventListener('dragleave', (e) => { e.preventDefault(); zone.classList.remove('dragover'); });
-            zone.addEventListener('drop', (e) => { e.preventDefault(); zone.classList.remove('dragover'); if(e.dataTransfer.files.length) { input.files = e.dataTransfer.files; handleFile(inputId, inputId.replace('File', 'Preview')); } });
-        }
-
-        window.onload = () => {
-            const savedKey = localStorage.getItem('geminiApiKey');
-            if (savedKey) document.getElementById('sysApiKey').value = savedKey;
-            
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            document.documentElement.setAttribute('data-theme', savedTheme);
-            document.getElementById('themeSelector').value = savedTheme;
-            
-            renderOMR();
-            setupDragAndDrop('conceptDropZone', 'conceptFile');
-            setupDragAndDrop('gradeDropZone', 'gradeQuestFile');
-            dragElement(document.getElementById("floatingTimer"));
-            renderStreak();
-        };
-
-        function changeTheme(themeValue) {
-            document.documentElement.setAttribute('data-theme', themeValue);
-            localStorage.setItem('theme', themeValue);
-        }
-
-        function toggleZenMode() {
-            document.body.classList.toggle('zen-mode');
-            if(document.body.classList.contains('zen-mode')) { document.getElementById('pdfViewerPanel').style.display = 'none'; }
-        }
+        mermaid.initialize({ startOnLoad: false, theme: 'base', themeVariables: { primaryColor: '#F4F9FF', primaryBorderColor: '#A2D2FF', lineColor: '#CBD5E1' } });
 
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
         function closeSidebarOutside() { if(window.innerWidth <= 1024) document.getElementById('sidebar').classList.remove('open'); }
 
-        function handleFile(inputId, previewId) {
-            const file = document.getElementById(inputId).files[0];
-            const preview = document.getElementById(previewId);
-            if (file && file.size > 20 * 1024 * 1024) { alert("20MB 초과"); document.getElementById(inputId).value = ""; return; }
-            if (file) {
-                preview.style.display = 'block'; preview.innerHTML = `${file.name}`;
-                if(file.type === 'application/pdf' && window.innerWidth > 1024 && !document.body.classList.contains('zen-mode')) {
-                    const fileURL = URL.createObjectURL(file);
-                    document.getElementById('pdfIframe').src = fileURL;
-                    document.getElementById('pdfViewerPanel').style.display = 'block';
-                }
-            }
-        }
+        window.onload = () => {
+            const savedKey = localStorage.getItem('geminiApiKey');
+            if (savedKey) document.getElementById('sysApiKey').value = savedKey;
+            renderOMR();
+        };
 
-        let recognition; let isRecording = false;
-        function toggleSpeechRecognition() {
-            if (!('webkitSpeechRecognition' in window)) return alert("크롬을 사용해주세요.");
-            const btn = document.getElementById('micBtn'); const promptBox = document.getElementById('conceptPrompt');
-            if (isRecording) { recognition.stop(); return; }
-            recognition = new webkitSpeechRecognition(); recognition.lang = 'ko-KR'; recognition.continuous = true; recognition.interimResults = true;
-            recognition.onstart = () => { isRecording = true; promptBox.placeholder = "듣고 있습니다..."; };
-            recognition.onresult = (e) => { for (let i = e.resultIndex; i < e.results.length; ++i) { if (e.results[i].isFinal) { promptBox.value += e.results[i][0].transcript + " "; promptBox.style.height = promptBox.scrollHeight + 'px'; } } };
-            recognition.onend = () => { isRecording = false; promptBox.placeholder = "요약할 내용을 입력하세요."; };
-            recognition.start();
-        }
-
-        let timerInterval; let timeLeft = 25 * 60; let isTimerRunning = false;
-        function updateTimerDisplay() {
-            const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
-            const s = (timeLeft % 60).toString().padStart(2, '0');
-            document.getElementById('timerDisplay').innerText = `${m}:${s}`;
-        }
-        function startTimer() { if(!isTimerRunning) { isTimerRunning = true; timerInterval = setInterval(() => { if(timeLeft > 0) { timeLeft--; updateTimerDisplay(); } else { pauseTimer(); alert("완료!"); } }, 1000); } }
-        function pauseTimer() { clearInterval(timerInterval); isTimerRunning = false; }
-        function resetTimer() { pauseTimer(); timeLeft = 25 * 60; updateTimerDisplay(); }
-        
-        let isBgmPlaying = false;
-        function toggleBGM() {
-            const bgm = document.getElementById('bgm'); const btn = document.getElementById('bgmBtn');
-            if(isBgmPlaying) { bgm.pause(); isBgmPlaying = false; btn.classList.remove('playing'); } 
-            else { bgm.play(); isBgmPlaying = true; btn.classList.add('playing'); }
-        }
-
-        let currentRawMarkdown = ""; 
-        function copyNotionMarkdown() {
-            if(!currentRawMarkdown) return;
-            navigator.clipboard.writeText(currentRawMarkdown).then(() => alert("마크다운 복사 완료!"));
-        }
-
-        function toggleFocusMode(elementId) { document.getElementById(elementId).classList.toggle('focus-mode'); }
-
+        // --- OMR 로직 ---
         let userAnswers = {}; 
         function renderOMR() {
-            const container = document.getElementById('visualOMR'); if(!container) return;
+            const container = document.getElementById('visualOMR');
+            if(!container) return;
             let html = '';
             for(let i=1; i<=20; i++) {
                 html += `<div class="omr-row"><div class="omr-qnum">${i}.</div><div class="omr-bubbles">`;
-                for(let j=1; j<=5; j++) html += `<div class="omr-bubble" onclick="selectOMR(${i}, ${j})" id="omr-q${i}-c${j}">${j}</div>`;
+                for(let j=1; j<=5; j++) {
+                    html += `<div class="omr-bubble" onclick="selectOMR(${i}, ${j})" id="omr-q${i}-c${j}">${j}</div>`;
+                }
                 html += `</div></div>`;
             }
             container.innerHTML = html;
         }
-        function selectOMR(q, c) {
-            userAnswers[q] = c;
-            for(let j=1; j<=5; j++) document.getElementById(`omr-q${q}-c${j}`).classList.remove('selected');
-            document.getElementById(`omr-q${q}-c${c}`).classList.add('selected');
-            let ansArr = []; for(let i=1; i<=20; i++) if(userAnswers[i]) ansArr.push(`${i}:${userAnswers[i]}`);
-            document.getElementById('omrAnswers').value = ansArr.join(',');
+        function selectOMR(questionNum, choice) {
+            userAnswers[questionNum] = choice;
+            for(let j=1; j<=5; j++) document.getElementById(`omr-q${questionNum}-c${j}`).classList.remove('selected');
+            document.getElementById(`omr-q${questionNum}-c${choice}`).classList.add('selected');
+            updateOMRText();
         }
-        function clearOMR() { userAnswers = {}; for(let i=1; i<=20; i++) for(let j=1; j<=5; j++) document.getElementById(`omr-q${i}-c${j}`).classList.remove('selected'); document.getElementById('omrAnswers').value = ''; }
+        function clearOMR() {
+            userAnswers = {};
+            for(let i=1; i<=20; i++) {
+                for(let j=1; j<=5; j++) document.getElementById(`omr-q${i}-c${j}`).classList.remove('selected');
+            }
+            updateOMRText();
+        }
+        function updateOMRText() {
+            let ansArr = [];
+            for(let i=1; i<=20; i++) if(userAnswers[i]) ansArr.push(`${i}번:${userAnswers[i]}`);
+            document.getElementById('omrAnswers').value = ansArr.join(', ');
+        }
 
-        const pageTitles = {
-            'concept': '<i class="fa-solid fa-file-pdf"></i> PDF 개념 요약',
-            'grading': '<i class="fa-solid fa-marker"></i> OMR & 오답 해설',
-            'dashboard': '<i class="fa-solid fa-chart-pie"></i> 단원별 지식 맵',
-            'training': '<i class="fa-solid fa-dumbbell"></i> 오답 선지 OX 훈련',
-            'unified': '<i class="fa-solid fa-layer-group"></i> 단권화 & 모의고사 생성'
-        };
+        // --- 공통 기능 (TTS, PDF, 빈칸 등) ---
+        function saveApiKey() { localStorage.setItem('geminiApiKey', document.getElementById('sysApiKey').value); }
 
         function navTo(pageId) {
-            if(window.speechSynthesis.speaking) window.speechSynthesis.cancel(); 
+            if(window.speechSynthesis.speaking) window.speechSynthesis.cancel(); // 탭 이동 시 오디오 중지
             document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
             event.currentTarget.classList.add('active');
             document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
             document.getElementById('page-' + pageId).classList.add('active');
             closeSidebarOutside();
             
-            document.body.classList.remove('zen-mode'); 
-            document.getElementById('pdfViewerPanel').style.display = 'none';
-            document.getElementById('pageTitleText').innerHTML = pageTitles[pageId] || '';
-
-            if(pageId === 'dashboard') { loadHistory(); renderKnowledgeTree(); }
-            if(pageId === 'training') loadTrainingSelection();
+            if(pageId === 'archive') loadHistory();
+            if(pageId === 'knowledgetree') renderKnowledgeTree();
             if(pageId === 'unified') loadUnifiedSelection();
+        }
+
+        function handleFile(inputId, previewId) {
+            const file = document.getElementById(inputId).files[0];
+            const preview = document.getElementById(previewId);
+            if (file && file.size > 20 * 1024 * 1024) {
+                alert("파일 용량이 20MB를 초과했습니다. 더 작은 파일로 올려주세요.");
+                document.getElementById(inputId).value = ""; 
+                preview.style.display = 'none';
+                return;
+            }
+            if (file) {
+                preview.style.display = 'block';
+                preview.innerHTML = `<i class="fa-solid fa-check-circle"></i> 첨부완료: ${file.name}`;
+            }
         }
 
         function fileToBase64(file) {
             return new Promise((resolve, reject) => {
-                const reader = new FileReader(); reader.readAsDataURL(file);
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
                 reader.onload = () => resolve({ data: reader.result.split(',')[1], mimeType: file.type });
                 reader.onerror = error => reject(error);
             });
         }
 
-        function applyTableWrapper(element) {
-            element.querySelectorAll('table').forEach(table => {
-                if (table.parentElement.classList.contains('table-responsive')) return;
-                const wrapper = document.createElement('div');
-                wrapper.className = 'table-responsive';
-                table.parentNode.insertBefore(wrapper, table);
-                wrapper.appendChild(table);
-            });
-        }
-
-        // 🚨 사파리/iOS 백지화 원천 차단 전용 PDF 엔진 🚨
-        async function downloadPDF(elementId, fileName) {
-            const originalElement = document.getElementById(elementId);
-            await document.fonts.ready;
-            
-            const noPrints = originalElement.querySelectorAll('.no-print, .toolbar-chips');
-            noPrints.forEach(el => el.style.display = 'none');
-
-            // 1. 사파리 백지화의 주원인인 스크롤 가능한 상위 컨테이너들의 속성을 잠시 해제합니다.
-            const mainContent = document.querySelector('.main-content');
-            const appContainer = document.querySelector('.app-container');
-            const origMainOverflow = mainContent.style.overflowY;
-            const origMainHeight = mainContent.style.height;
-            const origAppHeight = appContainer.style.height;
-            
-            mainContent.style.overflowY = 'visible';
-            mainContent.style.height = 'auto';
-            appContainer.style.height = 'auto';
-
-            // 2. 현재 타겟 엘리먼트의 가로 폭을 A4 비율로 일시 고정하여 화면이 짤리거나 깨지지 않게 만듭니다.
-            const origWidth = originalElement.style.width;
-            originalElement.style.width = '794px'; 
-            originalElement.style.maxWidth = '100%';
-            originalElement.style.margin = '0 auto';
-
-            // 화면을 최상단으로 강제 이동
-            window.scrollTo(0, 0);
-
-            const loaderId = elementId.replace('Result', 'Loader');
-            const loader = document.getElementById(loaderId);
-            if(loader) {
-                loader.style.display = 'block';
-                loader.innerHTML = '<div class="spinner"></div>안전하게 PDF를 굽고 있습니다... (사파리 최적화 중)';
-            }
-
-            // 3. Apple 기기(아이폰, 아이패드, 맥) 감지: 캡처 화질(scale)을 1로 강제 고정하여 메모리 폭발(백지화) 방지
-            const isAppleMobile = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-            let pdfScale = isAppleMobile ? 1 : 2; 
-
+        function downloadPDF(elementId, fileName) {
+            const element = document.getElementById(elementId);
             const opt = {
-                margin:       [10, 10, 10, 10], 
+                margin:       [15, 0, 15, 0],
                 filename:     `${fileName}.pdf`,
-                image:        { type: 'jpeg', quality: 0.95 },
-                html2canvas:  { 
-                    scale: pdfScale, 
-                    useCORS: true, 
-                    scrollY: 0,
-                    windowWidth: 794 // 고정된 폭 명시
-                },
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] } 
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
-            
-            try {
-                await html2pdf().set(opt).from(originalElement).save();
-            } catch (error) {
-                alert("PDF 생성 오류: " + error.message);
-            } finally {
-                // 4. 추출 완료 후 모든 설정을 원래대로 완벽하게 복구합니다.
-                originalElement.style.width = origWidth;
-                mainContent.style.overflowY = origMainOverflow;
-                mainContent.style.height = origMainHeight;
-                appContainer.style.height = origAppHeight;
-                noPrints.forEach(el => el.style.display = '');
-                if(loader) loader.style.display = 'none';
-            }
+            html2pdf().set(opt).from(element).save();
         }
 
         function toggleCloze(btn) {
             const container = btn.closest('.document-wrapper').querySelector('.document-view');
             const strongTags = container.querySelectorAll('strong');
             let isCloze = btn.dataset.cloze === 'true';
+            
             if (!isCloze) {
                 strongTags.forEach(el => { el.classList.add('cloze-blank'); el.onclick = function() { this.classList.remove('cloze-blank'); }; });
-                btn.dataset.cloze = 'true'; btn.classList.add('active');
+                btn.dataset.cloze = 'true';
+                btn.innerHTML = '<i class="fa-solid fa-eye"></i> 암기 모드 종료';
+                btn.style.background = 'var(--accent-primary)';
             } else {
                 strongTags.forEach(el => { el.classList.remove('cloze-blank'); el.onclick = null; });
-                btn.dataset.cloze = 'false'; btn.classList.remove('active');
+                btn.dataset.cloze = 'false';
+                btn.innerHTML = '<i class="fa-solid fa-eye-slash"></i> 암기 모드 (빈칸 뚫기)';
+                btn.style.background = '#1E293B';
             }
         }
 
+        // 🔥 오디오 브리핑 (TTS) 로직
         let currentUtterance = null;
         function toggleTTS(elementId, btnId) {
             const btn = document.getElementById(btnId);
-            if(window.speechSynthesis.speaking) { window.speechSynthesis.cancel(); btn.classList.remove('active'); return; }
-            currentUtterance = new SpeechSynthesisUtterance(document.getElementById(elementId).innerText);
-            currentUtterance.lang = 'ko-KR'; currentUtterance.rate = 1.1; 
-            currentUtterance.onend = () => { btn.classList.remove('active'); };
+            if(window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+                btn.classList.remove('playing');
+                btn.innerHTML = '<i class="fa-solid fa-headphones"></i> 오디오 브리핑 듣기';
+                return;
+            }
+            const text = document.getElementById(elementId).innerText;
+            currentUtterance = new SpeechSynthesisUtterance(text);
+            currentUtterance.lang = 'ko-KR';
+            currentUtterance.rate = 1.1; // 약간 빠른 템포
+            
+            currentUtterance.onend = () => {
+                btn.classList.remove('playing');
+                btn.innerHTML = '<i class="fa-solid fa-headphones"></i> 오디오 브리핑 듣기';
+            };
+
             window.speechSynthesis.speak(currentUtterance);
-            btn.classList.add('active');
+            btn.classList.add('playing');
+            btn.innerHTML = '<i class="fa-solid fa-circle-stop"></i> 브리핑 중지';
         }
 
+        // 🔥 통신 로직 및 포맷 보호 (하이픈, 달러 금지)
         const formattingRules = `
-[마크다운 및 렌더링 절대 준수 규칙]
-1. 글머리 기호나 리스트 작성 시 하이픈(-) 사용을 금지합니다. 대신 별표(*)나 숫자(1. 2.)를 사용하세요. 표 안에서도 마찬가지입니다.
-2. 텍스트 내에서 단일 달러 기호($)를 절대 사용하지 마세요. 수학 수식에만 이중 달러 기호($$수식$$)를 허용합니다.
-3. 표(Table) 작성 시 가독성을 위해 한 행(Row)의 내용이 너무 길어지지 않도록 여러 개의 행으로 쪼개서 작성하세요. 중요어 앞 2글자는 반드시 **볼드체**로 처리하여 가독성을 높이세요.`;
+[마크다운 및 렌더링 절대 준수 규칙 - 위반 시 감점]
+1. 글머리 기호(Bullet point)나 리스트 작성 시 하이픈(-)을 절대 사용하지 마세요. 반드시 별표(*)나 숫자(1. 2.)를 사용하세요. 표 안에서도 하이픈 금지.
+2. 텍스트에 단일 달러 기호($)를 절대 사용하지 마세요. 필요시 '달러'라고 한글로 표기하고, 수학 수식에만 이중 달러 기호($$수식$$)를 사용하세요.`;
 
         async function callGeminiAPI(apiKey, prompt, files = [], loaderId = null) {
             let requestParts = [{ text: prompt }];
             files.forEach(f => requestParts.push({ inlineData: { data: f.data, mimeType: f.mimeType } }));
-            const options = { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: requestParts }], generationConfig: { temperature: 0.7 } }) };
+            
+            const options = {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ contents: [{ parts: requestParts }], generationConfig: { temperature: 0.7 } })
+            };
 
-            for (let i = 0; i < 3; i++) {
+            const maxRetries = 4; 
+            let delay = 3000; 
+
+            for (let i = 0; i <= maxRetries; i++) {
                 try {
                     const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`, options);
+                    
                     if (!response.ok) {
-                        if (response.status === 429 || response.status === 503) {
-                            if (loaderId) document.getElementById(loaderId).innerHTML = `<div class="spinner"></div>서버 우회 접속 시도 중... (${i+1}/3)`;
-                            await new Promise(r=>setTimeout(r, 2000)); continue;
+                        const status = response.status;
+                        if ((status === 429 || status === 503 || status === 500) && i < maxRetries) {
+                            if (loaderId) {
+                                const loaderEl = document.getElementById(loaderId);
+                                if (loaderEl) loaderEl.innerHTML = `<div class="spinner" style="border-top-color:currentColor"></div>구글 서버 과부하 감지. 자동 우회 중입니다... (${i+1}/${maxRetries}회 시도)`;
+                            }
+                            await new Promise(resolve => setTimeout(resolve, delay));
+                            delay += 2000; 
+                            continue;
                         }
-                        throw new Error("서버 통신 에러");
+                        const errorData = await response.json().catch(() => ({}));
+                        let errMsg = errorData.error ? errorData.error.message : `API 통신 오류 (${status})`;
+                        if(status === 429 || status === 503) errMsg = "서버 혼잡이 극심합니다. 병합하는 노트 개수를 줄이거나 1분 뒤 다시 시도해주세요.";
+                        throw new Error(errMsg);
                     }
-                    const data = await response.json(); return data.candidates[0].content.parts[0].text;
-                } catch (e) { if(i===2) throw e; await new Promise(r=>setTimeout(r, 2000)); }
+
+                    const data = await response.json();
+                    if (data.error) throw new Error(data.error.message);
+                    return data.candidates[0].content.parts[0].text;
+
+                } catch (error) {
+                    if (i === maxRetries) throw error; 
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    delay += 2000;
+                }
             }
         }
 
         let currentContext = ""; 
 
-        async function executeAI(mode, subMode) {
+        async function executeAI(mode) {
             if(window.speechSynthesis.speaking) window.speechSynthesis.cancel();
             const apiKey = document.getElementById('sysApiKey').value;
-            if (!apiKey) return alert("왼쪽 하단 설정에서 API Key를 입력해주세요!");
+            if (!apiKey) return alert("설정 메뉴에서 API Key를 입력해주세요!");
 
-            const loaderId = mode + 'Loader'; const resultWrapper = document.getElementById(mode + 'ResultWrapper'); const resultBox = document.getElementById(mode + 'Result');
-            document.getElementById(loaderId).style.display = 'block'; resultWrapper.style.display = 'none';
+            const loaderId = mode + 'Loader';
+            const loader = document.getElementById(loaderId);
+            const resultWrapper = document.getElementById(mode + 'ResultWrapper');
+            const resultBox = document.getElementById(mode + 'Result');
+            
+            if(mode === 'concept') loader.innerHTML = `<div class="spinner" style="border-top-color:currentColor"></div>자료를 깊이 있게 분석하여 노트를 작성 중입니다...`;
+            if(mode === 'grading') loader.innerHTML = `<div class="spinner" style="border-top-color:currentColor"></div>오답 원인을 심층 분석 중입니다...`;
+            
+            loader.style.display = 'block'; 
+            resultWrapper.style.display = 'none';
+            resultBox.innerHTML = ""; 
 
             let prompt = "", title = "", filesToProcess = [], tags = [];
 
@@ -773,135 +610,101 @@
                 if (mode === 'concept') {
                     const inputPrompt = document.getElementById('conceptPrompt').value;
                     const file = document.getElementById('conceptFile').files[0];
-                    let rawTags = document.getElementById('conceptTags').value;
-                    const formatChoice = document.getElementById('conceptFormat').value; 
-                    if (!inputPrompt && !file) throw new Error("분석할 텍스트나 파일이 필요합니다.");
+                    const rawTags = document.getElementById('conceptTags').value;
+                    if (!inputPrompt && !file) throw new Error("요약할 텍스트나 파일을 넣어주세요.");
                     if (file) filesToProcess.push(await fileToBase64(file));
                     
-                    if(subMode === 'note') {
-                        let styleIns = formatChoice === "cornell" ? "2열 표(Table) 형식" : formatChoice === "bullet" ? "개조식 (표 사용 금지)" : "내용에 맞게 AI 유동적 판단";
-                        prompt = `[데이터]: ${inputPrompt}\n[레이아웃 지정]: ${styleIns}\n내용 생략 금지. [🚨 출제자 오답 패턴 경고] 포함. 태그가 비어있으면 문서 끝에 '#태그' 추천.\n${formattingRules}`;
-                    } else {
-                        prompt = `[데이터]: ${inputPrompt}\n내용을 분석하여 최적의 진도표/커리큘럼을 표 형태로 작성하세요.\n${formattingRules}`;
-                    }
-                    title = `[노트] ${rawTags || '개념 요약'}`;
+                    tags = rawTags.split(',').map(t => t.trim()).filter(t => t);
+                    title = `[정리노트] ${tags[0] || '핵심 요약'}`;
+                    
+                    // 🔥 함정 레이더 프롬프트 추가 완료!
+                    prompt = `당신은 최고 수준의 일타 강사입니다. 제공된 데이터를 완벽한 '코넬 노트' 형식으로 변환하세요.\n[원본 데이터]: ${inputPrompt}\n\n[필수 조건]\n1. 원본 내용을 절대 생략하지 말고 백과사전 수준으로 깊게 꽉 채워 넣으세요.\n2. 중요 암기 키워드는 반드시 양쪽에 별표 두 개(**단어**)를 쳐서 볼드체로 만드세요.\n3. 좌측 '핵심 키워드', 우측 '상세 내용' 2열짜리 표(Table)로 출력하세요.\n4. [🚨 출제자 빙의 함정 레이더] 섹션을 마크다운 인용구(blockquote: >)로 작성하여, 출제자가 인과관계를 꼬거나 일반화 오류를 유도할 만한 '매력적인 오답 선지 패턴'을 경고해 주세요.\n5. [👩‍🏫 AI 선생님의 족집게 하이라이트]를 하단에 상세히 기술하세요.\n${formattingRules}`;
                 }
                 else if (mode === 'grading') {
                     const qFile = document.getElementById('gradeQuestFile').files[0];
                     const omrInput = document.getElementById('omrAnswers').value;
-                    if (!qFile) throw new Error("문제지 파일을 첨부해주세요.");
-                    filesToProcess.push(await fileToBase64(qFile));
+                    if (!qFile) throw new Error("객관식 문제지 이미지를 올려주세요.");
+                    if (!omrInput) throw new Error("OMR 카드를 클릭하여 마킹을 완료해주세요.");
+                    if (qFile) filesToProcess.push(await fileToBase64(qFile));
                     
-                    if(subMode === 'score') {
-                        if (!omrInput) throw new Error("OMR 마킹을 입력해주세요.");
-                        prompt = `[학생 답안]: ${omrInput}\n채점 및 오답에 대한 상세 해설, 약점 보완 가이드를 제공하세요.\n${formattingRules}`;
-                        title = `[오답 해설] 모의고사`;
-                    } else {
-                        prompt = `이 시험지에서 틀릴 확률이 가장 높은 핵심 개념 3개만 추출하여 초압축 요약 노트를 작성하세요.\n${formattingRules}`;
-                        title = `[초압축 노트] 약점 대비`;
-                    }
+                    title = `[채점/오답분석] 모의고사`;
+                    prompt = `첨부된 시험지와 학생 마킹 답안을 바탕으로 초정밀 가채점 및 분석 리포트를 작성하세요.\n[학생 답안]: ${omrInput}\n\n[조건]\n1. 실제 정답과 학생 답안을 비교 채점(O/X)하세요.\n2. 틀린 문제는 오답 원인(논리적 함정)을 생략 없이 아주 길고 상세하게 해설하세요.\n3. [👩‍🏫 AI 선생님의 약점 보완 하이라이트]와 [🚨 변형 출제 포인트 예측]을 상세히 작성하세요.\n${formattingRules}`;
                 }
 
                 const aiText = await callGeminiAPI(apiKey, prompt, filesToProcess, loaderId);
-                currentContext = aiText; currentRawMarkdown = aiText; 
+                currentContext = aiText; 
                 
-                if(mode === 'concept' && !document.getElementById('conceptTags').value) {
-                    const tagMatch = aiText.match(/#(\S+)/g);
-                    if(tagMatch) document.getElementById('conceptTags').value = tagMatch.join(', ').replace(/#/g, '');
-                }
-
                 resultBox.innerHTML = marked.parse(aiText);
-                applyTableWrapper(resultBox); // 표 가로 스크롤 적용
                 resultWrapper.style.display = 'block';
                 if (window.MathJax) MathJax.typesetPromise([resultBox]);
+                saveHistory(title, tags, aiText);
                 
-                let finalTags = document.getElementById(mode === 'concept' ? 'conceptTags' : 'gradeTags').value.split(',').map(t=>t.trim()).filter(t=>t);
-                saveHistory(title, finalTags, aiText);
-                markStreak();
+                const chatBoxId = mode === 'concept' ? 'chatBoxConcept' : 'chatBoxGrade';
+                document.getElementById(chatBoxId).innerHTML = '<div class="chat-msg msg-ai">자료 정리가 완료되었습니다! 복습 모드(빈칸 뚫기)를 해보시거나, 이해가 안 가는 부분은 저에게 질문해 주세요!</div>';
 
-            } catch (error) { resultBox.innerHTML = `<div style="color:red; padding:20px;">🚨 에러: ${error.message}</div>`; resultWrapper.style.display = 'block'; } 
-            finally { document.getElementById(loaderId).style.display = 'none'; }
+            } catch (error) { 
+                resultBox.innerHTML = `<div style="color: #EF4444; font-weight: bold; padding: 20px; border: 2px dashed #EF4444; border-radius: 10px; background: #FEF2F2;"><i class="fa-solid fa-triangle-exclamation"></i> 에러 발생:<br><br>${error.message}</div>`;
+                resultWrapper.style.display = 'block';
+            } 
+            finally { 
+                loader.style.display = 'none'; 
+            }
         }
 
         async function askTutor(mode) {
             const apiKey = document.getElementById('sysApiKey').value;
-            if (!apiKey) return alert("왼쪽 하단에서 API Key를 입력해주세요!");
             const inputField = document.getElementById('chatInput' + (mode === 'concept' ? 'Concept' : 'Grade'));
             const chatBox = document.getElementById('chatBox' + (mode === 'concept' ? 'Concept' : 'Grade'));
             const question = inputField.value.trim();
+
+            if (!apiKey) return alert("API Key를 입력해주세요.");
             if (!question) return;
 
-            chatBox.innerHTML += `<div class="chat-msg msg-user">${question}</div>`; inputField.value = ""; chatBox.scrollTop = chatBox.scrollHeight;
-            const loadingId = "load-" + Date.now(); chatBox.innerHTML += `<div class="chat-msg msg-ai" id="${loadingId}">답변을 생각 중입니다...</div>`;
-            const prompt = `[학습 자료]:\n${currentContext}\n\n[학생 질문]: ${question}\n위 자료 맥락 안에서 명확히 답변하세요.\n${formattingRules}`;
+            chatBox.innerHTML += `<div class="chat-msg msg-user">${question}</div>`;
+            inputField.value = "";
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            const loadingId = "load-" + Date.now();
+            chatBox.innerHTML += `<div class="chat-msg msg-ai" id="${loadingId}"><i class="fa-solid fa-spinner fa-spin"></i> 선생님이 답변을 생각 중입니다...</div>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            const prompt = `우리가 방금 학습한 아래 자료를 바탕으로 학생의 질문에 친절하고 상세하게 답변해주세요.\n\n[학습 자료]:\n${currentContext}\n\n[학생의 질문]: ${question}\n\n[답변 지침]: 자료의 맥락을 벗어나지 않게 설명할 것.\n${formattingRules}`;
 
             try {
-                const answerText = await callGeminiAPI(apiKey, prompt, []);
+                const answerText = await callGeminiAPI(apiKey, prompt, [], null);
                 document.getElementById(loadingId).remove();
                 chatBox.innerHTML += `<div class="chat-msg msg-ai">${marked.parse(answerText)}</div>`;
                 if (window.MathJax) MathJax.typesetPromise([chatBox]);
-            } catch (error) { document.getElementById(loadingId).remove(); chatBox.innerHTML += `<div style="color:red;">에러 발생</div>`; }
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
-
-        function markStreak() {
-            let streaks = JSON.parse(localStorage.getItem('studyStreak') || '{}');
-            const today = new Date().toISOString().split('T')[0];
-            streaks[today] = true;
-            localStorage.setItem('studyStreak', JSON.stringify(streaks));
-            renderStreak();
-        }
-        function renderStreak() {
-            let streaks = JSON.parse(localStorage.getItem('studyStreak') || '{}');
-            const grid = document.getElementById('streakGrid');
-            if(!grid) return;
-            let html = '';
-            for(let i=29; i>=0; i--) {
-                let d = new Date(); d.setDate(d.getDate() - i);
-                let dateStr = d.toISOString().split('T')[0];
-                let activeClass = streaks[dateStr] ? 'active' : '';
-                html += `<div class="streak-box ${activeClass}" title="${dateStr}"></div>`;
+            } catch (error) {
+                document.getElementById(loadingId).remove();
+                chatBox.innerHTML += `<div class="chat-msg msg-ai" style="color:red;">🚨 에러 발생: ${error.message}</div>`;
             }
-            grid.innerHTML = html;
+            chatBox.scrollTop = chatBox.scrollHeight;
         }
 
         function saveHistory(title, tags, content) {
             let history = JSON.parse(localStorage.getItem('cozyArchive') || '[]');
-            history.unshift({ id: Date.now(), title: title, tags: tags, content: content });
-            if (history.length > 50) history.pop();
+            history.unshift({ id: Date.now(), date: new Date().toLocaleDateString('ko-KR'), title: title, tags: tags, content: content });
+            if (history.length > 30) history.pop();
             localStorage.setItem('cozyArchive', JSON.stringify(history));
         }
 
+        // 보관함에 OX 버튼 추가
         function loadHistory() {
             const list = document.getElementById('historyList');
             let history = JSON.parse(localStorage.getItem('cozyArchive') || '[]');
-            if (history.length === 0) return list.innerHTML = "<div style='color:var(--text-sub);'>저장된 기록이 없습니다.</div>";
+            if (history.length === 0) return list.innerHTML = "<div style='color:var(--text-sub); padding:20px;'>데이터가 없습니다.</div>";
             list.innerHTML = history.map(item => {
                 let tagsHtml = (item.tags || []).map(t => `<span class="tag-badge">${t}</span>`).join('');
                 return `
-                <div class="archive-item" onclick="viewHistory(${item.id})">
-                    <div style="flex:1;">
+                <div class="archive-item">
+                    <div style="flex:1;" onclick="viewHistory(${item.id})">
                         <div class="archive-title">${item.title}</div>
-                        <div>${tagsHtml}</div>
+                        <div class="tag-container">${tagsHtml}</div>
                     </div>
-                    <button class="icon-btn" style="border:none; box-shadow:none; width:30px; height:30px; background:transparent;" onclick="deleteHistory(${item.id}, event)"><i class="fa-solid fa-trash" style="font-size:0.9rem; color:var(--text-sub);"></i></button>
+                    <button class="btn-ox" onclick="startOXSurvival(${item.id})"><i class="fa-solid fa-gamepad"></i> OX 서바이벌</button>
                 </div>`;
             }).join('');
-        }
-
-        function deleteHistory(id, event) {
-            event.stopPropagation();
-            if(!confirm("이 노트를 삭제하시겠습니까?")) return;
-            let history = JSON.parse(localStorage.getItem('cozyArchive') || '[]');
-            history = history.filter(h => h.id !== id);
-            localStorage.setItem('cozyArchive', JSON.stringify(history));
-            loadHistory(); renderKnowledgeTree(); loadTrainingSelection();
-        }
-
-        function filterHistory() {
-            const query = document.getElementById('archiveSearch').value.toLowerCase();
-            const items = document.querySelectorAll('#historyList .archive-item');
-            items.forEach(item => { item.style.display = item.innerText.toLowerCase().includes(query) ? 'flex' : 'none'; });
         }
 
         function viewHistory(id) {
@@ -911,80 +714,143 @@
             if (item) {
                 document.querySelectorAll('.menu-item, .page-section').forEach(el => el.classList.remove('active'));
                 document.getElementById('page-concept').classList.add('active'); 
-                document.getElementById('conceptResult').innerHTML = marked.parse(item.content);
-                applyTableWrapper(document.getElementById('conceptResult'));
-                document.getElementById('conceptResultWrapper').style.display = 'block';
-                currentContext = item.content; currentRawMarkdown = item.content;
-                if (window.MathJax) MathJax.typesetPromise([document.getElementById('conceptResult')]);
-                window.scrollTo({ top: 0 });
+                
+                const resultBox = document.getElementById('conceptResult');
+                const resultWrapper = document.getElementById('conceptResultWrapper');
+                
+                currentContext = item.content; 
+                resultBox.innerHTML = marked.parse(item.content);
+                resultWrapper.style.display = 'block';
+                if (window.MathJax) MathJax.typesetPromise([resultBox]);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                
+                document.getElementById('chatBoxConcept').innerHTML = '<div class="chat-msg msg-ai">보관함에서 노트를 불러왔습니다! 복습 모드를 켜거나 질문을 남겨주세요.</div>';
             }
         }
 
         function renderKnowledgeTree() {
             let history = JSON.parse(localStorage.getItem('cozyArchive') || '[]');
             let treeContainer = document.getElementById('mermaidTree');
-            if (history.length === 0) return treeContainer.innerHTML = "<div style='color:var(--text-sub);'>지식 맵을 구성할 데이터가 없습니다.</div>";
-            let graphDef = "graph TD\n Root((핵심 지식))";
-            history.forEach((item, index) => { graphDef += `\n Root --> node_${index}("${item.title.substring(0,15)}")`; });
+            if (history.length === 0) {
+                treeContainer.innerHTML = "<div style='color:var(--text-sub); font-weight:bold;'>아직 쌓인 지식이 없습니다. 코넬 노트를 생성해보세요!</div>";
+                return;
+            }
+            let graphDef = "graph TD\n Root((나의 지식 마스터))";
+            let tagMap = {}; 
+            history.forEach((item, index) => {
+                let mainTag = (item.tags && item.tags.length > 0) ? item.tags[0] : "기타 과목";
+                let titleTrimmed = item.title.replace(/\[.*?\] /g, ''); 
+                if(!tagMap[mainTag]) tagMap[mainTag] = [];
+                tagMap[mainTag].push({ id: "node_" + index, name: titleTrimmed });
+            });
+            let tagIndex = 0;
+            for(let tag in tagMap) {
+                let tagNode = "T" + tagIndex;
+                graphDef += `\n Root --> ${tagNode}[${tag}]`;
+                tagMap[tag].forEach(sub => { graphDef += `\n ${tagNode} --> ${sub.id}("${sub.name}")`; });
+                tagIndex++;
+            }
             treeContainer.innerHTML = `<div class="mermaid">${graphDef}</div>`;
             mermaid.init(undefined, document.querySelectorAll('.mermaid'));
         }
 
-        function loadSelectionList(containerId, isRadio = false) {
-            const list = document.getElementById(containerId);
+        function loadUnifiedSelection() {
+            const list = document.getElementById('unifiedSelectionList');
             let history = JSON.parse(localStorage.getItem('cozyArchive') || '[]');
-            if (history.length === 0) return list.innerHTML = "<div style='padding:10px; color:var(--text-sub);'>선택할 노트가 없습니다.</div>";
-            const inputType = isRadio ? 'radio' : 'checkbox';
-            const nameAttr = isRadio ? 'name="trainingSel"' : '';
+            if (history.length === 0) return list.innerHTML = "<div>데이터가 없습니다.</div>";
             list.innerHTML = history.map(item => `
-                <label style="display:flex; align-items:center; gap:10px; padding:10px; border-bottom:1px solid var(--border-soft); cursor:pointer;">
-                    <input type="${inputType}" ${nameAttr} class="${containerId}-checkbox" value="${item.id}" style="width:18px; height:18px;">
-                    <span style="font-weight:600;">${item.title}</span>
-                </label>`).join('');
+                <div class="archive-item" style="padding:10px;">
+                    <input type="checkbox" class="archive-checkbox unified-checkbox" value="${item.id}">
+                    <div style="margin-left:10px;">${item.title}</div>
+                </div>`).join('');
         }
-        function loadTrainingSelection() { loadSelectionList('trainingSelectionList', true); }
-        function loadUnifiedSelection() { loadSelectionList('unifiedSelectionList', false); }
 
-        async function executeUnifiedNote(type) {
+        async function executeUnifiedNote() {
+            if(window.speechSynthesis.speaking) window.speechSynthesis.cancel();
             const apiKey = document.getElementById('sysApiKey').value;
-            if (!apiKey) return alert("왼쪽 하단 설정에서 API Key를 입력해주세요!");
-            
-            const checkboxes = document.querySelectorAll('.unifiedSelectionList-checkbox:checked');
-            if (checkboxes.length === 0) return alert("병합할 노트를 1개 이상 체크해주세요.");
+            const checkboxes = document.querySelectorAll('.unified-checkbox:checked');
+            if (!apiKey || checkboxes.length === 0) return alert("API Key를 입력하고, 병합할 노트를 선택해주세요.");
 
-            const loaderId = 'unifiedLoader'; const resultWrapper = document.getElementById('unifiedResultWrapper'); const resultBox = document.getElementById('unifiedResult');
-            document.getElementById(loaderId).style.display = 'block'; resultWrapper.style.display = 'none';
+            const loaderId = 'unifiedLoader';
+            const loader = document.getElementById(loaderId);
+            const resultWrapper = document.getElementById('unifiedResultWrapper');
+            const resultBox = document.getElementById('unifiedResult');
+            
+            loader.innerHTML = `<div class="spinner" style="border-top-color:currentColor"></div>노트 병합 중... (파일이 많을수록 시간이 오래 걸립니다)`;
+            loader.style.display = 'block'; 
+            resultWrapper.style.display = 'none';
 
             let history = JSON.parse(localStorage.getItem('cozyArchive') || '[]');
-            let mergedContent = ""; 
-            checkboxes.forEach(cb => { const item = history.find(h => h.id == cb.value); if(item) mergedContent += `\n\n[자료]: ${item.content}`; });
+            let mergedContent = "";
+            let selectedTags = new Set();
+            checkboxes.forEach(cb => {
+                const item = history.find(h => h.id == cb.value);
+                if(item) { mergedContent += `\n\n### [${item.title}]\n${item.content}`; if(item.tags) item.tags.forEach(t => selectedTags.add(t)); }
+            });
 
-            let prompt = "", coverHtml = "";
-            if (type === 'book') { prompt = `단권화 병합 노트 작성\n${mergedContent}\n${formattingRules}`; coverHtml = `<div class="book-cover"><div class="book-title">단권화 병합 노트</div></div>`; } 
-            else if (type === 'exam') { prompt = `실전 모의고사 출제 (정답/해설은 하단에 배치)\n${mergedContent}\n${formattingRules}`; coverHtml = `<div class="mock-exam-title">실전 모의고사</div>`; } 
-            else { prompt = `다단원 융합 고난도 문제 1문제 출제\n${mergedContent}\n${formattingRules}`; coverHtml = `<div class="book-cover" style="background:var(--bg-body);"><div class="book-title" style="color:var(--accent-danger);">다단원 융합 고난도 문제</div></div>`; }
-
+            const prompt = `학습 기록을 병합하여 마스터 단권화 노트를 길고 상세하게 작성하세요.\n\n${mergedContent}\n\n[조건]\n1. 내용의 유기적 연결을 중시하여 절대 생략하지 말고 풍부하게 재구성할 것.\n2. 통합된 개념을 바탕으로 [🔥 최종 킬러 문항 예측 리포트]를 작성할 것.\n${formattingRules}`;
             try {
                 const aiText = await callGeminiAPI(apiKey, prompt, [], loaderId);
-                resultBox.innerHTML = coverHtml + `<div style="padding:0;">` + marked.parse(aiText) + `</div>`;
-                applyTableWrapper(resultBox); 
+                const tagsString = Array.from(selectedTags).join(', ') || '종합 노트';
+                const today = new Date().toLocaleDateString('ko-KR');
+                const coverHtml = `<div class="book-cover"><div class="book-title">나만의 마스터 단권화 문제집</div><div class="book-subtitle">AI 튜터 분석 에디션</div><div class="book-date">발행일: ${today} | 포함 단원: ${tagsString}</div></div>`;
+
+                resultBox.innerHTML = coverHtml + `<div style="padding: 0 60px 50px;">` + marked.parse(aiText) + `</div>`;
                 resultWrapper.style.display = 'block';
                 if (window.MathJax) MathJax.typesetPromise([resultBox]);
-                saveHistory(`[저장] ${type === 'book' ? '단권화' : type === 'exam' ? '모의고사' : '고난도 융합'}`, [], aiText);
-            } catch (error) { resultBox.innerHTML = `<div style="color:red;">🚨 에러 발생</div>`; resultWrapper.style.display = 'block'; } 
-            finally { document.getElementById(loaderId).style.display = 'none'; }
+            } catch (error) { 
+                resultBox.innerHTML = `<div style="color: #EF4444; padding: 20px; font-weight: bold; border: 2px dashed #EF4444; background: #FEF2F2;"><i class="fa-solid fa-triangle-exclamation"></i> 에러 발생: ${error.message}</div>`;
+                resultWrapper.style.display = 'block';
+            } 
+            finally { loader.style.display = 'none'; }
         }
 
-        let oxAnswerCache = "";
-        async function startTraining(type) {
+        // 🔥 보스전 (융합 킬러 문항 생성) 로직
+        async function executeBossFight() {
+            if(window.speechSynthesis.speaking) window.speechSynthesis.cancel();
             const apiKey = document.getElementById('sysApiKey').value;
-            if (!apiKey) return alert("왼쪽 하단 설정에서 API Key를 입력해주세요!");
+            const checkboxes = document.querySelectorAll('.unified-checkbox:checked');
+            if (!apiKey || checkboxes.length === 0) return alert("API Key를 입력하고, 융합할 노트를 2개 이상 선택해주세요.");
+
+            const loaderId = 'unifiedLoader';
+            const loader = document.getElementById(loaderId);
+            const resultWrapper = document.getElementById('unifiedResultWrapper');
+            const resultBox = document.getElementById('unifiedResult');
             
-            const selected = document.querySelector('.trainingSelectionList-checkbox:checked');
-            if (!selected) return alert("훈련할 노트를 체크해주세요.");
+            loader.innerHTML = `<div class="spinner" style="border-top-color:currentColor"></div>선택된 단원들을 분석하여 융합 킬러 문항을 출제 중입니다...`;
+            loader.style.display = 'block'; 
+            resultWrapper.style.display = 'none';
 
             let history = JSON.parse(localStorage.getItem('cozyArchive') || '[]');
-            const item = history.find(h => h.id == selected.value);
+            let mergedContent = "";
+            checkboxes.forEach(cb => {
+                const item = history.find(h => h.id == cb.value);
+                if(item) mergedContent += `\n\n[자료]: ${item.content}`;
+            });
+
+            const prompt = `당신은 수능 출제 위원장입니다. 제공된 여러 단원의 자료를 융합하여 수능 20번(최고난도) 수준의 [🔥 융합 킬러 문항]을 1문제 출제하세요.\n\n${mergedContent}\n\n[조건]\n1. 단순 지식이 아니라 두 개념의 교집합이나 모순점을 파고드는 고난도 추론 문제여야 합니다.\n2. 정답 선지 1개와 치명적인 함정이 숨어있는 오답 선지 4개를 만드세요.\n3. 문제 바로 아래에 왜 이 문제가 킬러 문항인지, 각 선지의 함정(매력적인 이유)이 무엇인지 소름 돋게 상세한 해설을 적어주세요.\n${formattingRules}`;
+            try {
+                const aiText = await callGeminiAPI(apiKey, prompt, [], loaderId);
+                const coverHtml = `<div class="book-cover" style="padding:60px 40px; background:linear-gradient(135deg, #FFF1F2, #FFE4E6); border-color:#FDA4AF;"><div class="book-title" style="color:#E11D48;"><i class="fa-solid fa-skull"></i> BOSS FIGHT</div><div class="book-subtitle">단원 융합 최고난도 킬러 문항</div></div>`;
+
+                resultBox.innerHTML = coverHtml + `<div style="padding: 0 60px 50px;">` + marked.parse(aiText) + `</div>`;
+                resultWrapper.style.display = 'block';
+                if (window.MathJax) MathJax.typesetPromise([resultBox]);
+            } catch (error) { 
+                resultBox.innerHTML = `<div style="color: #EF4444; padding: 20px; font-weight: bold; border: 2px dashed #EF4444; background: #FEF2F2;"><i class="fa-solid fa-triangle-exclamation"></i> 에러 발생: ${error.message}</div>`;
+                resultWrapper.style.display = 'block';
+            } 
+            finally { loader.style.display = 'none'; }
+        }
+
+        // 🔥 지옥의 OX 서바이벌 로직
+        let oxAnswerCache = "";
+        async function startOXSurvival(id) {
+            const apiKey = document.getElementById('sysApiKey').value;
+            if (!apiKey) return alert("API Key를 입력해주세요.");
+
+            let history = JSON.parse(localStorage.getItem('cozyArchive') || '[]');
+            const item = history.find(h => h.id === id);
             if (!item) return;
 
             document.getElementById('oxModal').style.display = 'flex';
@@ -992,24 +858,38 @@
             document.getElementById('oxAnswerArea').style.display = 'none';
             document.getElementById('oxLoader').style.display = 'block';
 
-            const prompt = `[오답 선지 OX 훈련] 문제 5개 출제.\n${item.content}\n\n[조건] 중간에 '====ANSWER====' 넣고 그 위엔 문제만, 아래엔 정답/해설 작성.\n${formattingRules}`;
+            const prompt = `당신은 잔혹한 출제자입니다. 다음 노트 내용을 바탕으로, 교묘하게 단어를 바꾸거나 인과관계를 섞어서 만든 [지옥의 OX 선지] 5개를 출제하세요.\n\n[노트 내용]:\n${item.content}\n\n[조건]\n1. 무조건 마크다운으로 출력하되, 내용의 절반 지점에 정확히 '====ANSWER====' 라는 구분선을 넣으세요.\n2. 구분선 위쪽에는 학생이 풀 수 있도록 "문제 번호. 선지 내용 ( )" 형태로 문제 5개만 제시하세요.\n3. 구분선 아래쪽에는 정답(O 또는 X)과 함께 왜 그 선지가 함정인지 아주 악랄하고 상세하게 해설해 주세요.\n${formattingRules}`;
+
             try {
                 const aiText = await callGeminiAPI(apiKey, prompt, []);
+                
+                // 구분선으로 문제와 해설 분리
                 const parts = aiText.split('====ANSWER====');
+                const questionPart = parts[0] ? parts[0].trim() : "문제를 불러오지 못했습니다.";
+                oxAnswerCache = parts[1] ? parts[1].trim() : "해설이 제공되지 않았습니다.";
+
                 document.getElementById('oxLoader').style.display = 'none';
                 document.getElementById('oxPlayArea').style.display = 'block';
-                document.getElementById('oxQuestionContent').innerHTML = marked.parse(parts[0] ? parts[0].trim() : "출제 오류");
-                oxAnswerCache = parts[1] ? parts[1].trim() : "해설 데이터 없음";
-            } catch(error) { document.getElementById('oxLoader').style.display = 'none'; document.getElementById('oxPlayArea').style.display = 'block'; document.getElementById('oxQuestionContent').innerHTML = `<div style="color:red;">🚨 에러 발생</div>`; }
+                document.getElementById('oxQuestionContent').innerHTML = marked.parse(questionPart);
+
+            } catch(error) {
+                document.getElementById('oxLoader').style.display = 'none';
+                document.getElementById('oxPlayArea').style.display = 'block';
+                document.getElementById('oxQuestionContent').innerHTML = `<div style="color:red;">🚨 문제 출제 실패: ${error.message}</div>`;
+            }
         }
 
         function revealOXAnswer() {
             document.getElementById('oxAnswerArea').style.display = 'block';
             document.getElementById('oxAnswerContent').innerHTML = marked.parse(oxAnswerCache);
+            // 정답 보기 버튼 숨기기
             document.querySelector('#oxPlayArea .btn-primary').style.display = 'none';
-            markStreak();
         }
-        function closeOXModal() { document.getElementById('oxModal').style.display = 'none'; document.querySelector('#oxPlayArea .btn-primary').style.display = 'block'; }
+
+        function closeOXModal() {
+            document.getElementById('oxModal').style.display = 'none';
+            document.querySelector('#oxPlayArea .btn-primary').style.display = 'flex'; // 버튼 원상복구
+        }
     </script>
 </body>
 </html>
