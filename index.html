@@ -50,7 +50,7 @@
             </div>
 
             <div class="settings-section">
-                <label class="setting-label">테마 색상 선택</label>
+                <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-sub); margin-bottom: 6px; display: block;">테마 색상 선택</label>
                 <select id="themeSelector" onchange="changeTheme(this.value)">
                     <option value="light">밝은 기본 (Light)</option>
                     <option value="dark">어두운 기본 (Dark)</option>
@@ -58,13 +58,20 @@
                     <option value="pastel">코지 파스텔 (Cozy Pastel)</option>
                     <option value="paper">클래식 종이 (Classic Paper)</option>
                     <option value="sepianight">세피아 나이트 (Sepia Night)</option>
+                    <option value="mintchoco">민트 초코 (Mint Choco)</option>
+                    <option value="midnightblue">미드나잇 블루 (Midnight Blue)</option>
+                    <option value="cherryblossom">체리 블라썸 (Cherry Blossom)</option>
                 </select>
-                <label class="setting-label">Gemini API Key</label>
+                <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-sub); margin-bottom: 6px; display: block;">Gemini API Key</label>
                 <input type="password" id="sysApiKey" placeholder="API Key 입력" onchange="saveApiKey()">
             </div>
         </nav>
 
         <div class="main-wrapper">
+            <div class="pdf-viewer-container no-print" id="pdfViewerPanel">
+                <iframe id="pdfIframe"></iframe>
+            </div>
+
             <main class="main-content" onclick="closeSidebarOutside()">
                 
                 <div class="page-header no-print">
@@ -102,7 +109,7 @@
                                 <label>요약 지시사항 (음성 지원)</label>
                                 <textarea id="conceptPrompt" rows="1" style="min-height:45px;" placeholder="요약할 내용이나 지시사항을 적어주세요."></textarea>
                             </div>
-                            <button class="icon-btn mic-btn" id="micBtn" onclick="toggleSpeechRecognition()"><i class="fa-solid fa-microphone"></i></button>
+                            <button class="icon-btn" style="background:var(--accent-danger); color:white; border:none; width:45px; height:45px; flex-shrink:0;" id="micBtn" onclick="toggleSpeechRecognition()"><i class="fa-solid fa-microphone"></i></button>
                         </div>
                         
                         <div class="grid-2">
@@ -115,48 +122,155 @@
                     <div id="conceptResultWrapper" class="document-wrapper">
                         <div class="toolbar-chips no-print">
                             <div class="chip" onclick="toggleFocusMode('conceptResult')"><i class="fa-solid fa-eye-low-vision"></i> 포커스 모드</div>
-                            <div class="chip" id="ttsBtnConcept" onclick="toggleTTS('conceptResult', 'ttsBtnConcept')"><i class="fa-solid fa-headphones"></i> 읽기</div>
+                            <div class="chip" id="ttsBtnConcept" onclick="toggleTTS('conceptResult', 'ttsBtnConcept')"><i class="fa-solid fa-headphones"></i> 소리내어 읽기</div>
                             <div class="chip" onclick="toggleCloze(this)"><i class="fa-solid fa-eye-slash"></i> 빈칸 암기</div>
-                            <div class="chip" onclick="copyNotionMarkdown('conceptResult')"><i class="fa-brands fa-neos"></i> 복사</div>
+                            <div class="chip" onclick="copyNotionMarkdown('conceptResult')"><i class="fa-brands fa-neos"></i> 텍스트 복사</div>
                             <div class="chip active zen-btn" onclick="exportPDF('conceptResult', '개념요약노트')"><i class="fa-solid fa-arrow-up-right-from-square"></i> 굿노트 내보내기 (PDF)</div>
                         </div>
                         
                         <div id="conceptResult" class="document-view"></div>
                         
                         <div class="qna-section no-print">
-                            <div class="chat-box" id="chatBoxConcept"><div class="chat-msg msg-ai">궁금한 점을 질문해 주세요.</div></div>
-                            <div class="chat-input-area">
-                                <input type="text" id="chatInputConcept" placeholder="질문을 입력하세요..." onkeypress="if(event.key === 'Enter') askTutor('concept')">
+                            <div class="chat-box" id="chatBoxConcept">
+                                <div class="chat-msg msg-ai">노트에 대해 궁금한 점을 질문해 주세요.</div>
+                            </div>
+                            <div class="chat-input-area" style="display:flex; gap:10px;">
+                                <input type="text" id="chatInputConcept" placeholder="질문을 입력하세요..." onkeypress="if(event.key === 'Enter') askTutor('concept')" style="flex:1;">
                                 <button class="btn-primary" style="width:60px; padding:0; border-radius:8px;" onclick="askTutor('concept')"><i class="fa-solid fa-paper-plane"></i></button>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                <!-- 훈련소 및 다른 탭들의 기본 뼈대 (app.js에서 렌더링 제어) -->
+                <!-- 페이지 2: OMR & 오답 해설 -->
                 <section id="page-grading" class="page-section">
-                    <!-- 생략 (app.js에서 동일 구조로 처리) -->
+                    <div class="panel no-print">
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label>문제지 첨부</label>
+                                <div class="upload-zone" id="gradeDropZone" onclick="document.getElementById('gradeQuestFile').click()">
+                                    <i class="fa-solid fa-file-image"></i>
+                                    <div class="upload-text">파일을 끌어다 놓으세요</div>
+                                    <input type="file" id="gradeQuestFile" accept="image/*,.pdf" onchange="handleFile('gradeQuestFile', 'gradeQuestPreview')">
+                                </div>
+                                <div id="gradeQuestPreview" class="preview-area" style="background:var(--accent-blue)"></div>
+                            </div>
+                            <div class="form-group">
+                                <label>태그 (선택)</label>
+                                <input type="text" id="gradeTags" placeholder="예: 9월 모의고사">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>OMR 마킹</label>
+                            <div id="visualOMR" class="omr-container"></div>
+                            <div style="text-align:right; margin-top:10px;"><a href="#" onclick="clearOMR()" style="color:var(--text-sub); font-size:0.85rem;">마킹 초기화</a></div>
+                            <input type="hidden" id="omrAnswers">
+                        </div>
+                        <div class="grid-2">
+                            <button class="btn-primary" style="background:var(--accent-blue);" onclick="executeAI('grading', 'score')">가채점 분석</button>
+                            <button class="btn-primary" style="background:var(--accent-danger);" onclick="executeAI('grading', 'firstaid')">최다 오답 개념 초압축 노트</button>
+                        </div>
+                        <div id="gradeLoader" class="loader"><div class="spinner"></div>오답을 분석 중입니다...</div>
+                    </div>
+
+                    <div id="gradeResultWrapper" class="document-wrapper">
+                        <div class="toolbar-chips no-print">
+                            <div class="chip" onclick="toggleFocusMode('gradeResult')"><i class="fa-solid fa-eye-low-vision"></i> 포커스 모드</div>
+                            <div class="chip" id="ttsBtnGrade" onclick="toggleTTS('gradeResult', 'ttsBtnGrade')"><i class="fa-solid fa-headphones"></i> 소리내어 읽기</div>
+                            <div class="chip" onclick="toggleCloze(this)"><i class="fa-solid fa-eye-slash"></i> 빈칸 암기</div>
+                            <div class="chip active zen-btn" onclick="exportPDF('gradeResult', '오답분석리포트')"><i class="fa-solid fa-arrow-up-right-from-square"></i> 굿노트 내보내기 (PDF)</div>
+                        </div>
+                        <div id="gradeResult" class="document-view"></div>
+                    </div>
                 </section>
-                <section id="page-dashboard" class="page-section"></section>
-                <section id="page-training" class="page-section"></section>
-                <section id="page-unified" class="page-section"></section>
+
+                <!-- 페이지 3: 지식 대시보드 -->
+                <section id="page-dashboard" class="page-section">
+                    <div class="streak-container no-print" style="background:var(--bg-surface); padding:20px; border-radius:16px; border:1px solid var(--border-soft); margin-bottom:20px;">
+                        <div class="streak-title" style="font-size:1rem; font-weight:800; margin-bottom:15px; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-fire" style="color:var(--accent-danger);"></i> 최근 학습 기록</div>
+                        <div id="streakGrid"></div>
+                    </div>
+                    <div class="dashboard-grid" style="display:grid; grid-template-columns:1fr; gap:20px;">
+                        <div class="panel no-print" style="padding:20px;">
+                            <label style="font-weight:700; margin-bottom:15px; display:block;"><i class="fa-solid fa-network-wired"></i> 단원별 지식 맵</label>
+                            <div id="mermaidTree" style="background:var(--bg-surface); border-radius:16px; border:1px solid var(--border-soft); min-height:250px; display:flex; justify-content:center; align-items:center; overflow-x:auto; padding:20px;"></div>
+                        </div>
+                        <div class="panel no-print" style="padding:20px; background:transparent; border:none; box-shadow:none;">
+                            <div class="search-bar" style="position:relative; margin-bottom:15px;">
+                                <i class="fa-solid fa-magnifying-glass" style="position:absolute; left:15px; top:50%; transform:translateY(-50%); color:var(--text-sub);"></i>
+                                <input type="text" id="archiveSearch" placeholder="저장된 노트를 검색하세요..." onkeyup="filterHistory()" style="padding-left:40px; border-radius:30px;">
+                            </div>
+                            <div id="historyList">기록이 없습니다.</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 페이지 4: 객관식 훈련소 -->
+                <section id="page-training" class="page-section">
+                    <div class="panel no-print">
+                        <p style="margin-bottom:15px; font-weight:700; color:var(--text-main);">🎯 훈련할 노트를 보관함에서 선택하세요</p>
+                        <div id="trainingSelectionList" style="max-height:200px; overflow-y:auto; margin-bottom:20px; border:1px solid var(--border-soft); border-radius:12px; padding:10px;"></div>
+                        
+                        <div style="display:flex; gap:10px;">
+                            <button class="btn-primary" style="background:var(--accent-special);" onclick="startTraining('ox')"><i class="fa-solid fa-gamepad"></i> 오답 선지 OX 훈련</button>
+                            <button class="btn-primary" style="background:var(--text-main); opacity:0.5;" onclick="alert('다음 업데이트를 기대해주세요!')"><i class="fa-solid fa-list-check"></i> 다중 선택지 훈련 (예정)</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 페이지 5: 단권화 & 모의고사 생성 -->
+                <section id="page-unified" class="page-section">
+                    <div class="panel no-print">
+                        <p style="margin-bottom:15px; font-weight:700; color:var(--text-main);">📝 묶을 노트를 선택하세요 (2~3개 권장)</p>
+                        <div id="unifiedSelectionList" style="max-height:250px; overflow-y:auto; margin-bottom:20px; border:1px solid var(--border-soft); border-radius:12px; padding:10px;"></div>
+                        
+                        <div class="grid-2">
+                            <button class="btn-primary" style="background:var(--accent-blue);" onclick="executeUnifiedNote('book')">단권화 노트 병합</button>
+                            <button class="btn-primary" style="background:var(--accent-danger);" onclick="executeUnifiedNote('boss')">다단원 융합 고난도 출제</button>
+                        </div>
+                        <button class="btn-primary" style="background:var(--text-main); margin-top:15px;" onclick="executeUnifiedNote('exam')">실전 모의고사 생성</button>
+                        <div id="unifiedLoader" class="loader"><div class="spinner"></div>서버에 요청 중입니다...</div>
+                    </div>
+                    <div id="unifiedResultWrapper" class="document-wrapper">
+                        <div class="toolbar-chips no-print">
+                            <div class="chip active zen-btn" onclick="exportPDF('unifiedResult', '나만의_마스터자료')"><i class="fa-solid fa-arrow-up-right-from-square"></i> 굿노트 내보내기 (PDF)</div>
+                        </div>
+                        <div id="unifiedResult" class="document-view" style="padding:0;"></div>
+                    </div>
+                </section>
 
             </main>
         </div>
     </div>
 
     <!-- 플로팅 타이머 위젯 -->
-    <div class="floating-widget no-print" id="floatingTimer">
-        <div class="widget-drag-handle"><i class="fa-solid fa-grip-lines"></i></div>
-        <div class="timer-time" id="timerDisplay">25:00</div>
-        <div class="timer-controls">
-            <button onclick="startTimer()"><i class="fa-solid fa-play"></i></button>
-            <button onclick="pauseTimer()"><i class="fa-solid fa-pause"></i></button>
-            <button onclick="resetTimer()"><i class="fa-solid fa-rotate-right"></i></button>
+    <div class="floating-widget no-print" id="floatingTimer" style="position:fixed; bottom:30px; right:30px; width:220px; background:var(--bg-surface); padding:15px; border-radius:16px; border:1px solid var(--border-soft); box-shadow:0 10px 25px rgba(0,0,0,0.1); z-index:1000; user-select:none;">
+        <div class="widget-drag-handle" id="dragHandler" style="width:100%; height:25px; display:flex; justify-content:center; align-items:center; margin-bottom:5px; color:var(--text-sub); cursor:grab; background:rgba(0,0,0,0.02); border-radius:8px;"><i class="fa-solid fa-grip-lines"></i></div>
+        <div class="timer-time" id="timerDisplay" style="font-size:2rem; font-weight:900; margin-bottom:10px; text-align:center; color:var(--text-main); font-variant-numeric:tabular-nums;">25:00</div>
+        <div class="timer-controls" style="display:flex; justify-content:center; gap:8px;">
+            <button onclick="startTimer()" style="background:var(--bg-body); border:1px solid var(--border-soft); padding:8px 15px; border-radius:8px; cursor:pointer;"><i class="fa-solid fa-play"></i></button>
+            <button onclick="pauseTimer()" style="background:var(--bg-body); border:1px solid var(--border-soft); padding:8px 15px; border-radius:8px; cursor:pointer;"><i class="fa-solid fa-pause"></i></button>
+            <button onclick="resetTimer()" style="background:var(--bg-body); border:1px solid var(--border-soft); padding:8px 15px; border-radius:8px; cursor:pointer;"><i class="fa-solid fa-rotate-right"></i></button>
         </div>
-        <!-- 백색소음 -->
-        <audio id="bgm" loop preload="none"><source src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_0625c1539c.mp3?filename=heavy-rain-nature-sounds-8186.mp3" type="audio/mpeg"></audio>
-        <button class="btn-bgm" id="bgmBtn" onclick="toggleBGM()"><i class="fa-solid fa-cloud-rain"></i> 집중 빗소리</button>
+        <button class="btn-bgm" id="bgmBtn" onclick="toggleBGM()" style="margin-top:10px; width:100%; padding:8px; background:transparent; border:1px solid var(--text-sub); color:var(--text-sub); border-radius:8px; cursor:pointer;"><i class="fa-solid fa-cloud-rain"></i> 집중 빗소리</button>
+    </div>
+
+    <!-- OX 모달 -->
+    <div id="oxModal" class="ox-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(3px);">
+        <div class="ox-modal-content" style="background:var(--bg-surface); width:90%; max-width:800px; max-height:85vh; overflow-y:auto; border-radius:16px; padding:40px; position:relative; box-shadow:0 20px 50px rgba(0,0,0,0.5);">
+            <i class="fa-solid fa-circle-xmark ox-close" onclick="closeOXModal()" style="position:absolute; top:20px; right:25px; font-size:1.8rem; color:var(--text-sub); cursor:pointer;"></i>
+            <div class="ox-header">
+                <h2 style="color:var(--accent-special); font-size:2rem; font-weight:900; margin-bottom:20px; text-align:center;"><i class="fa-solid fa-gamepad"></i> 오답 선지 OX 훈련</h2>
+            </div>
+            <div id="oxLoader" class="loader" style="color:var(--accent-special); display:none; text-align:center;"><div class="spinner"></div>출제 중...</div>
+            <div id="oxPlayArea" style="display:none;">
+                <div id="oxQuestionContent" style="font-size:1.05rem; line-height:1.8;"></div>
+                <button class="btn-primary" style="background:var(--accent-special); margin-top:30px; width:100%; padding:16px; border-radius:10px; color:white; font-weight:bold; border:none; cursor:pointer;" onclick="revealOXAnswer()">정답 확인</button>
+            </div>
+            <div id="oxAnswerArea" style="display:none; margin-top:20px; padding-top:20px; border-top:1px solid var(--border-soft);">
+                <div id="oxAnswerContent" style="font-size:1.05rem; line-height:1.8;"></div>
+            </div>
+        </div>
     </div>
 
     <!-- 분리된 자바스크립트 파일 연결 -->
