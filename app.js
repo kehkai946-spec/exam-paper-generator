@@ -2,7 +2,6 @@
 // 1. 초기화 및 기본 UI 설정
 // ==========================================
 document.addEventListener("DOMContentLoaded", () => {
-    // API 키 및 테마 불러오기
     const savedKey = localStorage.getItem('geminiApiKey');
     if (savedKey) document.getElementById('sysApiKey').value = savedKey;
     
@@ -11,12 +10,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const themeSelector = document.getElementById('themeSelector');
     if(themeSelector) themeSelector.value = savedTheme;
     
-    // UI 컴포넌트 초기화
     renderOMR();
     setupDragAndDrop('conceptDropZone', 'conceptFile');
     setupDragAndDrop('gradeDropZone', 'gradeQuestFile');
     dragElement(document.getElementById("floatingTimer"));
-    renderStreak();
+    renderStreak(); // 잔디 심기 로드
 });
 
 function saveApiKey() { localStorage.setItem('geminiApiKey', document.getElementById('sysApiKey').value); }
@@ -38,20 +36,22 @@ function navTo(pageId) {
     const titles = {
         'concept': '<i class="fa-solid fa-file-pdf"></i> PDF 개념 요약',
         'grading': '<i class="fa-solid fa-marker"></i> OMR & 오답 해설',
-        'dashboard': '<i class="fa-solid fa-chart-pie"></i> 단원별 지식 맵',
-        'training': '<i class="fa-solid fa-dumbbell"></i> 오답 선지 OX 훈련',
+        'dashboard': '<i class="fa-solid fa-network-wired"></i> 단원별 지식 맵',
+        'archive': '<i class="fa-solid fa-box-archive"></i> 내 기록 보관함',
+        'training': '<i class="fa-solid fa-dumbbell"></i> 실전 멘탈 훈련소',
         'unified': '<i class="fa-solid fa-layer-group"></i> 단권화 & 모의고사 생성'
     };
     document.getElementById('pageTitleText').innerHTML = titles[pageId] || '';
 
-    // 탭 이동 시 데이터 로드
-    if(pageId === 'dashboard') { loadHistory(); renderKnowledgeTree(); }
-    if(pageId === 'training') loadTrainingSelection();
-    if(pageId === 'unified') loadUnifiedSelection();
+    // 메뉴 이동 시 필요한 데이터 동적 로드
+    if(pageId === 'dashboard') { renderKnowledgeTree(); renderStreak(); }
+    if(pageId === 'archive') { loadHistory(); }
+    if(pageId === 'training') { loadTrainingSelection(); }
+    if(pageId === 'unified') { loadUnifiedSelection(); }
 }
 
 // ==========================================
-// 2. 아이패드 완벽 지원 위젯 드래그 (Touch & Mouse)
+// 2. 아이패드 완벽 지원 위젯 드래그
 // ==========================================
 function dragElement(elmnt) {
     if(!elmnt) return;
@@ -61,34 +61,16 @@ function dragElement(elmnt) {
     handle.onmousedown = dragMouseDown;
     handle.ontouchstart = dragTouchStart;
 
-    function dragMouseDown(e) { 
-        e = e || window.event; e.preventDefault(); 
-        pos3 = e.clientX; pos4 = e.clientY; 
-        document.onmouseup = closeDragElement; document.onmousemove = elementDrag; 
-    }
-    function dragTouchStart(e) { 
-        e = e || window.event; 
-        pos3 = e.touches[0].clientX; pos4 = e.touches[0].clientY; 
-        document.ontouchend = closeDragElement; document.ontouchmove = elementTouchDrag; 
-    }
+    function dragMouseDown(e) { e = e || window.event; e.preventDefault(); pos3 = e.clientX; pos4 = e.clientY; document.onmouseup = closeDragElement; document.onmousemove = elementDrag; }
+    function dragTouchStart(e) { e = e || window.event; pos3 = e.touches[0].clientX; pos4 = e.touches[0].clientY; document.ontouchend = closeDragElement; document.ontouchmove = elementTouchDrag; }
     
-    function elementDrag(e) { 
-        e = e || window.event; e.preventDefault(); 
-        pos1 = pos3 - e.clientX; pos2 = pos4 - e.clientY; pos3 = e.clientX; pos4 = e.clientY; 
-        elmnt.style.top = (elmnt.offsetTop - pos2) + "px"; elmnt.style.left = (elmnt.offsetLeft - pos1) + "px"; 
-        elmnt.style.bottom = "auto"; elmnt.style.right = "auto"; 
-    }
-    function elementTouchDrag(e) { 
-        e = e || window.event; 
-        pos1 = pos3 - e.touches[0].clientX; pos2 = pos4 - e.touches[0].clientY; pos3 = e.touches[0].clientX; pos4 = e.touches[0].clientY; 
-        elmnt.style.top = (elmnt.offsetTop - pos2) + "px"; elmnt.style.left = (elmnt.offsetLeft - pos1) + "px"; 
-        elmnt.style.bottom = "auto"; elmnt.style.right = "auto"; 
-    }
+    function elementDrag(e) { e = e || window.event; e.preventDefault(); pos1 = pos3 - e.clientX; pos2 = pos4 - e.clientY; pos3 = e.clientX; pos4 = e.clientY; elmnt.style.top = (elmnt.offsetTop - pos2) + "px"; elmnt.style.left = (elmnt.offsetLeft - pos1) + "px"; elmnt.style.bottom = "auto"; elmnt.style.right = "auto"; }
+    function elementTouchDrag(e) { e = e || window.event; pos1 = pos3 - e.touches[0].clientX; pos2 = pos4 - e.touches[0].clientY; pos3 = e.touches[0].clientX; pos4 = e.touches[0].clientY; elmnt.style.top = (elmnt.offsetTop - pos2) + "px"; elmnt.style.left = (elmnt.offsetLeft - pos1) + "px"; elmnt.style.bottom = "auto"; elmnt.style.right = "auto"; }
     function closeDragElement() { document.onmouseup = null; document.onmousemove = null; document.ontouchend = null; document.ontouchmove = null; }
 }
 
 // ==========================================
-// 3. 오디오 및 타이머 기능 (iOS 정책 우회)
+// 3. 오디오 및 타이머 (iOS 차단 우회)
 // ==========================================
 let timerInterval; let timeLeft = 25 * 60; let isTimerRunning = false;
 function updateTimerDisplay() {
@@ -96,24 +78,16 @@ function updateTimerDisplay() {
     const s = (timeLeft % 60).toString().padStart(2, '0');
     document.getElementById('timerDisplay').innerText = `${m}:${s}`;
 }
-function startTimer() { if(!isTimerRunning) { isTimerRunning = true; timerInterval = setInterval(() => { if(timeLeft > 0) { timeLeft--; updateTimerDisplay(); } else { pauseTimer(); alert("뽀모도로 완료!"); } }, 1000); } }
+function startTimer() { if(!isTimerRunning) { isTimerRunning = true; timerInterval = setInterval(() => { if(timeLeft > 0) { timeLeft--; updateTimerDisplay(); } else { pauseTimer(); alert("학습 세션 완료!"); } }, 1000); } }
 function pauseTimer() { clearInterval(timerInterval); isTimerRunning = false; }
 function resetTimer() { pauseTimer(); timeLeft = 25 * 60; updateTimerDisplay(); }
 
 let bgmAudio = null; let isBgmPlaying = false;
 function toggleBGM() {
     const btn = document.getElementById('bgmBtn');
-    if(!bgmAudio) { 
-        bgmAudio = new Audio("https://cdn.pixabay.com/download/audio/2021/08/04/audio_0625c1539c.mp3?filename=heavy-rain-nature-sounds-8186.mp3"); 
-        bgmAudio.loop = true; 
-    }
-    if(isBgmPlaying) { 
-        bgmAudio.pause(); isBgmPlaying = false; btn.classList.remove('playing'); 
-        btn.innerHTML = '<i class="fa-solid fa-cloud-rain"></i> 집중 빗소리';
-    } else { 
-        bgmAudio.play().catch(e=>console.log("재생 실패", e)); isBgmPlaying = true; btn.classList.add('playing'); 
-        btn.innerHTML = '<i class="fa-solid fa-pause"></i> 재생 중지';
-    }
+    if(!bgmAudio) { bgmAudio = new Audio("https://cdn.pixabay.com/download/audio/2021/08/04/audio_0625c1539c.mp3?filename=heavy-rain-nature-sounds-8186.mp3"); bgmAudio.loop = true; }
+    if(isBgmPlaying) { bgmAudio.pause(); isBgmPlaying = false; btn.classList.remove('playing'); btn.innerHTML = '<i class="fa-solid fa-cloud-rain"></i> 집중 빗소리'; } 
+    else { bgmAudio.play().catch(e=>console.log("재생 실패", e)); isBgmPlaying = true; btn.classList.add('playing'); btn.innerHTML = '<i class="fa-solid fa-pause"></i> 재생 중지'; }
 }
 
 let isTTSPlaying = false;
@@ -121,13 +95,12 @@ function toggleTTS(elementId, btnId) {
     const btn = document.getElementById(btnId);
     if(isTTSPlaying || window.speechSynthesis.speaking) { 
         window.speechSynthesis.cancel(); isTTSPlaying = false; btn.classList.remove('active'); 
-        btn.innerHTML = '<i class="fa-solid fa-headphones"></i> 듣기'; return; 
+        btn.innerHTML = '<i class="fa-solid fa-headphones"></i> 소리내어 읽기'; return; 
     }
     
     const text = document.getElementById(elementId).innerText;
     if(!text) return;
     
-    // iOS 사파리 침묵 버그 해결을 위한 문장 단위 청킹(Chunking)
     const sentences = text.match(/[^.!?\n]+[.!?\n]+/g) || [text];
     let currentIndex = 0;
     isTTSPlaying = true;
@@ -136,7 +109,7 @@ function toggleTTS(elementId, btnId) {
 
     function speakNext() {
         if(currentIndex >= sentences.length || !isTTSPlaying) {
-            isTTSPlaying = false; btn.classList.remove('active'); btn.innerHTML = '<i class="fa-solid fa-headphones"></i> 듣기'; return;
+            isTTSPlaying = false; btn.classList.remove('active'); btn.innerHTML = '<i class="fa-solid fa-headphones"></i> 소리내어 읽기'; return;
         }
         let utterance = new SpeechSynthesisUtterance(sentences[currentIndex]);
         utterance.lang = 'ko-KR'; utterance.rate = 1.1;
@@ -148,60 +121,7 @@ function toggleTTS(elementId, btnId) {
 }
 
 // ==========================================
-// 4. 완벽한 PDF 및 굿노트 공유 엔진 (Hidden Canvas + Safari Fix)
-// ==========================================
-async function exportPDF(elementId, fileName) {
-    const originalElement = document.getElementById(elementId);
-    const loaderId = elementId.replace('Result', 'Loader');
-    const loader = document.getElementById(loaderId);
-    
-    if(loader) { loader.style.display = 'block'; loader.innerHTML = '<div class="spinner"></div>안전하게 PDF를 렌더링 중입니다...'; }
-
-    const noPrints = originalElement.querySelectorAll('.no-print, .toolbar-chips');
-    noPrints.forEach(el => el.style.display = 'none');
-
-    // 짤림 방지 가상 캔버스 세팅
-    const container = document.createElement('div');
-    container.appendChild(originalElement.cloneNode(true));
-    container.style.position = 'absolute'; container.style.top = '-9999px'; container.style.left = '0';
-    container.style.width = '794px'; container.style.padding = '30px';
-    container.style.background = '#ffffff'; container.style.color = '#000000';
-    
-    container.querySelectorAll('table').forEach(t => { t.style.width = '100%'; t.style.tableLayout = 'fixed'; t.style.wordBreak = 'break-all'; });
-    document.body.appendChild(container);
-
-    // 아이패드 메모리 방어를 위한 동적 Scale
-    const isMobile = window.innerWidth <= 1024;
-    const opt = {
-        margin: [10, 10, 10, 10], 
-        filename: `${fileName}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: isMobile ? 1.5 : 2, useCORS: true, windowWidth: 794, logging: false },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
-    };
-    
-    try {
-        const pdfBlob = await html2pdf().set(opt).from(container).outputPdf('blob');
-        const file = new File([pdfBlob], `${fileName}.pdf`, { type: 'application/pdf' });
-        
-        // 아이패드 공유 시트 트리거 (굿노트 등)
-        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-            await navigator.share({ files: [file], title: fileName });
-        } else {
-            await html2pdf().set(opt).from(container).save();
-        }
-    } catch (error) {
-        console.error(error); alert("PDF 추출 중 오류가 발생했습니다.");
-    } finally {
-        document.body.removeChild(container);
-        noPrints.forEach(el => el.style.display = '');
-        if(loader) loader.style.display = 'none';
-    }
-}
-
-// ==========================================
-// 5. 유틸리티 (암기, 파일, 노션, OMR)
+// 4. 유틸리티 (암기모드, 복사, 드래그앤드롭, OMR)
 // ==========================================
 function setupDragAndDrop(zoneId, inputId) {
     const zone = document.getElementById(zoneId); const input = document.getElementById(inputId);
@@ -230,17 +150,17 @@ function toggleCloze(btn) {
     let isCloze = btn.dataset.cloze === 'true';
     if (!isCloze) {
         strongTags.forEach(el => { el.style.background = 'var(--text-main)'; el.style.color = 'var(--text-main)'; el.style.borderRadius = '4px'; el.style.cursor = 'pointer'; el.onclick = function(){ this.style.background=''; this.style.color=''; }; });
-        btn.dataset.cloze = 'true'; btn.classList.add('active');
+        btn.dataset.cloze = 'true'; btn.classList.add('active'); btn.innerHTML = '<i class="fa-solid fa-eye"></i> 빈칸 끄기';
     } else {
         strongTags.forEach(el => { el.style.background = ''; el.style.color = ''; el.onclick = null; });
-        btn.dataset.cloze = 'false'; btn.classList.remove('active');
+        btn.dataset.cloze = 'false'; btn.classList.remove('active'); btn.innerHTML = '<i class="fa-solid fa-eye-slash"></i> 빈칸 암기';
     }
 }
 
 let currentRawMarkdown = ""; 
 function copyNotionMarkdown(elementId) {
     if(!currentRawMarkdown) return alert("복사할 내용이 없습니다.");
-    navigator.clipboard.writeText(currentRawMarkdown).then(() => alert("텍스트가 클립보드에 복사되었습니다. 노션에 붙여넣기 하세요."));
+    navigator.clipboard.writeText(currentRawMarkdown).then(() => alert("텍스트가 클립보드에 복사되었습니다."));
 }
 
 let userAnswers = {}; 
@@ -248,7 +168,7 @@ function renderOMR() {
     const container = document.getElementById('visualOMR'); if(!container) return;
     let html = '';
     for(let i=1; i<=20; i++) {
-        html += `<div class="omr-row"><div class="omr-qnum">${i}.</div><div style="display:flex; gap:10px;">`;
+        html += `<div class="omr-row"><div style="font-weight:bold; width:25px;">${i}.</div><div style="display:flex; gap:10px;">`;
         for(let j=1; j<=5; j++) html += `<div class="omr-bubble" onclick="selectOMR(${i}, ${j})" id="omr-q${i}-c${j}">${j}</div>`;
         html += `</div></div>`;
     }
@@ -256,21 +176,25 @@ function renderOMR() {
 }
 function selectOMR(q, c) {
     userAnswers[q] = c;
-    for(let j=1; j<=5; j++) document.getElementById(`omr-q${q}-c${j}`).classList.remove('selected');
-    document.getElementById(`omr-q${q}-c${c}`).classList.add('selected');
+    for(let j=1; j<=5; j++) {
+        let bubble = document.getElementById(`omr-q${q}-c${j}`);
+        bubble.style.background = 'transparent'; bubble.style.color = 'var(--text-sub)'; bubble.style.borderColor = 'var(--border-soft)';
+    }
+    let target = document.getElementById(`omr-q${q}-c${c}`);
+    target.style.background = 'var(--accent-primary)'; target.style.color = 'white'; target.style.borderColor = 'var(--accent-primary)';
     let ansArr = []; for(let i=1; i<=20; i++) if(userAnswers[i]) ansArr.push(`${i}:${userAnswers[i]}`);
     document.getElementById('omrAnswers').value = ansArr.join(',');
 }
-function clearOMR() { userAnswers = {}; for(let i=1; i<=20; i++) for(let j=1; j<=5; j++) document.getElementById(`omr-q${i}-c${j}`).classList.remove('selected'); document.getElementById('omrAnswers').value = ''; }
+function clearOMR() { userAnswers = {}; for(let i=1; i<=20; i++) for(let j=1; j<=5; j++) { let b=document.getElementById(`omr-q${i}-c${j}`); b.style.background='transparent'; b.style.color='var(--text-sub)'; b.style.borderColor='var(--border-soft)'; } document.getElementById('omrAnswers').value = ''; }
 
 // ==========================================
-// 6. Gemini AI 코어 엔진
+// 5. Gemini AI 코어 엔진
 // ==========================================
 const formattingRules = `
-[마크다운 및 렌더링 절대 준수 규칙]
-1. 글머리 기호나 리스트 작성 시 하이픈(-) 사용을 금지합니다. 대신 별표(*)나 숫자(1. 2.)를 사용하세요. 표 안에서도 마찬가지입니다.
-2. 텍스트 내에서 단일 달러 기호($)를 절대 사용하지 마세요. 수학 수식에만 이중 달러 기호($$수식$$)를 허용합니다.
-3. 표(Table) 작성 시 한 행(Row)의 내용이 너무 길어지지 않게 여러 개의 행으로 잘게 쪼개서 작성하세요. 중요어 앞 2글자는 반드시 **볼드체** 처리하세요.`;
+[마크다운 필수 규칙]
+1. 하이픈(-) 절대 금지. 리스트는 별표(*)나 숫자 사용.
+2. 수식은 무조건 $$수식$$ 형태만 사용. 단일 $ 사용 금지.
+3. 표(Table) 작성 시 가독성을 위해 내용이 길어지지 않게 쪼갤 것. 중요어 앞 2글자 **볼드체** 처리.`;
 
 async function callGeminiAPI(apiKey, prompt, files = [], loaderId = null) {
     let requestParts = [{ text: prompt }];
@@ -279,7 +203,7 @@ async function callGeminiAPI(apiKey, prompt, files = [], loaderId = null) {
 
     try {
         const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`, options);
-        if (!response.ok) throw new Error("구글 AI 서버 연결 실패. API Key를 확인해주세요.");
+        if (!response.ok) throw new Error("구글 AI 서버 통신 에러 (API Key 확인 필요)");
         const data = await response.json(); 
         if(data.error) throw new Error(data.error.message);
         return data.candidates[0].content.parts[0].text;
@@ -291,7 +215,7 @@ let currentContext = "";
 async function executeAI(mode, subMode) {
     if(window.speechSynthesis.speaking) window.speechSynthesis.cancel();
     const apiKey = document.getElementById('sysApiKey').value;
-    if (!apiKey) return alert("좌측 하단 설정에서 API Key를 먼저 입력해주세요!");
+    if (!apiKey) return alert("좌측 하단 설정에서 API Key를 입력하세요.");
 
     const loaderId = mode + 'Loader'; const resultWrapper = document.getElementById(mode + 'ResultWrapper'); const resultBox = document.getElementById(mode + 'Result');
     document.getElementById(loaderId).style.display = 'block'; resultWrapper.style.display = 'none';
@@ -308,7 +232,7 @@ async function executeAI(mode, subMode) {
             if (file) filesToProcess.push(await fileToBase64(file));
             
             let styleIns = formatChoice === "cornell" ? "2열 표(Table) 형식" : formatChoice === "bullet" ? "개조식" : "AI 자동 판단";
-            prompt = `[자료]: ${inputPrompt}\n[레이아웃 지정]: ${styleIns}\n내용 생략 금지. [🚨 출제자 오답 패턴 경고] 포함. 태그가 비어있으면 문서 끝에 '#태그' 추천.\n${formattingRules}`;
+            prompt = `[자료]: ${inputPrompt}\n[레이아웃]: ${styleIns}\n자료를 깊이 있게 분석하여 요약 노트를 작성하세요. [🚨 출제자 오답 패턴 경고] 포함.\n${formattingRules}`;
             title = `[개념 요약] ${rawTags || '노트'}`;
             tags = rawTags.split(',').map(t=>t.trim()).filter(t=>t);
         }
@@ -334,8 +258,6 @@ async function executeAI(mode, subMode) {
         currentContext = aiText; currentRawMarkdown = aiText; 
         
         resultBox.innerHTML = marked.parse(aiText);
-        
-        // 표 가로 스크롤 적용 (아이패드 짤림 방지)
         resultBox.querySelectorAll('table').forEach(table => {
             if (table.parentElement.classList.contains('table-responsive')) return;
             const wrapper = document.createElement('div'); wrapper.className = 'table-responsive';
@@ -349,7 +271,7 @@ async function executeAI(mode, subMode) {
         markStreak();
 
     } catch (error) { 
-        resultBox.innerHTML = `<div style="color:red; font-weight:bold; padding:20px;">🚨 에러: ${error.message}</div>`; 
+        resultBox.innerHTML = `<div style="color:var(--accent-danger); font-weight:bold; padding:20px;">🚨 에러: ${error.message}</div>`; 
         resultWrapper.style.display = 'block'; 
     } 
     finally { document.getElementById(loaderId).style.display = 'none'; }
@@ -374,12 +296,12 @@ async function askTutor(mode) {
         document.getElementById(loadingId).remove();
         chatBox.innerHTML += `<div class="chat-msg msg-ai">${marked.parse(answerText)}</div>`;
         if (window.MathJax) MathJax.typesetPromise([chatBox]);
-    } catch (error) { document.getElementById(loadingId).remove(); chatBox.innerHTML += `<div style="color:red;">에러 발생</div>`; }
+    } catch (error) { document.getElementById(loadingId).remove(); chatBox.innerHTML += `<div style="color:var(--accent-danger);">에러 발생</div>`; }
     chatBox.scrollTop = chatBox.scrollHeight;
 }
 
 // ==========================================
-// 7. 대시보드 (보관함, 잔디심기, 마인드맵)
+// 6. 기록 보관함, 잔디 심기, 마인드맵
 // ==========================================
 function markStreak() {
     let streaks = JSON.parse(localStorage.getItem('studyStreak') || '{}');
@@ -397,8 +319,8 @@ function renderStreak() {
     for(let i=29; i>=0; i--) {
         let d = new Date(); d.setDate(d.getDate() - i);
         let dateStr = d.toISOString().split('T')[0];
-        let activeClass = streaks[dateStr] ? 'active' : '';
-        html += `<div class="streak-box ${activeClass}" title="${dateStr}"></div>`;
+        let bgClass = streaks[dateStr] ? 'streak-box active' : 'streak-box';
+        html += `<div class="${bgClass}" title="${dateStr}"></div>`;
     }
     grid.innerHTML = html;
 }
@@ -406,14 +328,15 @@ function renderStreak() {
 function saveHistory(title, tags, content) {
     let history = JSON.parse(localStorage.getItem('cozyArchive') || '[]');
     history.unshift({ id: Date.now(), title: title, tags: tags, content: content });
-    if (history.length > 50) history.pop();
+    if (history.length > 50) history.pop(); // 최근 50개 유지
     localStorage.setItem('cozyArchive', JSON.stringify(history));
 }
 
 function loadHistory() {
     const list = document.getElementById('historyList');
+    if(!list) return;
     let history = JSON.parse(localStorage.getItem('cozyArchive') || '[]');
-    if (history.length === 0) return list.innerHTML = "<div style='color:var(--text-sub);'>저장된 기록이 없습니다.</div>";
+    if (history.length === 0) { list.innerHTML = "<div style='color:var(--text-sub);'>저장된 기록이 없습니다.</div>"; return; }
     
     list.innerHTML = history.map(item => {
         let tagsHtml = (item.tags || []).map(t => `<span class="tag-badge">${t}</span>`).join('');
@@ -423,7 +346,7 @@ function loadHistory() {
                 <div class="archive-title">${item.title}</div>
                 <div>${tagsHtml}</div>
             </div>
-            <button style="background:transparent; border:none; color:#EF4444; cursor:pointer;" onclick="deleteHistory(${item.id}, event)"><i class="fa-solid fa-trash"></i></button>
+            <button style="background:transparent; border:none; color:var(--accent-danger); cursor:pointer; padding:5px;" onclick="deleteHistory(${item.id}, event)"><i class="fa-solid fa-trash"></i></button>
         </div>`;
     }).join('');
 }
@@ -437,11 +360,17 @@ function deleteHistory(id, event) {
     loadHistory(); renderKnowledgeTree(); loadUnifiedSelection(); loadTrainingSelection();
 }
 
+function filterHistory() {
+    const query = document.getElementById('archiveSearch').value.toLowerCase();
+    const items = document.querySelectorAll('#historyList .archive-item');
+    items.forEach(item => { item.style.display = item.innerText.toLowerCase().includes(query) ? 'flex' : 'none'; });
+}
+
 function viewHistory(id) {
     let history = JSON.parse(localStorage.getItem('cozyArchive') || '[]');
     const item = history.find(h => h.id === id);
     if (item) {
-        navTo('concept');
+        navTo('concept'); // 뷰어로 이동
         document.getElementById('conceptResult').innerHTML = marked.parse(item.content);
         document.getElementById('conceptResult').querySelectorAll('table').forEach(table => {
             if (table.parentElement.classList.contains('table-responsive')) return;
@@ -455,24 +384,22 @@ function viewHistory(id) {
     }
 }
 
-function filterHistory() {
-    const query = document.getElementById('archiveSearch').value.toLowerCase();
-    const items = document.querySelectorAll('#historyList .archive-item');
-    items.forEach(item => { item.style.display = item.innerText.toLowerCase().includes(query) ? 'flex' : 'none'; });
-}
-
 function renderKnowledgeTree() {
     let history = JSON.parse(localStorage.getItem('cozyArchive') || '[]');
     let treeContainer = document.getElementById('mermaidTree');
+    if(!treeContainer) return;
     if (history.length === 0) return treeContainer.innerHTML = "<div style='color:var(--text-sub);'>지식 맵을 구성할 데이터가 없습니다.</div>";
-    let graphDef = "graph TD\n Root((핵심 지식))";
-    history.forEach((item, index) => { graphDef += `\n Root --> node_${index}("${item.title.substring(0,15)}")`; });
+    let graphDef = "graph TD\n Root((지식 코어))";
+    history.forEach((item, index) => { 
+        let safeTitle = item.title.replace(/["()]/g, '').substring(0,15);
+        graphDef += `\n Root --> node_${index}("${safeTitle}")`; 
+    });
     treeContainer.innerHTML = `<div class="mermaid">${graphDef}</div>`;
     mermaid.init(undefined, document.querySelectorAll('.mermaid'));
 }
 
 // ==========================================
-// 8. 훈련소 및 단권화 모듈
+// 7. 단권화 및 모의고사 병합 모듈
 // ==========================================
 function loadSelectionList(containerId, isRadio = false) {
     const list = document.getElementById(containerId);
@@ -487,8 +414,8 @@ function loadSelectionList(containerId, isRadio = false) {
             <span style="font-weight:600;">${item.title}</span>
         </label>`).join('');
 }
-function loadTrainingSelection() { loadSelectionList('trainingSelectionList', true); }
 function loadUnifiedSelection() { loadSelectionList('unifiedSelectionList', false); }
+function loadTrainingSelection() { loadSelectionList('trainingSelectionList', true); }
 
 async function executeUnifiedNote(type) {
     const apiKey = document.getElementById('sysApiKey').value;
@@ -506,14 +433,14 @@ async function executeUnifiedNote(type) {
 
     let prompt = "", coverHtml = "";
     if (type === 'book') { 
-        prompt = `단권화 병합 노트 작성\n${mergedContent}\n${formattingRules}`; 
+        prompt = `여러 노트 내용을 유기적으로 연결하여 하나의 '단권화 마스터 노트'로 병합 작성하세요.\n${mergedContent}\n${formattingRules}`; 
         coverHtml = `<div class="book-cover"><h1 style="font-size:2rem; font-weight:900;">단권화 병합 노트</h1></div>`; 
     } else if (type === 'exam') { 
-        prompt = `실전 모의고사 출제 (정답/해설은 하단에 배치)\n${mergedContent}\n${formattingRules}`; 
+        prompt = `제공된 자료들을 바탕으로 '실전 모의고사'를 출제하세요. (정답과 해설은 반드시 맨 아래에 배치)\n${mergedContent}\n${formattingRules}`; 
         coverHtml = `<div class="mock-exam-title">실전 모의고사</div>`; 
     } else {
-        prompt = `다단원 융합 고난도 문제 1문제 출제\n${mergedContent}\n${formattingRules}`; 
-        coverHtml = `<div class="book-cover" style="background:var(--bg-body);"><h1 style="font-size:2rem; font-weight:900; color:var(--accent-danger);">다단원 융합 고난도 문제</h1></div>`;
+        prompt = `제공된 여러 자료의 개념들을 교묘하게 엮어서 수능형 '다단원 융합 고난도 킬러 문항' 1문제를 출제하고 상세히 해설하세요.\n${mergedContent}\n${formattingRules}`; 
+        coverHtml = `<div class="book-cover" style="background:var(--bg-body);"><h1 style="font-size:1.8rem; font-weight:900; color:var(--accent-danger);">융합 고난도 킬러 문항</h1></div>`;
     }
 
     try {
@@ -530,53 +457,141 @@ async function executeUnifiedNote(type) {
         if (window.MathJax) MathJax.typesetPromise([resultBox]);
         saveHistory(`[저장] ${type === 'book' ? '단권화' : type === 'exam' ? '모의고사' : '고난도 융합'}`, [], aiText);
     } catch (error) { 
-        resultBox.innerHTML = `<div style="color:red; font-weight:bold;">🚨 에러 발생: ${error.message}</div>`; 
+        resultBox.innerHTML = `<div style="color:var(--accent-danger); font-weight:bold;">🚨 에러 발생: ${error.message}</div>`; 
         resultWrapper.style.display = 'block'; 
     } 
     finally { document.getElementById(loaderId).style.display = 'none'; }
 }
 
-let oxAnswerCache = "";
+// ==========================================
+// 8. 실전 멘탈 훈련소 (베타 기능 3종 완벽 연동)
+// ==========================================
+let trainingAnswerCache = "";
+let currentTrainingContext = "";
+
 async function startTraining(type) {
     const apiKey = document.getElementById('sysApiKey').value;
-    if (!apiKey) return alert("API Key를 입력해주세요!");
+    if (!apiKey) return alert("좌측 하단 설정에서 API Key를 먼저 입력해주세요!");
     
     const selected = document.querySelector('.trainingSelectionList-checkbox:checked');
-    if (!selected) return alert("훈련할 노트를 체크해주세요.");
+    if (!selected) return alert("훈련할 노트를 1개 체크해주세요.");
 
     let history = JSON.parse(localStorage.getItem('cozyArchive') || '[]');
     const item = history.find(h => h.id == selected.value);
     if (!item) return;
 
-    document.getElementById('oxModal').style.display = 'flex';
-    document.getElementById('oxPlayArea').style.display = 'none';
-    document.getElementById('oxAnswerArea').style.display = 'none';
-    document.getElementById('oxLoader').style.display = 'block';
+    currentTrainingContext = item.content; // 훈련 데이터 캐싱
+    
+    // 모달창 UI 초기화
+    document.getElementById('trainingModal').style.display = 'flex';
+    document.getElementById('trainingPlayArea').style.display = 'none';
+    document.getElementById('trainingAnswerArea').style.display = 'none';
+    const loader = document.getElementById('trainingLoader');
+    loader.style.display = 'block';
 
-    const prompt = `[오답 선지 OX 훈련] 문제 5개 출제.\n${item.content}\n\n[조건] 중간에 '====ANSWER====' 넣고 그 위엔 문제만, 아래엔 정답/해설 작성.\n${formattingRules}`;
+    let prompt = "";
+    const titleEl = document.getElementById('trainingModalTitle');
+    const playArea = document.getElementById('trainingPlayArea');
+
     try {
-        const aiText = await callGeminiAPI(apiKey, prompt, []);
-        const parts = aiText.split('====ANSWER====');
-        document.getElementById('oxLoader').style.display = 'none';
-        document.getElementById('oxPlayArea').style.display = 'block';
-        document.getElementById('oxQuestionContent').innerHTML = marked.parse(parts[0] ? parts[0].trim() : "출제 오류");
-        oxAnswerCache = parts[1] ? parts[1].trim() : "해설 데이터 없음";
+        if (type === 'ox') {
+            titleEl.innerHTML = '<i class="fa-solid fa-gamepad"></i> 오답 선지 OX 훈련';
+            prompt = `[자료]\n${item.content}\n\n위 자료에서 핵심 개념을 꼬아놓은 O/X 문제 5개를 출제하세요.\n[조건] 문제만 먼저 작성하고, '====ANSWER====' 라는 구분선을 넣은 뒤, 그 아래에 정답과 해설을 적으세요.\n${formattingRules}`;
+            
+            const aiText = await callGeminiAPI(apiKey, prompt, []);
+            const parts = aiText.split('====ANSWER====');
+            playArea.innerHTML = `
+                <div style="font-size:1.05rem; line-height:1.8;">${marked.parse(parts[0] ? parts[0].trim() : "출제 오류")}</div>
+                <button class="btn-primary" style="background:var(--accent-special); margin-top:30px;" onclick="revealTrainingAnswer()">정답 및 해설 확인</button>`;
+            trainingAnswerCache = parts[1] ? parts[1].trim() : "해설 데이터가 없습니다.";
+        } 
+        else if (type === 'blank') {
+            titleEl.innerHTML = '<i class="fa-solid fa-eraser"></i> 백지 복습 (메타인지)';
+            prompt = `[자료]\n${item.content}\n\n위 자료를 바탕으로 흐름이 이어지는 긴 요약 지문을 작성하되, 가장 중요한 핵심어 10개를 골라 '[ 빈칸 ]' 으로 뚫어놓으세요.\n[조건] 지문 작성 후 '====ANSWER====' 구분선을 넣고, 아래에 빈칸에 들어갈 정답 10개를 순서대로 적으세요.\n${formattingRules}`;
+            
+            const aiText = await callGeminiAPI(apiKey, prompt, []);
+            const parts = aiText.split('====ANSWER====');
+            playArea.innerHTML = `
+                <p style="color:var(--text-sub); margin-bottom:15px;"><i class="fa-solid fa-circle-info"></i> 빈칸에 들어갈 단어를 머릿속으로 떠올려보거나 종이에 적어보세요.</p>
+                <div style="font-size:1.05rem; line-height:1.8; background:var(--bg-body); padding:20px; border-radius:12px;">${marked.parse(parts[0] ? parts[0].trim() : "출제 오류")}</div>
+                <button class="btn-primary" style="background:var(--accent-blue); margin-top:30px;" onclick="revealTrainingAnswer()">채점하기 (정답 확인)</button>`;
+            trainingAnswerCache = parts[1] ? parts[1].trim() : "정답 데이터가 없습니다.";
+        }
+        else if (type === 'trap') {
+            titleEl.innerHTML = '<i class="fa-solid fa-skull"></i> 함정 출제자 빙의';
+            // 함정 훈련은 사용자 입력을 받아야 하므로, 초기 화면만 즉시 세팅합니다.
+            loader.style.display = 'none';
+            playArea.style.display = 'block';
+            playArea.innerHTML = `
+                <p style="margin-bottom:15px; font-weight:600;">선택한 자료의 내용을 바탕으로, 친구들이 완벽하게 속아 넘어갈 만한 '교묘한 오답 선지(함정)'를 직접 하나 만들어보세요.</p>
+                <textarea id="trapInput" rows="3" style="width:100%; padding:15px; border-radius:10px; border:1px solid var(--border-soft); margin-bottom:15px; font-family:inherit;" placeholder="여기에 직접 만든 함정 선지를 입력하세요..."></textarea>
+                <button class="btn-primary" style="background:var(--accent-danger);" onclick="evaluateTrap()">AI 출제위원에게 평가받기</button>`;
+            return; // API 호출 없이 종료 (버튼 누를 때 호출)
+        }
+        else if (type === 'chain') {
+            titleEl.innerHTML = '<i class="fa-solid fa-link"></i> 개념 짝맞추기 퀴즈';
+            prompt = `[자료]\n${item.content}\n\n위 자료에서 핵심 개념 5개와 그에 대한 설명을 추출하세요. 개념어 목록과 설명 목록의 순서를 뒤죽박죽으로 무작위로 섞어서 제시하세요.\n[조건] 사용자가 속으로 짝을 맞춰볼 수 있도록 제시한 후, '====ANSWER====' 구분선 아래에 올바르게 짝지어진 정답을 적어주세요.\n${formattingRules}`;
+            
+            const aiText = await callGeminiAPI(apiKey, prompt, []);
+            const parts = aiText.split('====ANSWER====');
+            playArea.innerHTML = `
+                <p style="color:var(--text-sub); margin-bottom:15px;"><i class="fa-solid fa-circle-info"></i> 제시된 개념과 올바른 설명을 선으로 연결하듯 짝지어 보세요.</p>
+                <div style="font-size:1.05rem; line-height:1.8;">${marked.parse(parts[0] ? parts[0].trim() : "출제 오류")}</div>
+                <button class="btn-primary" style="background:var(--text-main); margin-top:30px;" onclick="revealTrainingAnswer()">올바른 짝 확인하기</button>`;
+            trainingAnswerCache = parts[1] ? parts[1].trim() : "정답 데이터가 없습니다.";
+        }
+
+        // 공통 마무리 (trap 제외)
+        loader.style.display = 'none';
+        playArea.style.display = 'block';
+        if (window.MathJax) MathJax.typesetPromise([playArea]);
+
     } catch(error) { 
-        document.getElementById('oxLoader').style.display = 'none'; 
-        document.getElementById('oxPlayArea').style.display = 'block'; 
-        document.getElementById('oxQuestionContent').innerHTML = `<div style="color:red; font-weight:bold;">🚨 에러 발생: ${error.message}</div>`; 
+        loader.style.display = 'none'; 
+        playArea.style.display = 'block'; 
+        playArea.innerHTML = `<div style="color:var(--accent-danger); font-weight:bold;">🚨 에러 발생: ${error.message}</div>`; 
     }
 }
 
-function revealOXAnswer() {
-    document.getElementById('oxAnswerArea').style.display = 'block';
-    document.getElementById('oxAnswerContent').innerHTML = marked.parse(oxAnswerCache);
-    document.querySelector('#oxPlayArea .btn-primary').style.display = 'none';
-    markStreak();
+// 함정 출제 기능의 '평가받기' 버튼 로직
+async function evaluateTrap() {
+    const apiKey = document.getElementById('sysApiKey').value;
+    const trapInput = document.getElementById('trapInput').value.trim();
+    if(!trapInput) return alert("함정 선지를 입력해주세요!");
+
+    const loader = document.getElementById('trainingLoader');
+    const answerArea = document.getElementById('trainingAnswerArea');
+    
+    loader.style.display = 'block';
+    loader.innerHTML = '<div class="spinner"></div>AI 출제위원이 제출하신 함정을 날카롭게 분석 중입니다...';
+    document.querySelector('#trainingPlayArea button').style.display = 'none'; // 버튼 숨김
+
+    const prompt = `[학습 자료]\n${currentTrainingContext}\n\n[학생이 직접 만든 함정 선지]\n"${trapInput}"\n\n[지시사항]\n학생이 만든 위 선지가 '매력적인 오답'으로서 얼마나 교묘하고 훌륭한지, 혹은 어떤 부분이 뻔하거나 엉성한지 출제위원의 관점에서 날카롭게 평가(팩트폭격) 해주세요.\n${formattingRules}`;
+
+    try {
+        const aiText = await callGeminiAPI(apiKey, prompt, []);
+        loader.style.display = 'none';
+        answerArea.style.display = 'block';
+        answerArea.innerHTML = `<h3 style="color:var(--accent-danger); margin-bottom:10px;"><i class="fa-solid fa-magnifying-glass"></i> AI 출제위원의 평가 결과</h3><div style="font-size:1.05rem; line-height:1.8;">${marked.parse(aiText)}</div>`;
+        if (window.MathJax) MathJax.typesetPromise([answerArea]);
+        markStreak();
+    } catch(error) {
+        loader.style.display = 'none';
+        answerArea.style.display = 'block';
+        answerArea.innerHTML = `<div style="color:red;">평가 중 오류 발생: ${error.message}</div>`;
+        document.querySelector('#trainingPlayArea button').style.display = 'block';
+    }
 }
 
-function closeOXModal() { 
-    document.getElementById('oxModal').style.display = 'none'; 
-    const btn = document.querySelector('#oxPlayArea .btn-primary');
-    if(btn) btn.style.display = 'block'; 
+function revealTrainingAnswer() {
+    const answerArea = document.getElementById('trainingAnswerArea');
+    answerArea.style.display = 'block';
+    answerArea.innerHTML = marked.parse(trainingAnswerCache);
+    document.querySelector('#trainingPlayArea button').style.display = 'none'; // 확인 버튼 숨김
+    if (window.MathJax) MathJax.typesetPromise([answerArea]);
+    markStreak(); // 훈련 완료 시 잔디 1스택 적립
+}
+
+function closeTrainingModal() { 
+    document.getElementById('trainingModal').style.display = 'none'; 
 }
