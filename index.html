@@ -3,46 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>단권화 스터디 다이어리 V17 - The Ultimate AI Tutor</title>
+    <title>단권화 마스터 V20 - AI Note Generator</title>
     
+    <!-- 폰트 및 아이콘 -->
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- 🚀 수만 줄의 외부 모듈을 단 한 줄로 끌어다 씁니다 (마크다운, 수식, PDF, 마인드맵) -->
+    <!-- 필수 코어 모듈 (마크다운, 수식, PDF, IndexedDB) -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.10.0/localforage.min.js"></script>
 
     <style>
         :root {
             --bg-body: #F8FAFC; --bg-surface: #FFFFFF;
             --text-main: #1E293B; --text-sub: #64748B;
-            --accent-primary: #FF8BA7; --accent-secondary: #FFC6C7; 
-            --accent-blue: #3B82F6; --accent-mint: #10B981; --accent-boss: #E11D48; --accent-ox: #8B5CF6;
+            --accent-primary: #FF8BA7; --accent-blue: #3B82F6; --accent-mint: #10B981; --accent-dark: #0F172A;
             --border-soft: #E2E8F0; --shadow-fluffy: 0 10px 30px rgba(0, 0, 0, 0.05);
             --radius-box: 20px; --radius-btn: 12px;
         }
         
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Pretendard', sans-serif; background-color: var(--bg-body); color: var(--text-main); display: flex; flex-direction: column; min-height: 100dvh; overflow-x: hidden; line-height: 1.7; letter-spacing: -0.02em; }
+        body { font-family: 'Pretendard', sans-serif; background-color: var(--bg-body); color: var(--text-main); display: flex; flex-direction: column; min-height: 100dvh; overflow-x: hidden; line-height: 1.7; }
         
         .mobile-header { display: none; background: var(--bg-surface); padding: 16px 24px; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-soft); position: sticky; top: 0; z-index: 100; }
-        .mobile-header h1 { font-size: 1.2rem; font-weight: 800; color: var(--accent-primary); }
-        .menu-toggle { background: none; border: none; font-size: 1.4rem; color: var(--accent-primary); cursor: pointer; }
+        .mobile-header h1 { font-size: 1.2rem; font-weight: 800; color: var(--accent-blue); }
+        .menu-toggle { background: none; border: none; font-size: 1.4rem; color: var(--accent-blue); cursor: pointer; }
 
-        .app-container { display: flex; flex: 1; position: relative; max-width: 1400px; margin: 0 auto; width: 100%; }
+        .app-container { display: flex; flex: 1; max-width: 1400px; margin: 0 auto; width: 100%; }
 
         .sidebar { width: 280px; background: var(--bg-surface); border-right: 1px solid var(--border-soft); display: flex; flex-direction: column; padding: 32px 0; transition: transform 0.3s ease; z-index: 50; }
-        .brand { padding: 0 32px 32px; font-size: 1.4rem; font-weight: 800; color: var(--accent-primary); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+        .brand { padding: 0 32px 32px; font-size: 1.4rem; font-weight: 800; color: var(--accent-blue); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
         
         .menu-group { margin-bottom: 24px; }
-        .menu-label { padding: 0 32px; font-size: 0.8rem; font-weight: 700; color: var(--accent-blue); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
+        .menu-label { padding: 0 32px; font-size: 0.8rem; font-weight: 700; color: var(--text-sub); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
         .menu-item { padding: 14px 32px; cursor: pointer; display: flex; align-items: center; gap: 14px; font-weight: 600; color: var(--text-sub); transition: 0.2s; font-size: 1rem; position: relative; }
-        .menu-item:hover { color: var(--accent-primary); background: #FFF5F7; }
-        .menu-item.active { color: var(--accent-primary); background: #FFF0F3; font-weight: 700; }
-        .menu-item.active::before { content: ''; position: absolute; left: 0; top: 15%; height: 70%; width: 4px; background: var(--accent-primary); border-radius: 0 10px 10px 0; }
+        .menu-item:hover { color: var(--accent-blue); background: #EFF6FF; }
+        .menu-item.active { color: var(--accent-blue); background: #DBEAFE; font-weight: 700; }
+        .menu-item.active::before { content: ''; position: absolute; left: 0; top: 15%; height: 70%; width: 4px; background: var(--accent-blue); border-radius: 0 10px 10px 0; }
         .menu-item i { font-size: 1.1rem; width: 22px; text-align: center; }
         
         .settings-section { margin-top: auto; padding: 24px 32px; border-top: 1px solid var(--border-soft); background: #F8FAFC; }
@@ -55,110 +55,75 @@
         @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
         .page-header { margin-bottom: 30px; display: flex; align-items: center; justify-content: space-between; }
-        .page-header-left { display: flex; align-items: center; gap: 18px; }
-        .page-header-icon { background: var(--accent-primary); color: white; width: 54px; height: 54px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; box-shadow: 0 4px 15px rgba(255, 139, 167, 0.3); }
+        .page-header-icon { background: var(--accent-blue); color: white; width: 54px; height: 54px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3); margin-right: 18px; }
         .page-title { font-size: 1.6rem; font-weight: 800; color: var(--text-main); margin-bottom: 4px; }
         .page-desc { color: var(--text-sub); font-size: 0.95rem; font-weight: 500; }
         
-        .panel { background: var(--bg-surface); padding: 35px; border-radius: var(--radius-box); box-shadow: var(--shadow-fluffy); border: 1px solid var(--border-soft); margin-bottom: 25px; position: relative; }
-        .form-group { margin-bottom: 25px; }
+        .panel { background: var(--bg-surface); padding: 35px; border-radius: var(--radius-box); box-shadow: var(--shadow-fluffy); border: 1px solid var(--border-soft); margin-bottom: 25px; }
+        .form-row { display: flex; gap: 15px; margin-bottom: 20px; }
+        .form-group { flex: 1; margin-bottom: 20px; }
         .form-group label { display: flex; font-weight: 700; margin-bottom: 10px; font-size: 0.95rem; color: var(--text-main); align-items: center; gap: 8px; }
-        input[type="text"], textarea, select { width: 100%; padding: 15px 18px; border: 1px solid #CBD5E1; border-radius: var(--radius-btn); font-family: inherit; font-size: 1rem; background: #F8FAFC; transition: all 0.2s; resize: vertical; line-height: 1.6; }
+        input[type="text"], textarea, select { width: 100%; padding: 15px 18px; border: 1px solid #CBD5E1; border-radius: var(--radius-btn); font-family: inherit; font-size: 1rem; background: #F8FAFC; transition: all 0.2s; line-height: 1.6; }
         input:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent-blue); background: #FFF; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); }
         
-        .upload-zone { border: 2px dashed #94A3B8; background: #F8FAFC; padding: 30px 20px; text-align: center; border-radius: var(--radius-btn); cursor: pointer; position: relative; transition: all 0.3s; }
-        .upload-zone:hover { background: #F1F5F9; border-color: var(--accent-blue); }
+        .upload-zone { border: 2px dashed #94A3B8; background: #F8FAFC; padding: 20px; text-align: center; border-radius: var(--radius-btn); cursor: pointer; position: relative; transition: all 0.3s; }
+        .upload-zone:hover { background: #EFF6FF; border-color: var(--accent-blue); }
         .upload-zone input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
-        .upload-zone i { font-size: 2rem; color: #94A3B8; margin-bottom: 10px; transition: 0.3s; }
-        .upload-zone:hover i { color: var(--accent-blue); transform: translateY(-3px); }
-        .upload-text { font-size: 0.95rem; font-weight: 600; color: var(--text-sub); }
-        .preview-area { display: none; margin-top: 10px; font-size: 0.9rem; color: white; background: var(--accent-blue); padding: 10px; border-radius: 8px; text-align: center; font-weight: 700; }
+        .upload-text { font-size: 0.95rem; font-weight: 600; color: var(--text-sub); margin-top: 8px; }
+        .preview-area { display: none; margin-top: 10px; font-size: 0.9rem; color: white; background: var(--accent-mint); padding: 10px; border-radius: 8px; text-align: center; font-weight: 700; }
 
-        .btn-primary { background: var(--text-main); color: white; border: none; padding: 18px 25px; border-radius: var(--radius-btn); font-size: 1.1rem; font-weight: 700; cursor: pointer; width: 100%; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
+        .btn-primary { background: var(--accent-blue); color: white; border: none; padding: 18px 25px; border-radius: var(--radius-btn); font-size: 1.1rem; font-weight: 700; cursor: pointer; width: 100%; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4); }
         
-        .btn-pdf { background: white; color: var(--text-main); border: 1px solid #CBD5E1; padding: 10px 18px; border-radius: 8px; font-size: 0.95rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
-        .btn-pdf:hover { background: #F8FAFC; border-color: #94A3B8; }
-        
-        .btn-cloze { background: #1E293B; color: white; border: none; padding: 10px 18px; border-radius: 8px; font-size: 0.95rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .btn-cloze:hover { background: var(--accent-primary); }
+        .action-bar { display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+        .btn-action { padding: 10px 18px; border-radius: 8px; font-size: 0.95rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s; border: none; color: white; }
+        .btn-cloze { background: var(--accent-dark); } .btn-cloze:hover { background: #334155; }
+        .btn-pdf { background: var(--text-main); } .btn-pdf:hover { background: #334155; }
+        .btn-delete { background: #EF4444; } .btn-delete:hover { background: #DC2626; }
 
-        /* 🔥 TTS 및 OX 버튼 추가 */
-        .btn-tts { background: var(--accent-blue); color: white; border: none; padding: 10px 18px; border-radius: 8px; font-size: 0.95rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s; box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3); }
-        .btn-tts:hover { background: #2563EB; }
-        .btn-tts.playing { background: #EF4444; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3); animation: pulse 1.5s infinite; }
-
-        .btn-ox { background: var(--accent-ox); color: white; border: none; padding: 10px 18px; border-radius: 8px; font-size: 0.95rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s; box-shadow: 0 4px 10px rgba(139, 92, 246, 0.3); margin-top: 10px;}
-        .btn-ox:hover { background: #7C3AED; transform: translateY(-2px); }
-
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
-
-        .loader { display: none; text-align: center; padding: 30px; font-size: 1rem; font-weight: 700; }
-        .spinner { display: inline-block; width: 24px; height: 24px; border: 3px solid #E2E8F0; border-radius: 50%; border-top-color: currentColor; animation: spin 0.8s ease-in-out infinite; margin-right: 10px; vertical-align: middle; }
+        .loader { display: none; text-align: center; padding: 40px; font-size: 1.1rem; font-weight: 700; color: var(--accent-blue); }
+        .spinner { display: inline-block; width: 28px; height: 28px; border: 4px solid #E2E8F0; border-radius: 50%; border-top-color: currentColor; animation: spin 0.8s linear infinite; margin-right: 12px; vertical-align: middle; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        .document-wrapper { display: none; position: relative; margin-top: 30px; }
-        .pdf-actions { display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
-        .document-view { background: white; padding: 50px 60px; border-radius: var(--radius-box); border: 1px solid var(--border-soft); box-shadow: var(--shadow-fluffy); font-size: 1.05rem; color: #1E293B; }
+        .document-wrapper { display: none; margin-top: 30px; animation: slideUp 0.5s ease; }
+        .document-view { background: white; padding: 50px 60px; border-radius: var(--radius-box); border: 1px solid var(--border-soft); box-shadow: var(--shadow-fluffy); font-size: 1.05rem; color: #1E293B; line-height: 1.8; }
         
-        .document-view h2 { color: var(--text-main); margin: 40px 0 20px; font-weight: 800; font-size: 1.6rem; border-bottom: 3px solid var(--accent-primary); padding-bottom: 10px; display: inline-block; }
+        /* 렌더링 스타일 최적화 */
+        .document-view h2 { color: var(--text-main); margin: 40px 0 20px; font-weight: 800; font-size: 1.6rem; border-bottom: 3px solid var(--accent-blue); padding-bottom: 10px; display: inline-block; }
         .document-view h3 { color: var(--accent-blue); margin: 30px 0 15px; font-weight: 700; font-size: 1.3rem; }
-        .document-view p { margin-bottom: 18px; line-height: 1.8; }
-        .document-view ul, .document-view ol { margin-bottom: 20px; padding-left: 25px; line-height: 1.8; }
-        .document-view li { margin-bottom: 8px; }
+        .document-view p { margin-bottom: 15px; }
+        .document-view ul, .document-view ol { margin-bottom: 20px; padding-left: 25px; }
         
-        /* 🔥 함정 레이더 특별 디자인 */
-        .document-view blockquote { border-left: 5px solid #EF4444; background: #FEF2F2; padding: 15px 20px; margin: 20px 0; border-radius: 0 12px 12px 0; font-weight: 600; color: #991B1B; }
+        /* 🔥 함정 레이더 블록 인용구 디자인 */
+        .document-view blockquote { border-left: 5px solid #EF4444; background: #FEF2F2; padding: 20px; margin: 25px 0; border-radius: 0 12px 12px 0; font-weight: 600; color: #991B1B; }
 
-        .document-view strong { color: #0F172A; font-weight: 800; background: linear-gradient(180deg, rgba(255,255,255,0) 60%, rgba(255, 139, 167, 0.2) 40%); transition: 0.3s; }
-        .cloze-blank { background: #1E293B !important; color: #1E293B !important; border-radius: 4px; padding: 2px 6px; cursor: pointer; user-select: none; }
-        .cloze-blank:hover { background: var(--accent-primary) !important; color: white !important; }
+        /* 🔥 스마트 암기 빈칸 처리 로직을 위한 CSS */
+        .document-view strong { color: #0F172A; font-weight: 800; background: linear-gradient(180deg, rgba(255,255,255,0) 60%, rgba(59, 130, 246, 0.2) 40%); padding: 0 4px; border-radius: 2px; transition: 0.3s; }
+        .document-view.cloze-mode strong { background: var(--accent-dark) !important; color: var(--accent-dark) !important; user-select: none; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .document-view.cloze-mode strong.revealed { background: linear-gradient(180deg, rgba(255,255,255,0) 60%, rgba(16, 185, 129, 0.3) 40%) !important; color: #0F172A !important; cursor: default; }
 
-        .document-view table { width: 100%; border-collapse: collapse; margin: 30px 0; border: 1px solid #CBD5E1; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
-        .document-view th, .document-view td { border: 1px solid #E2E8F0; padding: 20px; text-align: left; vertical-align: top; }
-        .document-view th { background-color: #F8FAFC; color: var(--text-main); font-weight: 800; font-size: 1.1rem; border-bottom: 2px solid #CBD5E1; }
+        /* 테이블 렌더링 */
+        .document-view table { width: 100%; border-collapse: collapse; margin: 30px 0; border: 1px solid #CBD5E1; border-radius: 12px; overflow: hidden; }
+        .document-view th, .document-view td { border: 1px solid #E2E8F0; padding: 15px; text-align: left; vertical-align: top; }
+        .document-view th { background-color: #F8FAFC; color: var(--text-main); font-weight: 800; border-bottom: 2px solid #CBD5E1; }
         .document-view tr:nth-child(even) td { background-color: #FAFAFA; }
-        .document-view td:first-child { width: 28%; font-weight: 700; color: var(--accent-blue); background-color: #F8FAFC; border-right: 2px solid #E2E8F0; }
-        .document-view td:nth-child(2) { width: 72%; }
 
-        .book-cover { text-align: center; padding: 120px 40px; background: linear-gradient(135deg, #F8FAFC, #F1F5F9); border: 2px solid #E2E8F0; border-radius: 16px; margin-bottom: 40px; }
-        .book-title { font-size: 3rem; font-weight: 900; color: var(--text-main); margin-bottom: 20px; }
-        .book-subtitle { font-size: 1.5rem; color: var(--accent-blue); font-weight: 700; }
-        .book-date { margin-top: 50px; font-weight: 600; color: var(--text-sub); }
+        /* 아카이브 & 병합 리스트 */
+        .archive-item { padding: 20px; border: 1px solid var(--border-soft); border-radius: var(--radius-btn); margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; background: white; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .archive-item:hover { border-color: var(--accent-blue); transform: translateY(-2px); box-shadow: 0 8px 15px rgba(59, 130, 246, 0.1); }
+        .archive-info { flex: 1; cursor: pointer; }
+        .archive-title { font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 6px; }
+        .tag-badge { background: #E2E8F0; color: #475569; padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; margin-right: 6px; }
 
-        .archive-item { padding: 20px; border: 1px solid var(--border-soft); border-radius: var(--radius-box); margin-bottom: 15px; display: flex; align-items: flex-start; justify-content: space-between; background: white; transition: 0.3s; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
-        .archive-item:hover { border-color: var(--accent-blue); transform: translateY(-3px); box-shadow: 0 8px 20px rgba(59, 130, 246, 0.1); }
-        
-        .omr-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; background: #F8FAFC; padding: 25px; border-radius: 16px; border: 1px solid #E2E8F0; margin-top: 10px; }
-        .omr-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 15px; background: white; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .omr-qnum { font-weight: 800; font-size: 1.1rem; color: var(--text-main); width: 35px; }
-        .omr-bubbles { display: flex; gap: 10px; }
-        .omr-bubble { width: 34px; height: 34px; border-radius: 50%; border: 2px solid #CBD5E1; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.05rem; color: #94A3B8; font-weight: 700; transition: all 0.2s; background: white; }
-        .omr-bubble:hover { border-color: var(--accent-blue); color: var(--accent-blue); transform: scale(1.1); }
-        .omr-bubble.selected { background-color: var(--accent-blue); border-color: var(--accent-blue); color: white; box-shadow: 0 4px 10px rgba(59, 130, 246, 0.4); }
-        .omr-controls { display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px; }
-        .btn-small { background: white; border: 2px solid var(--border-soft); padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: 600; color: var(--text-sub); transition: 0.2s; }
-        
+        /* Q&A 챗봇 및 피드백 재생성 */
         .qna-section { margin-top: 40px; padding-top: 30px; border-top: 2px dashed #E2E8F0; }
-        .qna-title { font-size: 1.3rem; font-weight: 800; color: var(--text-main); margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        .qna-title { font-size: 1.2rem; font-weight: 800; color: var(--text-main); margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
         .chat-box { background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 16px; padding: 20px; max-height: 400px; overflow-y: auto; margin-bottom: 15px; display: flex; flex-direction: column; gap: 15px; }
         .chat-msg { padding: 12px 18px; border-radius: 16px; max-width: 85%; font-size: 0.95rem; line-height: 1.5; }
         .msg-user { background: var(--accent-blue); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
-        .msg-ai { background: white; color: var(--text-main); border: 1px solid #E2E8F0; align-self: flex-start; border-bottom-left-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
-        .chat-input-area { display: flex; gap: 10px; }
-        .chat-input-area input { flex: 1; margin: 0; background: white; }
-
-        #mermaidTree { background: white; padding: 30px; border-radius: 16px; border: 1px solid #E2E8F0; box-shadow: var(--shadow-fluffy); overflow: hidden; display: flex; justify-content: center; align-items: center; min-height: 400px; }
-
-        /* 🔥 지옥의 OX 서바이벌 모달 UI */
-        .ox-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.8); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
-        .ox-modal-content { background: white; width: 90%; max-width: 800px; max-height: 85vh; overflow-y: auto; border-radius: 24px; padding: 40px; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
-        .ox-close { position: absolute; top: 20px; right: 25px; font-size: 1.8rem; color: #94A3B8; cursor: pointer; transition: 0.2s; }
-        .ox-close:hover { color: #EF4444; }
-        .ox-header { text-align: center; margin-bottom: 30px; }
-        .ox-header h2 { color: var(--accent-ox); font-size: 2rem; font-weight: 900; margin-bottom: 10px; }
-        .ox-body { font-size: 1.1rem; line-height: 1.8; color: var(--text-main); }
-        .ox-body h3 { color: #E11D48; border-bottom: 2px solid #E11D48; padding-bottom: 5px; margin: 30px 0 15px; }
+        .msg-ai { background: white; color: var(--text-main); border: 1px solid #E2E8F0; align-self: flex-start; border-bottom-left-radius: 4px; }
+        .input-bar { display: flex; gap: 10px; }
+        .input-bar input { flex: 1; margin: 0; background: white; }
 
         @media (max-width: 1024px) {
             .mobile-header { display: flex; }
@@ -166,205 +131,172 @@
             .sidebar.open { transform: translateX(280px); }
             .main-content { padding: 20px; }
             .document-view { padding: 30px 20px; }
-            .omr-container { grid-template-columns: 1fr; }
-            .pdf-actions { justify-content: center; }
+            .form-row { flex-direction: column; gap: 0; }
         }
     </style>
 </head>
 <body>
 
     <header class="mobile-header no-print">
-        <h1><i class="fa-solid fa-book-heart"></i> Study Diary</h1>
+        <h1><i class="fa-solid fa-book-journal-whills"></i> Note Master</h1>
         <button class="menu-toggle" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
     </header>
 
     <div class="app-container">
+        <!-- 사이드바 네비게이션 -->
         <nav class="sidebar no-print" id="sidebar">
-            <div class="brand"><i class="fa-solid fa-book-open-reader"></i> Study Diary</div>
+            <div class="brand"><i class="fa-solid fa-book-journal-whills"></i> Note Master</div>
             
             <div class="menu-group">
-                <div class="menu-label">✏️ Create</div>
-                <div class="menu-item active" onclick="navTo('concept')"><i class="fa-solid fa-shapes"></i> 코넬 정리 & 함정 레이더</div>
-                <div class="menu-item" onclick="navTo('grading')"><i class="fa-solid fa-marker"></i> OMR & 오답 분석</div>
-            </div>
-
-            <div class="menu-group">
-                <div class="menu-label">📚 Library</div>
-                <div class="menu-item" onclick="navTo('archive')"><i class="fa-solid fa-box-archive"></i> 기록 보관함 & OX 서바이벌</div>
-                <div class="menu-item" onclick="navTo('knowledgetree')"><i class="fa-solid fa-network-wired"></i> 나의 지식 지도</div>
-                <div class="menu-item" onclick="navTo('unified')"><i class="fa-solid fa-book-journal-whills"></i> 문제집 출판 (보스전)</div>
+                <div class="menu-label">Workspace</div>
+                <div class="menu-item active" onclick="navTo('create')"><i class="fa-solid fa-pen-nib"></i> 스마트 노트 생성</div>
+                <div class="menu-item" onclick="navTo('archive')"><i class="fa-solid fa-box-archive"></i> 내 노트 보관함</div>
+                <div class="menu-item" onclick="navTo('merge')"><i class="fa-solid fa-layer-group"></i> 노트 단권화 (출판)</div>
             </div>
 
             <div class="settings-section">
-                <label style="font-size: 0.8rem; font-weight: 700; color: var(--accent-blue); margin-bottom: 8px; display: block;">Gemini API Key</label>
+                <label style="font-size: 0.8rem; font-weight: 700; color: var(--accent-blue); margin-bottom: 8px; display: block;"><i class="fa-solid fa-key"></i> Gemini API Key</label>
                 <input type="password" id="sysApiKey" placeholder="API Key 입력" onchange="saveApiKey()">
             </div>
         </nav>
 
         <main class="main-content" onclick="closeSidebarOutside()">
             
-            <section id="page-concept" class="page-section active">
+            <!-- 페이지 1: 스마트 노트 생성 및 뷰어 -->
+            <section id="page-create" class="page-section active">
                 <div class="page-header">
-                    <div class="page-header-left">
-                        <div class="page-header-icon" style="background: var(--accent-mint);"><i class="fa-solid fa-book-open"></i></div>
+                    <div style="display: flex; align-items: center;">
+                        <div class="page-header-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
                         <div>
-                            <h2 class="page-title">코넬 정리노트 & 함정 레이더</h2>
-                            <p class="page-desc">내용 생략 없이 완벽하게 구조화하고 출제자의 오답 함정을 예측합니다.</p>
+                            <h2 class="page-title">스마트 노트 생성</h2>
+                            <p class="page-desc">내용 생략 없이 완벽히 분석하고 킬러 포인트를 예측합니다.</p>
                         </div>
                     </div>
                 </div>
-                <div class="panel no-print">
-                    <div class="form-group">
-                        <label><i class="fa-solid fa-tags"></i> 태그 (과목/단원)</label>
-                        <input type="text" id="conceptTags" placeholder="예: 국어, 문학분석">
+
+                <!-- 입력 패널 -->
+                <div class="panel no-print" id="createPanel">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-heading"></i> 노트 제목 (선택)</label>
+                            <input type="text" id="noteTitle" placeholder="예: 한국사 근현대사 완벽정리">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-tags"></i> 과목/태그 (선택)</label>
+                            <input type="text" id="noteTags" placeholder="예: 한국사, 2단원">
+                        </div>
                     </div>
+                    
+                    <div class="form-group">
+                        <label><i class="fa-solid fa-shapes"></i> 노트 템플릿 선택</label>
+                        <select id="noteFormat">
+                            <option value="코넬식">코넬식 정리 (키워드-상세내용 표 구조)</option>
+                            <option value="요약식">핵심 요약식 (개조식 리스트 구조)</option>
+                            <option value="마인드맵식">계층형 구조 (대주제-소주제 트리 형식)</option>
+                        </select>
+                    </div>
+
                     <div class="form-group">
                         <label><i class="fa-solid fa-align-left"></i> 요약 및 분석할 텍스트 원본 (필수)</label>
-                        <textarea id="conceptPrompt" rows="8" placeholder="여기에 정리하고 싶은 긴 글, 교과서 본문 등을 복사해서 붙여넣으세요. AI가 내용을 절대 생략하지 않고 빵빵하게 분석합니다."></textarea>
+                        <textarea id="notePrompt" rows="6" placeholder="정리하고 싶은 긴 글이나 본문을 붙여넣으세요. AI가 내용을 절대 생략하지 않고 상세히 구조화합니다."></textarea>
                     </div>
                     <div class="form-group">
                         <label><i class="fa-solid fa-image"></i> 교재 사진이나 PDF 첨부 (선택)</label>
-                        <div class="upload-zone" style="border-color: var(--accent-mint);">
-                            <i class="fa-solid fa-cloud-arrow-up" style="color: var(--accent-mint);"></i>
-                            <div class="upload-text">사진이나 PDF 첨부 (20MB 이하 권장)</div>
-                            <input type="file" id="conceptFile" accept="image/*,.pdf,.txt" onchange="handleFile('conceptFile', 'conceptPreview')">
+                        <div class="upload-zone">
+                            <input type="file" id="noteFile" accept="image/*,.pdf,.txt" onchange="handleFile('noteFile', 'notePreview')">
+                            <i class="fa-solid fa-cloud-arrow-up" style="font-size: 2rem; color: #94A3B8; margin-bottom: 8px;"></i>
+                            <div class="upload-text">클릭하여 파일 첨부 (용량 제한 없음)</div>
                         </div>
-                        <div id="conceptPreview" class="preview-area" style="background: var(--accent-mint); color: white;"></div>
+                        <div id="notePreview" class="preview-area"></div>
                     </div>
-                    <button class="btn-primary" style="background: var(--accent-mint);" onclick="executeAI('concept')">
-                        <i class="fa-solid fa-wand-magic-sparkles"></i> 100점 방어 코넬 노트 생성하기
+                    <button class="btn-primary" onclick="generateNote(false)">
+                        <i class="fa-solid fa-bolt"></i> 내용 생략 없는 완벽 노트 만들기
                     </button>
-                    <div id="conceptLoader" class="loader" style="color:var(--accent-mint)"><div class="spinner" style="border-top-color:currentColor"></div>자료를 깊이 있게 분석하여 노트를 작성 중입니다...</div>
                 </div>
-                
-                <div id="conceptResultWrapper" class="document-wrapper">
-                    <!-- 🔥 TTS, 백지 복습, PDF 다운로드 툴바 -->
-                    <div class="pdf-actions no-print">
-                        <button class="btn-tts" id="ttsBtnConcept" onclick="toggleTTS('conceptResult', 'ttsBtnConcept')"><i class="fa-solid fa-headphones"></i> 오디오 브리핑 듣기</button>
-                        <button class="btn-cloze" onclick="toggleCloze(this)"><i class="fa-solid fa-eye-slash"></i> 암기 모드 (빈칸 뚫기)</button>
-                        <button class="btn-pdf" onclick="downloadPDF('pdfConceptArea', '코넬정리노트')"><i class="fa-solid fa-file-pdf"></i> PDF 내보내기</button>
-                    </div>
-                    <div id="pdfConceptArea">
-                        <div id="conceptResult" class="document-view"></div>
+
+                <div id="mainLoader" class="loader">
+                    <div class="spinner"></div>AI가 원본을 깊이 있게 씹어먹으며 노트를 작성 중입니다...
+                </div>
+
+                <!-- 결과 렌더링 래퍼 -->
+                <div id="resultWrapper" class="document-wrapper">
+                    <div class="action-bar no-print">
+                        <button class="btn-action btn-cloze" onclick="toggleClozeMode(this)"><i class="fa-solid fa-eye-slash"></i> 암기 모드 (빈칸 뚫기)</button>
+                        <button class="btn-action btn-pdf" onclick="downloadPDF('pdfArea', '스마트단권화노트')"><i class="fa-solid fa-file-pdf"></i> PDF 내보내기</button>
+                        <button class="btn-action btn-delete" id="btnDeleteCurrent" style="display: none;" onclick="deleteCurrentNote()"><i class="fa-solid fa-trash"></i> 이 노트 삭제</button>
                     </div>
                     
-                    <div class="qna-section no-print" id="qnaConcept">
-                        <div class="qna-title"><i class="fa-solid fa-chalkboard-user"></i> AI 선생님 1:1 과외 (질문하기)</div>
-                        <div class="chat-box" id="chatBoxConcept">
-                            <div class="chat-msg msg-ai">작성된 노트 내용 중 이해가 안 가거나 추가로 궁금한 점이 있다면 편하게 물어보세요!</div>
+                    <div id="pdfArea">
+                        <div id="noteResult" class="document-view"></div>
+                    </div>
+                    
+                    <!-- 피드백 재생성 기능 -->
+                    <div class="qna-section no-print">
+                        <div class="qna-title"><i class="fa-solid fa-arrows-rotate"></i> AI 피드백 튜닝 (다시 만들기)</div>
+                        <p style="font-size:0.9rem; color:var(--text-sub); margin-bottom:10px;">결과물이 마음에 안 드시나요? 피드백을 주시면 반영해서 다시 짜드립니다.</p>
+                        <div class="input-bar">
+                            <input type="text" id="feedbackInput" placeholder="예: 너무 짧아. 2배로 길게, 표를 더 많이 써서 다시 만들어줘.">
+                            <button class="btn-action" style="background: var(--accent-mint);" onclick="generateNote(true)"><i class="fa-solid fa-wand-magic-sparkles"></i> 재생성</button>
                         </div>
-                        <div class="chat-input-area">
-                            <input type="text" id="chatInputConcept" placeholder="예: 빈칸 뚫린 내용 중에 'A이론' 예시 좀 들어줘." onkeypress="if(event.key === 'Enter') askTutor('concept')">
-                            <button class="btn-pdf" style="background: var(--text-main); color: white; border: none;" onclick="askTutor('concept')"><i class="fa-solid fa-paper-plane"></i> 전송</button>
+                    </div>
+
+                    <!-- AI 선생님 질의응답 -->
+                    <div class="qna-section no-print">
+                        <div class="qna-title"><i class="fa-solid fa-chalkboard-user"></i> 1:1 과외 질문하기</div>
+                        <div class="chat-box" id="chatBox">
+                            <div class="chat-msg msg-ai">노트 내용 중 이해가 안 가거나 더 깊이 알고 싶은 부분을 질문하세요!</div>
+                        </div>
+                        <div class="input-bar">
+                            <input type="text" id="chatInput" placeholder="예: 위 내용 중에 A이론에 대한 구체적인 예시 하나만 들어줄래?" onkeypress="if(event.key === 'Enter') askTutor()">
+                            <button class="btn-action" style="background: var(--accent-blue);" onclick="askTutor()"><i class="fa-solid fa-paper-plane"></i> 전송</button>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <section id="page-grading" class="page-section">
-                <div class="page-header">
-                    <div class="page-header-left">
-                        <div class="page-header-icon" style="background: var(--accent-blue);"><i class="fa-solid fa-marker"></i></div>
-                        <div>
-                            <h2 class="page-title">OMR & 오답 심층 분석</h2>
-                            <p class="page-desc">시험지를 올리고 OMR에 마킹하면 약점 보완 리포트를 제공합니다.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="panel no-print">
-                    <div class="form-group">
-                        <label><i class="fa-solid fa-image"></i> 객관식 문제지 / 모의고사 (PDF 또는 사진)</label>
-                        <div class="upload-zone" style="border-color: var(--accent-blue);"><input type="file" id="gradeQuestFile" accept="image/*,.pdf" onchange="handleFile('gradeQuestFile', 'gradeQuestPreview')"><div class="upload-text">문제지 첨부</div></div>
-                        <div id="gradeQuestPreview" class="preview-area"></div>
-                    </div>
-                    <div class="form-group">
-                        <label><i class="fa-solid fa-list-ol"></i> 나의 OMR 마킹 (터치하여 정답 입력)</label>
-                        <div id="visualOMR" class="omr-container"></div>
-                        <div class="omr-controls">
-                            <button class="btn-small" onclick="clearOMR()"><i class="fa-solid fa-rotate-right"></i> 마킹 초기화</button>
-                        </div>
-                        <input type="text" id="omrAnswers" readonly placeholder="마킹을 하시면 이곳에 자동으로 기록됩니다." style="margin-top: 15px; border:none; background:transparent; font-weight:bold; color:var(--accent-blue);">
-                    </div>
-                    <div class="form-group">
-                        <label><i class="fa-solid fa-tags"></i> 태그 (선택)</label>
-                        <input type="text" id="gradeTags" placeholder="예: 모의고사, 국어">
-                    </div>
-                    <button class="btn-primary" style="background: var(--accent-blue);" onclick="executeAI('grading')"><i class="fa-solid fa-magnifying-glass-chart"></i> 가채점 및 약점 하이라이트 시작</button>
-                    <div id="gradeLoader" class="loader" style="color:var(--accent-blue)"><div class="spinner" style="border-top-color:currentColor"></div>오답 원인을 심층 분석 중입니다...</div>
-                </div>
-
-                <div id="gradeResultWrapper" class="document-wrapper">
-                    <div class="pdf-actions no-print">
-                        <button class="btn-tts" id="ttsBtnGrade" onclick="toggleTTS('gradeResult', 'ttsBtnGrade')"><i class="fa-solid fa-headphones"></i> 오디오 브리핑 듣기</button>
-                        <button class="btn-cloze" onclick="toggleCloze(this)"><i class="fa-solid fa-eye-slash"></i> 암기 모드 (빈칸 뚫기)</button>
-                        <button class="btn-pdf" onclick="downloadPDF('pdfGradeArea', '오답분석리포트')"><i class="fa-solid fa-file-pdf"></i> PDF 내보내기</button>
-                    </div>
-                    <div id="pdfGradeArea">
-                        <div id="gradeResult" class="document-view"></div>
-                    </div>
-                    
-                    <div class="qna-section no-print" id="qnaGrade">
-                        <div class="qna-title"><i class="fa-solid fa-chalkboard-user"></i> AI 선생님 1:1 과외</div>
-                        <div class="chat-box" id="chatBoxGrade">
-                            <div class="chat-msg msg-ai">채점 결과나 오답 분석에 대해 궁금한 점이 있나요?</div>
-                        </div>
-                        <div class="chat-input-area">
-                            <input type="text" id="chatInputGrade" placeholder="질문을 입력하세요..." onkeypress="if(event.key === 'Enter') askTutor('grade')">
-                            <button class="btn-pdf" style="background: var(--text-main); color: white; border: none;" onclick="askTutor('grade')"><i class="fa-solid fa-paper-plane"></i> 전송</button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
+            <!-- 페이지 2: 내 노트 보관함 -->
             <section id="page-archive" class="page-section">
                 <div class="page-header">
-                    <div class="page-header-icon" style="background: #D4A373;"><i class="fa-solid fa-box-archive"></i></div>
-                    <div>
-                        <h2 class="page-title">나만의 기록 보관함</h2>
+                    <div style="display: flex; align-items: center;">
+                        <div class="page-header-icon" style="background: #10B981;"><i class="fa-solid fa-box-archive"></i></div>
+                        <div>
+                            <h2 class="page-title">내 노트 보관함</h2>
+                            <p class="page-desc">자동 저장된 모든 노트를 무제한으로 관리합니다.</p>
+                        </div>
                     </div>
                 </div>
-                <div class="panel no-print" style="background: transparent; border: none; box-shadow: none; padding: 0;">
-                    <div id="historyList">기록이 없습니다.</div>
+                <div id="archiveList">
+                    <!-- JS로 리스트 렌더링 -->
                 </div>
             </section>
 
-            <section id="page-knowledgetree" class="page-section">
+            <!-- 페이지 3: 노트 단권화 (병합) -->
+            <section id="page-merge" class="page-section">
                 <div class="page-header">
-                    <div class="page-header-icon" style="background: #8B5CF6;"><i class="fa-solid fa-network-wired"></i></div>
-                    <div>
-                        <h2 class="page-title">나의 지식 지도 (마인드맵)</h2>
-                        <p class="page-desc">보관함에 쌓인 학습 기록을 분석하여 지식 구조를 시각화합니다.</p>
-                    </div>
-                </div>
-                <div id="mermaidTree"></div>
-            </section>
-
-            <section id="page-unified" class="page-section">
-                <div class="page-header">
-                    <div class="page-header-icon" style="background: linear-gradient(135deg, #FFD166, #FF9F1C);"><i class="fa-solid fa-book-journal-whills"></i></div>
-                    <div>
-                        <h2 class="page-title">문제집 출판 & 융합 킬러 문항 (Boss Fight)</h2>
-                        <p class="page-desc">노트를 전자책으로 묶거나, 여러 단원을 융합한 최고난도 문제를 생성합니다.</p>
+                    <div style="display: flex; align-items: center;">
+                        <div class="page-header-icon" style="background: #F59E0B;"><i class="fa-solid fa-layer-group"></i></div>
+                        <div>
+                            <h2 class="page-title">노트 단권화 (출판)</h2>
+                            <p class="page-desc">여러 노트를 선택하여 하나의 매끄러운 단권화 전자책으로 병합합니다.</p>
+                        </div>
                     </div>
                 </div>
                 <div class="panel no-print">
-                    <p style="margin-bottom:15px; font-weight:700; color:var(--text-main);">📝 병합할 노트를 선택해주세요 (한 번에 2~3개 권장)</p>
-                    <div id="unifiedSelectionList" style="max-height:300px; overflow-y:auto; margin-bottom: 25px; padding-right: 10px;"></div>
+                    <p style="margin-bottom:15px; font-weight:700; color:var(--text-main);">📝 하나로 합칠 노트를 모두 선택하세요.</p>
+                    <div id="mergeSelectionList" style="max-height:400px; overflow-y:auto; margin-bottom: 25px; padding-right: 10px;"></div>
                     
-                    <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                        <button class="btn-primary" style="background: #FF9F1C; flex: 1;" onclick="executeUnifiedNote()"><i class="fa-solid fa-layer-group"></i> 전자책 출판하기</button>
-                        <!-- 🔥 융합 킬러 문항 생성 버튼 -->
-                        <button class="btn-primary" style="background: var(--accent-boss); flex: 1;" onclick="executeBossFight()"><i class="fa-solid fa-skull"></i> 융합 킬러 문항 생성 (Boss Fight)</button>
-                    </div>
-                    <div id="unifiedLoader" class="loader" style="color:#FF9F1C"><div class="spinner" style="border-top-color:currentColor"></div>서버에 요청 중입니다...</div>
+                    <button class="btn-primary" style="background: #F59E0B;" onclick="executeMerge()">
+                        <i class="fa-solid fa-book-journal-whills"></i> 선택한 노트 단권화 실행
+                    </button>
+                    <div id="mergeLoader" class="loader"><div class="spinner" style="border-top-color:currentColor"></div>선택한 노트들의 맥락을 융합하여 단권화 중입니다...</div>
                 </div>
-                <div id="unifiedResultWrapper" class="document-wrapper">
-                    <div class="pdf-actions no-print">
-                        <button class="btn-tts" id="ttsBtnUnified" onclick="toggleTTS('unifiedResult', 'ttsBtnUnified')"><i class="fa-solid fa-headphones"></i> 오디오 브리핑 듣기</button>
-                        <button class="btn-pdf" onclick="downloadPDF('pdfBookArea', '나만의_마스터자료')"><i class="fa-solid fa-file-pdf"></i> 📚 PDF 다운로드</button>
+
+                <div id="mergeResultWrapper" class="document-wrapper">
+                    <div class="action-bar no-print">
+                        <button class="btn-action btn-pdf" onclick="downloadPDF('pdfMergeArea', '나만의_마스터_단권화')"><i class="fa-solid fa-file-pdf"></i> 📚 전자책 PDF 다운로드</button>
                     </div>
-                    <div id="pdfBookArea">
-                        <div id="unifiedResult" class="document-view" style="padding: 0;"></div>
+                    <div id="pdfMergeArea">
+                        <div id="mergeResult" class="document-view"></div>
                     </div>
                 </div>
             </section>
@@ -372,102 +304,50 @@
         </main>
     </div>
 
-    <!-- 🔥 지옥의 OX 서바이벌 모달 UI -->
-    <div id="oxModal" class="ox-modal">
-        <div class="ox-modal-content">
-            <i class="fa-solid fa-circle-xmark ox-close" onclick="closeOXModal()"></i>
-            <div class="ox-header">
-                <h2><i class="fa-solid fa-gamepad"></i> 지옥의 OX 서바이벌</h2>
-                <p>가장 매력적인 오답 함정들을 피해 살아남으세요!</p>
-            </div>
-            <div id="oxLoader" class="loader" style="color:var(--accent-ox); display:none;"><div class="spinner" style="border-top-color:currentColor"></div>출제자가 악랄한 함정 선지를 만드는 중입니다...</div>
-            
-            <div id="oxPlayArea" style="display:none;">
-                <div id="oxQuestionContent" class="ox-body"></div>
-                <button class="btn-primary" style="background: var(--accent-ox); margin-top: 30px;" onclick="revealOXAnswer()"><i class="fa-solid fa-unlock-keyhole"></i> 정답 및 끔찍한 함정 해설 보기</button>
-            </div>
-
-            <div id="oxAnswerArea" style="display:none; margin-top: 30px;">
-                <div id="oxAnswerContent" class="ox-body"></div>
-            </div>
-        </div>
-    </div>
-
     <script>
-        mermaid.initialize({ startOnLoad: false, theme: 'base', themeVariables: { primaryColor: '#F4F9FF', primaryBorderColor: '#A2D2FF', lineColor: '#CBD5E1' } });
+        // 전역 상태 변수
+        let currentNoteContext = ""; 
+        let currentNoteId = null; // 현재 뷰에 띄워진 노트의 DB ID
+        let currentPromptCache = ""; // 재생성 시 재사용할 프롬프트
 
-        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
-        function closeSidebarOutside() { if(window.innerWidth <= 1024) document.getElementById('sidebar').classList.remove('open'); }
-
+        // --- 초기화 및 UI 제어 ---
         window.onload = () => {
             const savedKey = localStorage.getItem('geminiApiKey');
             if (savedKey) document.getElementById('sysApiKey').value = savedKey;
-            renderOMR();
+            
+            // localforage (IndexedDB) 초기화 설정
+            localforage.config({ name: 'NoteMaster', storeName: 'ArchiveDB' });
         };
 
-        // --- OMR 로직 ---
-        let userAnswers = {}; 
-        function renderOMR() {
-            const container = document.getElementById('visualOMR');
-            if(!container) return;
-            let html = '';
-            for(let i=1; i<=20; i++) {
-                html += `<div class="omr-row"><div class="omr-qnum">${i}.</div><div class="omr-bubbles">`;
-                for(let j=1; j<=5; j++) {
-                    html += `<div class="omr-bubble" onclick="selectOMR(${i}, ${j})" id="omr-q${i}-c${j}">${j}</div>`;
-                }
-                html += `</div></div>`;
-            }
-            container.innerHTML = html;
-        }
-        function selectOMR(questionNum, choice) {
-            userAnswers[questionNum] = choice;
-            for(let j=1; j<=5; j++) document.getElementById(`omr-q${questionNum}-c${j}`).classList.remove('selected');
-            document.getElementById(`omr-q${questionNum}-c${choice}`).classList.add('selected');
-            updateOMRText();
-        }
-        function clearOMR() {
-            userAnswers = {};
-            for(let i=1; i<=20; i++) {
-                for(let j=1; j<=5; j++) document.getElementById(`omr-q${i}-c${j}`).classList.remove('selected');
-            }
-            updateOMRText();
-        }
-        function updateOMRText() {
-            let ansArr = [];
-            for(let i=1; i<=20; i++) if(userAnswers[i]) ansArr.push(`${i}번:${userAnswers[i]}`);
-            document.getElementById('omrAnswers').value = ansArr.join(', ');
-        }
-
-        // --- 공통 기능 (TTS, PDF, 빈칸 등) ---
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+        function closeSidebarOutside() { if(window.innerWidth <= 1024) document.getElementById('sidebar').classList.remove('open'); }
         function saveApiKey() { localStorage.setItem('geminiApiKey', document.getElementById('sysApiKey').value); }
 
         function navTo(pageId) {
-            if(window.speechSynthesis.speaking) window.speechSynthesis.cancel(); // 탭 이동 시 오디오 중지
             document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
             event.currentTarget.classList.add('active');
             document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
             document.getElementById('page-' + pageId).classList.add('active');
             closeSidebarOutside();
             
-            if(pageId === 'archive') loadHistory();
-            if(pageId === 'knowledgetree') renderKnowledgeTree();
-            if(pageId === 'unified') loadUnifiedSelection();
+            if(pageId === 'create') {
+                // 새 노트 생성 탭 진입 시 상태 초기화
+                currentNoteId = null;
+                document.getElementById('createPanel').style.display = 'block';
+                document.getElementById('resultWrapper').style.display = 'none';
+                document.getElementById('btnDeleteCurrent').style.display = 'none';
+                document.getElementById('noteTitle').value = "";
+                document.getElementById('notePrompt').value = "";
+            }
+            if(pageId === 'archive') loadArchive();
+            if(pageId === 'merge') loadMergeSelection();
         }
 
+        // --- 유틸리티 기능 (파일, PDF, 암기모드) ---
         function handleFile(inputId, previewId) {
             const file = document.getElementById(inputId).files[0];
             const preview = document.getElementById(previewId);
-            if (file && file.size > 20 * 1024 * 1024) {
-                alert("파일 용량이 20MB를 초과했습니다. 더 작은 파일로 올려주세요.");
-                document.getElementById(inputId).value = ""; 
-                preview.style.display = 'none';
-                return;
-            }
-            if (file) {
-                preview.style.display = 'block';
-                preview.innerHTML = `<i class="fa-solid fa-check-circle"></i> 첨부완료: ${file.name}`;
-            }
+            if (file) { preview.style.display = 'block'; preview.innerHTML = `<i class="fa-solid fa-check-circle"></i> 첨부완료: ${file.name}`; }
         }
 
         function fileToBase64(file) {
@@ -475,72 +355,71 @@
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
                 reader.onload = () => resolve({ data: reader.result.split(',')[1], mimeType: file.type });
-                reader.onerror = error => reject(error);
             });
         }
 
+        // 🔥 PDF 용량 초과 및 백지화 방지 우회 로직 (scale 축소, 페이지 분할 허용)
         function downloadPDF(elementId, fileName) {
             const element = document.getElementById(elementId);
+            // 암기모드 상태라면 해제 후 인쇄 (선택적)
+            const view = element.querySelector('.document-view');
+            const wasCloze = view.classList.contains('cloze-mode');
+            if(wasCloze) view.classList.remove('cloze-mode');
+
             const opt = {
-                margin:       [15, 0, 15, 0],
+                margin:       [15, 10, 15, 10],
                 filename:     `${fileName}.pdf`,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true },
+                image:        { type: 'jpeg', quality: 0.95 },
+                html2canvas:  { scale: 1.5, useCORS: true, letterRendering: true }, 
+                pagebreak:    { mode: ['css', 'legacy'] }, // 페이지 넘김 보장
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
-            html2pdf().set(opt).from(element).save();
+            
+            html2pdf().set(opt).from(element).save().then(() => {
+                if(wasCloze) view.classList.add('cloze-mode'); // 복구
+            });
         }
 
-        function toggleCloze(btn) {
-            const container = btn.closest('.document-wrapper').querySelector('.document-view');
-            const strongTags = container.querySelectorAll('strong');
-            let isCloze = btn.dataset.cloze === 'true';
+        // 🔥 스마트 빈칸 암기 기능 (Event Delegation 적용)
+        function toggleClozeMode(btn) {
+            const view = document.getElementById('noteResult');
+            const isCloze = view.classList.contains('cloze-mode');
             
             if (!isCloze) {
-                strongTags.forEach(el => { el.classList.add('cloze-blank'); el.onclick = function() { this.classList.remove('cloze-blank'); }; });
-                btn.dataset.cloze = 'true';
+                view.classList.add('cloze-mode');
                 btn.innerHTML = '<i class="fa-solid fa-eye"></i> 암기 모드 종료';
-                btn.style.background = 'var(--accent-primary)';
+                btn.style.background = '#3B82F6';
+                
+                // 정답 확인용 클릭 이벤트 바인딩
+                const strongs = view.querySelectorAll('strong');
+                strongs.forEach(s => {
+                    s.classList.remove('revealed');
+                    s.onclick = function() { this.classList.toggle('revealed'); }
+                });
             } else {
-                strongTags.forEach(el => { el.classList.remove('cloze-blank'); el.onclick = null; });
-                btn.dataset.cloze = 'false';
+                view.classList.remove('cloze-mode');
                 btn.innerHTML = '<i class="fa-solid fa-eye-slash"></i> 암기 모드 (빈칸 뚫기)';
-                btn.style.background = '#1E293B';
+                btn.style.background = 'var(--accent-dark)';
+                
+                // 이벤트 해제
+                const strongs = view.querySelectorAll('strong');
+                strongs.forEach(s => { s.onclick = null; });
             }
         }
 
-        // 🔥 오디오 브리핑 (TTS) 로직
-        let currentUtterance = null;
-        function toggleTTS(elementId, btnId) {
-            const btn = document.getElementById(btnId);
-            if(window.speechSynthesis.speaking) {
-                window.speechSynthesis.cancel();
-                btn.classList.remove('playing');
-                btn.innerHTML = '<i class="fa-solid fa-headphones"></i> 오디오 브리핑 듣기';
-                return;
-            }
-            const text = document.getElementById(elementId).innerText;
-            currentUtterance = new SpeechSynthesisUtterance(text);
-            currentUtterance.lang = 'ko-KR';
-            currentUtterance.rate = 1.1; // 약간 빠른 템포
-            
-            currentUtterance.onend = () => {
-                btn.classList.remove('playing');
-                btn.innerHTML = '<i class="fa-solid fa-headphones"></i> 오디오 브리핑 듣기';
-            };
+        // --- 핵심 프롬프트 및 API 통신 ---
+        // 폰트 깨짐 방지 및 생략 방지 절대 규칙
+        const strictRules = `
+[마크다운 및 렌더링 절대 준수 규칙 - 위반 시 시스템 오류 발생]
+1. 하이픈(-), 화살표(=>, ->, ▶), 당구장(※) 등 특수문자 절대 금지. (폰트가 깨집니다)
+2. 글머리 기호(List)는 오직 별표(*)나 숫자(1. 2.)만 사용하세요.
+3. 텍스트 내에 단일 달러 기호($) 절대 금지. 수식에만 $$수식$$ 를 사용하세요.
+4. [가장 중요] 원본 내용을 요약하거나 임의로 '등등', '생략' 처리하지 마세요. 모든 디테일을 담으세요. 구조상 표에 넣기 애매한 방대한 내용은 노트 최하단에 '[📚 심화 및 부가 설명]' 이라는 헤딩을 만들고 거기에 전부 쏟아내세요. 절대 내용을 날리지 마세요.`;
 
-            window.speechSynthesis.speak(currentUtterance);
-            btn.classList.add('playing');
-            btn.innerHTML = '<i class="fa-solid fa-circle-stop"></i> 브리핑 중지';
-        }
+        async function callGeminiAPI(prompt, files = []) {
+            const apiKey = document.getElementById('sysApiKey').value;
+            if (!apiKey) throw new Error("API Key가 입력되지 않았습니다.");
 
-        // 🔥 통신 로직 및 포맷 보호 (하이픈, 달러 금지)
-        const formattingRules = `
-[마크다운 및 렌더링 절대 준수 규칙 - 위반 시 감점]
-1. 글머리 기호(Bullet point)나 리스트 작성 시 하이픈(-)을 절대 사용하지 마세요. 반드시 별표(*)나 숫자(1. 2.)를 사용하세요. 표 안에서도 하이픈 금지.
-2. 텍스트에 단일 달러 기호($)를 절대 사용하지 마세요. 필요시 '달러'라고 한글로 표기하고, 수학 수식에만 이중 달러 기호($$수식$$)를 사용하세요.`;
-
-        async function callGeminiAPI(apiKey, prompt, files = [], loaderId = null) {
             let requestParts = [{ text: prompt }];
             files.forEach(f => requestParts.push({ inlineData: { data: f.data, mimeType: f.mimeType } }));
             
@@ -549,346 +428,266 @@
                 body: JSON.stringify({ contents: [{ parts: requestParts }], generationConfig: { temperature: 0.7 } })
             };
 
-            const maxRetries = 4; 
-            let delay = 3000; 
-
-            for (let i = 0; i <= maxRetries; i++) {
-                try {
-                    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`, options);
-                    
-                    if (!response.ok) {
-                        const status = response.status;
-                        if ((status === 429 || status === 503 || status === 500) && i < maxRetries) {
-                            if (loaderId) {
-                                const loaderEl = document.getElementById(loaderId);
-                                if (loaderEl) loaderEl.innerHTML = `<div class="spinner" style="border-top-color:currentColor"></div>구글 서버 과부하 감지. 자동 우회 중입니다... (${i+1}/${maxRetries}회 시도)`;
-                            }
-                            await new Promise(resolve => setTimeout(resolve, delay));
-                            delay += 2000; 
-                            continue;
-                        }
-                        const errorData = await response.json().catch(() => ({}));
-                        let errMsg = errorData.error ? errorData.error.message : `API 통신 오류 (${status})`;
-                        if(status === 429 || status === 503) errMsg = "서버 혼잡이 극심합니다. 병합하는 노트 개수를 줄이거나 1분 뒤 다시 시도해주세요.";
-                        throw new Error(errMsg);
-                    }
-
-                    const data = await response.json();
-                    if (data.error) throw new Error(data.error.message);
-                    return data.candidates[0].content.parts[0].text;
-
-                } catch (error) {
-                    if (i === maxRetries) throw error; 
-                    await new Promise(resolve => setTimeout(resolve, delay));
-                    delay += 2000;
-                }
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`, options);
+            if (!response.ok) {
+                let err = await response.json().catch(()=>({}));
+                throw new Error(err.error?.message || "서버 통신 오류 (" + response.status + ")");
             }
+            const data = await response.json();
+            if (data.error) throw new Error(data.error.message);
+            return data.candidates[0].content.parts[0].text;
         }
 
-        let currentContext = ""; 
-
-        async function executeAI(mode) {
-            if(window.speechSynthesis.speaking) window.speechSynthesis.cancel();
-            const apiKey = document.getElementById('sysApiKey').value;
-            if (!apiKey) return alert("설정 메뉴에서 API Key를 입력해주세요!");
-
-            const loaderId = mode + 'Loader';
-            const loader = document.getElementById(loaderId);
-            const resultWrapper = document.getElementById(mode + 'ResultWrapper');
-            const resultBox = document.getElementById(mode + 'Result');
+        // 🔥 스마트 노트 생성 & 피드백 재생성 통합 함수
+        async function generateNote(isRegenerate = false) {
+            const loader = document.getElementById('mainLoader');
+            const resultWrapper = document.getElementById('resultWrapper');
+            const resultBox = document.getElementById('noteResult');
             
-            if(mode === 'concept') loader.innerHTML = `<div class="spinner" style="border-top-color:currentColor"></div>자료를 깊이 있게 분석하여 노트를 작성 중입니다...`;
-            if(mode === 'grading') loader.innerHTML = `<div class="spinner" style="border-top-color:currentColor"></div>오답 원인을 심층 분석 중입니다...`;
-            
+            let feedback = "";
+            if (isRegenerate) {
+                feedback = document.getElementById('feedbackInput').value.trim();
+                if(!feedback) return alert("반영할 피드백 내용(예: 더 길게 써줘)을 입력하세요.");
+                document.getElementById('feedbackInput').value = ""; // 초기화
+            } else {
+                // 신규 생성 시 입력값 검증
+                const rawPrompt = document.getElementById('notePrompt').value;
+                const fileInput = document.getElementById('noteFile');
+                if (!rawPrompt && (!fileInput.files || fileInput.files.length === 0)) {
+                    return alert("분석할 텍스트를 입력하거나 파일을 첨부해주세요.");
+                }
+            }
+
+            // UI 상태 전환
             loader.style.display = 'block'; 
             resultWrapper.style.display = 'none';
-            resultBox.innerHTML = ""; 
-
-            let prompt = "", title = "", filesToProcess = [], tags = [];
+            document.getElementById('createPanel').style.display = 'none'; // 로딩 중 폼 숨김
 
             try {
-                if (mode === 'concept') {
-                    const inputPrompt = document.getElementById('conceptPrompt').value;
-                    const file = document.getElementById('conceptFile').files[0];
-                    const rawTags = document.getElementById('conceptTags').value;
-                    if (!inputPrompt && !file) throw new Error("요약할 텍스트나 파일을 넣어주세요.");
+                let finalPrompt = "";
+                let filesToProcess = [];
+                let title = document.getElementById('noteTitle').value || '무제 노트';
+                let tagsRaw = document.getElementById('noteTags').value;
+                let tags = tagsRaw.split(',').map(t => t.trim()).filter(t => t);
+                let format = document.getElementById('noteFormat').value;
+
+                if (isRegenerate) {
+                    finalPrompt = `다음은 이전에 네가 작성한 노트 내용이다.\n\n${currentNoteContext}\n\n위 내용을 바탕으로 다음 사용자의 피드백을 엄격히 반영하여 노트를 처음부터 다시 렌더링해라.\n[사용자 피드백]: ${feedback}\n${strictRules}`;
+                } else {
+                    const inputPrompt = document.getElementById('notePrompt').value;
+                    const file = document.getElementById('noteFile').files[0];
                     if (file) filesToProcess.push(await fileToBase64(file));
                     
-                    tags = rawTags.split(',').map(t => t.trim()).filter(t => t);
-                    title = `[정리노트] ${tags[0] || '핵심 요약'}`;
-                    
-                    // 🔥 함정 레이더 프롬프트 추가 완료!
-                    prompt = `당신은 최고 수준의 일타 강사입니다. 제공된 데이터를 완벽한 '코넬 노트' 형식으로 변환하세요.\n[원본 데이터]: ${inputPrompt}\n\n[필수 조건]\n1. 원본 내용을 절대 생략하지 말고 백과사전 수준으로 깊게 꽉 채워 넣으세요.\n2. 중요 암기 키워드는 반드시 양쪽에 별표 두 개(**단어**)를 쳐서 볼드체로 만드세요.\n3. 좌측 '핵심 키워드', 우측 '상세 내용' 2열짜리 표(Table)로 출력하세요.\n4. [🚨 출제자 빙의 함정 레이더] 섹션을 마크다운 인용구(blockquote: >)로 작성하여, 출제자가 인과관계를 꼬거나 일반화 오류를 유도할 만한 '매력적인 오답 선지 패턴'을 경고해 주세요.\n5. [👩‍🏫 AI 선생님의 족집게 하이라이트]를 하단에 상세히 기술하세요.\n${formattingRules}`;
-                }
-                else if (mode === 'grading') {
-                    const qFile = document.getElementById('gradeQuestFile').files[0];
-                    const omrInput = document.getElementById('omrAnswers').value;
-                    if (!qFile) throw new Error("객관식 문제지 이미지를 올려주세요.");
-                    if (!omrInput) throw new Error("OMR 카드를 클릭하여 마킹을 완료해주세요.");
-                    if (qFile) filesToProcess.push(await fileToBase64(qFile));
-                    
-                    title = `[채점/오답분석] 모의고사`;
-                    prompt = `첨부된 시험지와 학생 마킹 답안을 바탕으로 초정밀 가채점 및 분석 리포트를 작성하세요.\n[학생 답안]: ${omrInput}\n\n[조건]\n1. 실제 정답과 학생 답안을 비교 채점(O/X)하세요.\n2. 틀린 문제는 오답 원인(논리적 함정)을 생략 없이 아주 길고 상세하게 해설하세요.\n3. [👩‍🏫 AI 선생님의 약점 보완 하이라이트]와 [🚨 변형 출제 포인트 예측]을 상세히 작성하세요.\n${formattingRules}`;
+                    finalPrompt = `당신은 최고 수준의 1타 강사이자 완벽한 노트 정리 AI입니다. 제공된 데이터를 '${format}' 구조로 재구성하세요.\n\n[원본 데이터]:\n${inputPrompt}\n\n[핵심 생성 조건]\n1. [스마트 암기 빈칸]: 전체 문장이 아닌, 학생이 반드시 암기해야 할 '핵심 명사'나 '개념어'의 양쪽에만 마크다운 볼드체(**단어**) 처리를 하세요. 이 단어들은 웹에서 빈칸 처리됩니다. (예: 아메리카 대륙을 발견한 사람은 **콜럼버스**이다.)\n2. [출제자 빙의 함정 레이더]: 노트 내용이 끝난 뒤, 마크다운 인용구(>)를 사용하여 출제 확률(%)과 시험에 자주 나오는 오답 유도 패턴(킬러 포인트) 2~3가지를 짚어주세요.\n${strictRules}`;
+                    currentPromptCache = finalPrompt; // 재생성을 대비해 원본 프롬프트 캐싱
                 }
 
-                const aiText = await callGeminiAPI(apiKey, prompt, filesToProcess, loaderId);
-                currentContext = aiText; 
+                const aiText = await callGeminiAPI(finalPrompt, filesToProcess);
                 
+                // 렌더링 및 상태 업데이트
+                currentNoteContext = aiText; 
                 resultBox.innerHTML = marked.parse(aiText);
                 resultWrapper.style.display = 'block';
+                resultBox.classList.remove('cloze-mode'); // 렌더링 초기화 시 암기모드 해제
+                document.querySelector('.btn-cloze').innerHTML = '<i class="fa-solid fa-eye-slash"></i> 암기 모드 (빈칸 뚫기)';
+                document.querySelector('.btn-cloze').style.background = 'var(--accent-dark)';
+
                 if (window.MathJax) MathJax.typesetPromise([resultBox]);
-                saveHistory(title, tags, aiText);
                 
-                const chatBoxId = mode === 'concept' ? 'chatBoxConcept' : 'chatBoxGrade';
-                document.getElementById(chatBoxId).innerHTML = '<div class="chat-msg msg-ai">자료 정리가 완료되었습니다! 복습 모드(빈칸 뚫기)를 해보시거나, 이해가 안 가는 부분은 저에게 질문해 주세요!</div>';
+                // DB 자동 저장 (신규 생성이면 insert, 재생성이면 update)
+                await saveToArchive(title, tags, aiText, format);
+                
+                document.getElementById('chatBox').innerHTML = '<div class="chat-msg msg-ai">노트 작성이 완료되었습니다! 복습 모드를 켜서 암기해 보거나, 모르는 부분을 질문해 보세요.</div>';
 
             } catch (error) { 
-                resultBox.innerHTML = `<div style="color: #EF4444; font-weight: bold; padding: 20px; border: 2px dashed #EF4444; border-radius: 10px; background: #FEF2F2;"><i class="fa-solid fa-triangle-exclamation"></i> 에러 발생:<br><br>${error.message}</div>`;
-                resultWrapper.style.display = 'block';
-            } 
-            finally { 
+                document.getElementById('createPanel').style.display = 'block'; // 에러 시 폼 다시 표시
+                alert("에러 발생: " + error.message);
+            } finally { 
                 loader.style.display = 'none'; 
             }
         }
 
-        async function askTutor(mode) {
-            const apiKey = document.getElementById('sysApiKey').value;
-            const inputField = document.getElementById('chatInput' + (mode === 'concept' ? 'Concept' : 'Grade'));
-            const chatBox = document.getElementById('chatBox' + (mode === 'concept' ? 'Concept' : 'Grade'));
-            const question = inputField.value.trim();
-
-            if (!apiKey) return alert("API Key를 입력해주세요.");
-            if (!question) return;
-
-            chatBox.innerHTML += `<div class="chat-msg msg-user">${question}</div>`;
-            inputField.value = "";
-            chatBox.scrollTop = chatBox.scrollHeight;
-
-            const loadingId = "load-" + Date.now();
-            chatBox.innerHTML += `<div class="chat-msg msg-ai" id="${loadingId}"><i class="fa-solid fa-spinner fa-spin"></i> 선생님이 답변을 생각 중입니다...</div>`;
-            chatBox.scrollTop = chatBox.scrollHeight;
-
-            const prompt = `우리가 방금 학습한 아래 자료를 바탕으로 학생의 질문에 친절하고 상세하게 답변해주세요.\n\n[학습 자료]:\n${currentContext}\n\n[학생의 질문]: ${question}\n\n[답변 지침]: 자료의 맥락을 벗어나지 않게 설명할 것.\n${formattingRules}`;
-
-            try {
-                const answerText = await callGeminiAPI(apiKey, prompt, [], null);
-                document.getElementById(loadingId).remove();
-                chatBox.innerHTML += `<div class="chat-msg msg-ai">${marked.parse(answerText)}</div>`;
-                if (window.MathJax) MathJax.typesetPromise([chatBox]);
-            } catch (error) {
-                document.getElementById(loadingId).remove();
-                chatBox.innerHTML += `<div class="chat-msg msg-ai" style="color:red;">🚨 에러 발생: ${error.message}</div>`;
+        // --- IndexedDB 기반 아카이브 제어 ---
+        async function saveToArchive(title, tags, content, format) {
+            let archive = await localforage.getItem('ArchiveDB') || [];
+            
+            if (currentNoteId) {
+                // 기존 노트 업데이트 (재생성 시)
+                const index = archive.findIndex(item => item.id === currentNoteId);
+                if (index !== -1) {
+                    archive[index].content = content;
+                    archive[index].date = new Date().toLocaleString('ko-KR');
+                }
+            } else {
+                // 새 노트 생성
+                currentNoteId = Date.now();
+                const newTitle = `[${format}] ${title}`;
+                archive.unshift({ id: currentNoteId, date: new Date().toLocaleString('ko-KR'), title: newTitle, tags: tags, content: content });
             }
-            chatBox.scrollTop = chatBox.scrollHeight;
+            await localforage.setItem('ArchiveDB', archive);
         }
 
-        function saveHistory(title, tags, content) {
-            let history = JSON.parse(localStorage.getItem('cozyArchive') || '[]');
-            history.unshift({ id: Date.now(), date: new Date().toLocaleDateString('ko-KR'), title: title, tags: tags, content: content });
-            if (history.length > 30) history.pop();
-            localStorage.setItem('cozyArchive', JSON.stringify(history));
-        }
-
-        // 보관함에 OX 버튼 추가
-        function loadHistory() {
-            const list = document.getElementById('historyList');
-            let history = JSON.parse(localStorage.getItem('cozyArchive') || '[]');
-            if (history.length === 0) return list.innerHTML = "<div style='color:var(--text-sub); padding:20px;'>데이터가 없습니다.</div>";
-            list.innerHTML = history.map(item => {
+        async function loadArchive() {
+            const list = document.getElementById('archiveList');
+            let archive = await localforage.getItem('ArchiveDB') || [];
+            if (archive.length === 0) {
+                list.innerHTML = `
+                    <div style="text-align:center; padding:50px; background:white; border-radius:16px; border:1px dashed #CBD5E1;">
+                        <i class="fa-solid fa-folder-open" style="font-size:3rem; color:#94A3B8; margin-bottom:15px;"></i>
+                        <div style="color:var(--text-sub); font-weight:700;">아직 저장된 노트가 없습니다. 새 노트를 생성해보세요!</div>
+                    </div>`;
+                return;
+            }
+            
+            list.innerHTML = archive.map(item => {
                 let tagsHtml = (item.tags || []).map(t => `<span class="tag-badge">${t}</span>`).join('');
                 return `
                 <div class="archive-item">
-                    <div style="flex:1;" onclick="viewHistory(${item.id})">
+                    <div class="archive-info" onclick="viewArchiveNote(${item.id})">
                         <div class="archive-title">${item.title}</div>
-                        <div class="tag-container">${tagsHtml}</div>
+                        <div style="margin-bottom:8px;">${tagsHtml}</div>
+                        <div style="font-size:0.8rem; color:#94A3B8;"><i class="fa-regular fa-clock"></i> ${item.date}</div>
                     </div>
-                    <button class="btn-ox" onclick="startOXSurvival(${item.id})"><i class="fa-solid fa-gamepad"></i> OX 서바이벌</button>
+                    <div>
+                        <button class="btn-action btn-delete" onclick="deleteNote(${item.id})"><i class="fa-solid fa-trash"></i></button>
+                    </div>
                 </div>`;
             }).join('');
         }
 
-        function viewHistory(id) {
-            if(window.speechSynthesis.speaking) window.speechSynthesis.cancel();
-            let history = JSON.parse(localStorage.getItem('cozyArchive') || '[]');
-            const item = history.find(h => h.id === id);
-            if (item) {
-                document.querySelectorAll('.menu-item, .page-section').forEach(el => el.classList.remove('active'));
-                document.getElementById('page-concept').classList.add('active'); 
-                
-                const resultBox = document.getElementById('conceptResult');
-                const resultWrapper = document.getElementById('conceptResultWrapper');
-                
-                currentContext = item.content; 
-                resultBox.innerHTML = marked.parse(item.content);
-                resultWrapper.style.display = 'block';
-                if (window.MathJax) MathJax.typesetPromise([resultBox]);
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-                
-                document.getElementById('chatBoxConcept').innerHTML = '<div class="chat-msg msg-ai">보관함에서 노트를 불러왔습니다! 복습 모드를 켜거나 질문을 남겨주세요.</div>';
-            }
+        async function viewArchiveNote(id) {
+            let archive = await localforage.getItem('ArchiveDB') || [];
+            const item = archive.find(h => h.id === id);
+            if (!item) return;
+
+            // Create 탭으로 이동하지만 입력 패널은 숨기고 뷰어만 노출
+            document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.menu-item')[0].classList.add('active'); // 스마트 노트 생성 탭 활성화
+            document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
+            document.getElementById('page-create').classList.add('active');
+            
+            document.getElementById('createPanel').style.display = 'none';
+            
+            currentNoteId = item.id;
+            currentNoteContext = item.content;
+            
+            const resultBox = document.getElementById('noteResult');
+            resultBox.classList.remove('cloze-mode');
+            document.querySelector('.btn-cloze').innerHTML = '<i class="fa-solid fa-eye-slash"></i> 암기 모드 (빈칸 뚫기)';
+            document.querySelector('.btn-cloze').style.background = 'var(--accent-dark)';
+            
+            resultBox.innerHTML = marked.parse(item.content);
+            document.getElementById('resultWrapper').style.display = 'block';
+            document.getElementById('btnDeleteCurrent').style.display = 'flex'; // 현재 노트 삭제 버튼 표시
+            
+            if (window.MathJax) MathJax.typesetPromise([resultBox]);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            document.getElementById('chatBox').innerHTML = '<div class="chat-msg msg-ai">보관함에서 노트를 불러왔습니다. 자유롭게 복습하거나 질문하세요!</div>';
         }
 
-        function renderKnowledgeTree() {
-            let history = JSON.parse(localStorage.getItem('cozyArchive') || '[]');
-            let treeContainer = document.getElementById('mermaidTree');
-            if (history.length === 0) {
-                treeContainer.innerHTML = "<div style='color:var(--text-sub); font-weight:bold;'>아직 쌓인 지식이 없습니다. 코넬 노트를 생성해보세요!</div>";
+        async function deleteNote(id) {
+            if(!confirm("이 노트를 영구적으로 삭제하시겠습니까?")) return;
+            let archive = await localforage.getItem('ArchiveDB') || [];
+            archive = archive.filter(h => h.id !== id);
+            await localforage.setItem('ArchiveDB', archive);
+            loadArchive(); // 목록 갱신
+        }
+
+        async function deleteCurrentNote() {
+            if(!currentNoteId) return;
+            if(!confirm("현재 보고 있는 노트를 삭제하시겠습니까?")) return;
+            let archive = await localforage.getItem('ArchiveDB') || [];
+            archive = archive.filter(h => h.id !== currentNoteId);
+            await localforage.setItem('ArchiveDB', archive);
+            navTo('archive'); // 삭제 후 보관함으로 이동
+        }
+
+        // --- 1:1 과외 AI 챗봇 ---
+        async function askTutor() {
+            const inputField = document.getElementById('chatInput');
+            const chatBox = document.getElementById('chatBox');
+            const question = inputField.value.trim();
+
+            if (!question) return;
+
+            chatBox.innerHTML += `<div class="chat-msg msg-user">${question}</div>`;
+            inputField.value = ""; 
+            chatBox.scrollTop = chatBox.scrollHeight;
+            
+            const loadingId = "load-" + Date.now();
+            chatBox.innerHTML += `<div class="chat-msg msg-ai" id="${loadingId}"><i class="fa-solid fa-spinner fa-spin"></i> 선생님이 답변을 고민 중입니다...</div>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            const prompt = `우리가 방금 학습한 아래 자료를 바탕으로 학생의 질문에 매우 친절하게 답변해주세요.\n\n[학습 자료]:\n${currentNoteContext}\n\n[학생의 질문]: ${question}\n${strictRules}`;
+            try {
+                const answer = await callGeminiAPI(prompt, []);
+                document.getElementById(loadingId).remove();
+                chatBox.innerHTML += `<div class="chat-msg msg-ai">${marked.parse(answer)}</div>`;
+                if (window.MathJax) MathJax.typesetPromise([chatBox]);
+            } catch (error) { 
+                document.getElementById(loadingId).remove();
+                chatBox.innerHTML += `<div class="chat-msg msg-ai" style="color:#EF4444;">오류가 발생했어요: ${error.message}</div>`;
+            }
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // --- 노트 단권화 (병합) 로직 ---
+        async function loadMergeSelection() {
+            const list = document.getElementById('mergeSelectionList');
+            let archive = await localforage.getItem('ArchiveDB') || [];
+            if (archive.length === 0) {
+                list.innerHTML = "<div style='color:var(--text-sub);'>보관함에 데이터가 없습니다. 노트를 먼저 생성해주세요.</div>";
                 return;
             }
-            let graphDef = "graph TD\n Root((나의 지식 마스터))";
-            let tagMap = {}; 
-            history.forEach((item, index) => {
-                let mainTag = (item.tags && item.tags.length > 0) ? item.tags[0] : "기타 과목";
-                let titleTrimmed = item.title.replace(/\[.*?\] /g, ''); 
-                if(!tagMap[mainTag]) tagMap[mainTag] = [];
-                tagMap[mainTag].push({ id: "node_" + index, name: titleTrimmed });
-            });
-            let tagIndex = 0;
-            for(let tag in tagMap) {
-                let tagNode = "T" + tagIndex;
-                graphDef += `\n Root --> ${tagNode}[${tag}]`;
-                tagMap[tag].forEach(sub => { graphDef += `\n ${tagNode} --> ${sub.id}("${sub.name}")`; });
-                tagIndex++;
-            }
-            treeContainer.innerHTML = `<div class="mermaid">${graphDef}</div>`;
-            mermaid.init(undefined, document.querySelectorAll('.mermaid'));
-        }
-
-        function loadUnifiedSelection() {
-            const list = document.getElementById('unifiedSelectionList');
-            let history = JSON.parse(localStorage.getItem('cozyArchive') || '[]');
-            if (history.length === 0) return list.innerHTML = "<div>데이터가 없습니다.</div>";
-            list.innerHTML = history.map(item => `
-                <div class="archive-item" style="padding:10px;">
-                    <input type="checkbox" class="archive-checkbox unified-checkbox" value="${item.id}">
-                    <div style="margin-left:10px;">${item.title}</div>
+            list.innerHTML = archive.map(item => `
+                <div class="archive-item" style="padding:15px; justify-content: flex-start; gap: 15px;">
+                    <input type="checkbox" class="merge-checkbox" value="${item.id}" style="width:20px; height:20px; cursor:pointer;">
+                    <div style="font-weight:700; color:var(--text-main); font-size:1.05rem;">${item.title}</div>
                 </div>`).join('');
         }
 
-        async function executeUnifiedNote() {
-            if(window.speechSynthesis.speaking) window.speechSynthesis.cancel();
-            const apiKey = document.getElementById('sysApiKey').value;
-            const checkboxes = document.querySelectorAll('.unified-checkbox:checked');
-            if (!apiKey || checkboxes.length === 0) return alert("API Key를 입력하고, 병합할 노트를 선택해주세요.");
-
-            const loaderId = 'unifiedLoader';
-            const loader = document.getElementById(loaderId);
-            const resultWrapper = document.getElementById('unifiedResultWrapper');
-            const resultBox = document.getElementById('unifiedResult');
+        async function executeMerge() {
+            const checkboxes = document.querySelectorAll('.merge-checkbox:checked');
+            if (checkboxes.length === 0) return alert("단권화할 노트를 1개 이상 선택해주세요.");
             
-            loader.innerHTML = `<div class="spinner" style="border-top-color:currentColor"></div>노트 병합 중... (파일이 많을수록 시간이 오래 걸립니다)`;
-            loader.style.display = 'block'; 
+            const loader = document.getElementById('mergeLoader');
+            const resultWrapper = document.getElementById('mergeResultWrapper');
+            const resultBox = document.getElementById('mergeResult');
+            
+            loader.style.display = 'block';
             resultWrapper.style.display = 'none';
 
-            let history = JSON.parse(localStorage.getItem('cozyArchive') || '[]');
-            let mergedContent = "";
-            let selectedTags = new Set();
-            checkboxes.forEach(cb => {
-                const item = history.find(h => h.id == cb.value);
-                if(item) { mergedContent += `\n\n### [${item.title}]\n${item.content}`; if(item.tags) item.tags.forEach(t => selectedTags.add(t)); }
-            });
-
-            const prompt = `학습 기록을 병합하여 마스터 단권화 노트를 길고 상세하게 작성하세요.\n\n${mergedContent}\n\n[조건]\n1. 내용의 유기적 연결을 중시하여 절대 생략하지 말고 풍부하게 재구성할 것.\n2. 통합된 개념을 바탕으로 [🔥 최종 킬러 문항 예측 리포트]를 작성할 것.\n${formattingRules}`;
             try {
-                const aiText = await callGeminiAPI(apiKey, prompt, [], loaderId);
-                const tagsString = Array.from(selectedTags).join(', ') || '종합 노트';
-                const today = new Date().toLocaleDateString('ko-KR');
-                const coverHtml = `<div class="book-cover"><div class="book-title">나만의 마스터 단권화 문제집</div><div class="book-subtitle">AI 튜터 분석 에디션</div><div class="book-date">발행일: ${today} | 포함 단원: ${tagsString}</div></div>`;
+                let archive = await localforage.getItem('ArchiveDB') || [];
+                let mergedContext = "";
+                checkboxes.forEach(cb => {
+                    const item = archive.find(h => h.id == cb.value);
+                    if(item) mergedContext += `\n\n### [${item.title}]\n${item.content}`; 
+                });
 
-                resultBox.innerHTML = coverHtml + `<div style="padding: 0 60px 50px;">` + marked.parse(aiText) + `</div>`;
-                resultWrapper.style.display = 'block';
-                if (window.MathJax) MathJax.typesetPromise([resultBox]);
-            } catch (error) { 
-                resultBox.innerHTML = `<div style="color: #EF4444; padding: 20px; font-weight: bold; border: 2px dashed #EF4444; background: #FEF2F2;"><i class="fa-solid fa-triangle-exclamation"></i> 에러 발생: ${error.message}</div>`;
-                resultWrapper.style.display = 'block';
-            } 
-            finally { loader.style.display = 'none'; }
-        }
-
-        // 🔥 보스전 (융합 킬러 문항 생성) 로직
-        async function executeBossFight() {
-            if(window.speechSynthesis.speaking) window.speechSynthesis.cancel();
-            const apiKey = document.getElementById('sysApiKey').value;
-            const checkboxes = document.querySelectorAll('.unified-checkbox:checked');
-            if (!apiKey || checkboxes.length === 0) return alert("API Key를 입력하고, 융합할 노트를 2개 이상 선택해주세요.");
-
-            const loaderId = 'unifiedLoader';
-            const loader = document.getElementById(loaderId);
-            const resultWrapper = document.getElementById('unifiedResultWrapper');
-            const resultBox = document.getElementById('unifiedResult');
-            
-            loader.innerHTML = `<div class="spinner" style="border-top-color:currentColor"></div>선택된 단원들을 분석하여 융합 킬러 문항을 출제 중입니다...`;
-            loader.style.display = 'block'; 
-            resultWrapper.style.display = 'none';
-
-            let history = JSON.parse(localStorage.getItem('cozyArchive') || '[]');
-            let mergedContent = "";
-            checkboxes.forEach(cb => {
-                const item = history.find(h => h.id == cb.value);
-                if(item) mergedContent += `\n\n[자료]: ${item.content}`;
-            });
-
-            const prompt = `당신은 수능 출제 위원장입니다. 제공된 여러 단원의 자료를 융합하여 수능 20번(최고난도) 수준의 [🔥 융합 킬러 문항]을 1문제 출제하세요.\n\n${mergedContent}\n\n[조건]\n1. 단순 지식이 아니라 두 개념의 교집합이나 모순점을 파고드는 고난도 추론 문제여야 합니다.\n2. 정답 선지 1개와 치명적인 함정이 숨어있는 오답 선지 4개를 만드세요.\n3. 문제 바로 아래에 왜 이 문제가 킬러 문항인지, 각 선지의 함정(매력적인 이유)이 무엇인지 소름 돋게 상세한 해설을 적어주세요.\n${formattingRules}`;
-            try {
-                const aiText = await callGeminiAPI(apiKey, prompt, [], loaderId);
-                const coverHtml = `<div class="book-cover" style="padding:60px 40px; background:linear-gradient(135deg, #FFF1F2, #FFE4E6); border-color:#FDA4AF;"><div class="book-title" style="color:#E11D48;"><i class="fa-solid fa-skull"></i> BOSS FIGHT</div><div class="book-subtitle">단원 융합 최고난도 킬러 문항</div></div>`;
-
-                resultBox.innerHTML = coverHtml + `<div style="padding: 0 60px 50px;">` + marked.parse(aiText) + `</div>`;
-                resultWrapper.style.display = 'block';
-                if (window.MathJax) MathJax.typesetPromise([resultBox]);
-            } catch (error) { 
-                resultBox.innerHTML = `<div style="color: #EF4444; padding: 20px; font-weight: bold; border: 2px dashed #EF4444; background: #FEF2F2;"><i class="fa-solid fa-triangle-exclamation"></i> 에러 발생: ${error.message}</div>`;
-                resultWrapper.style.display = 'block';
-            } 
-            finally { loader.style.display = 'none'; }
-        }
-
-        // 🔥 지옥의 OX 서바이벌 로직
-        let oxAnswerCache = "";
-        async function startOXSurvival(id) {
-            const apiKey = document.getElementById('sysApiKey').value;
-            if (!apiKey) return alert("API Key를 입력해주세요.");
-
-            let history = JSON.parse(localStorage.getItem('cozyArchive') || '[]');
-            const item = history.find(h => h.id === id);
-            if (!item) return;
-
-            document.getElementById('oxModal').style.display = 'flex';
-            document.getElementById('oxPlayArea').style.display = 'none';
-            document.getElementById('oxAnswerArea').style.display = 'none';
-            document.getElementById('oxLoader').style.display = 'block';
-
-            const prompt = `당신은 잔혹한 출제자입니다. 다음 노트 내용을 바탕으로, 교묘하게 단어를 바꾸거나 인과관계를 섞어서 만든 [지옥의 OX 선지] 5개를 출제하세요.\n\n[노트 내용]:\n${item.content}\n\n[조건]\n1. 무조건 마크다운으로 출력하되, 내용의 절반 지점에 정확히 '====ANSWER====' 라는 구분선을 넣으세요.\n2. 구분선 위쪽에는 학생이 풀 수 있도록 "문제 번호. 선지 내용 ( )" 형태로 문제 5개만 제시하세요.\n3. 구분선 아래쪽에는 정답(O 또는 X)과 함께 왜 그 선지가 함정인지 아주 악랄하고 상세하게 해설해 주세요.\n${formattingRules}`;
-
-            try {
-                const aiText = await callGeminiAPI(apiKey, prompt, []);
+                const prompt = `당신은 최고 수준의 교재 편집자입니다. 제공된 여러 개의 학습 기록을 병합하여 매끄러운 흐름의 '마스터 단권화 노트(전자책)'를 작성하세요.\n\n[병합할 자료들]:\n${mergedContext}\n\n[조건]\n1. 단순 짜깁기가 아닌, 개념의 흐름이 이어지도록 유기적으로 엮어주세요.\n2. 원본의 내용을 절대 단 하나도 생략하지 마세요.\n3. 마지막에 전체 내용을 관통하는 [🔥 최종 출제자 킬러 문항 예측 분석]을 덧붙이세요.\n${strictRules}`;
                 
-                // 구분선으로 문제와 해설 분리
-                const parts = aiText.split('====ANSWER====');
-                const questionPart = parts[0] ? parts[0].trim() : "문제를 불러오지 못했습니다.";
-                oxAnswerCache = parts[1] ? parts[1].trim() : "해설이 제공되지 않았습니다.";
+                const aiText = await callGeminiAPI(prompt, []);
+                
+                // 표지 디자인 추가
+                const today = new Date().toLocaleDateString('ko-KR');
+                const coverHtml = `
+                <div style="text-align: center; padding: 100px 40px; background: linear-gradient(135deg, #F8FAFC, #F1F5F9); border: 2px solid #E2E8F0; border-radius: 16px; margin-bottom: 50px;">
+                    <div style="font-size: 3rem; font-weight: 900; color: var(--text-main); margin-bottom: 20px;">나만의 마스터 단권화 교재</div>
+                    <div style="font-size: 1.3rem; color: #F59E0B; font-weight: 700;"><i class="fa-solid fa-crown"></i> AI Tutor Masterpiece</div>
+                    <div style="margin-top: 50px; font-weight: 600; color: var(--text-sub);">발행일: ${today} | 통합된 노트 수: ${checkboxes.length}개</div>
+                </div>`;
 
-                document.getElementById('oxLoader').style.display = 'none';
-                document.getElementById('oxPlayArea').style.display = 'block';
-                document.getElementById('oxQuestionContent').innerHTML = marked.parse(questionPart);
+                resultBox.innerHTML = coverHtml + marked.parse(aiText);
+                resultWrapper.style.display = 'block';
+                if (window.MathJax) MathJax.typesetPromise([resultBox]);
 
-            } catch(error) {
-                document.getElementById('oxLoader').style.display = 'none';
-                document.getElementById('oxPlayArea').style.display = 'block';
-                document.getElementById('oxQuestionContent').innerHTML = `<div style="color:red;">🚨 문제 출제 실패: ${error.message}</div>`;
+            } catch (error) {
+                alert("단권화 실패: " + error.message);
+            } finally {
+                loader.style.display = 'none';
             }
-        }
-
-        function revealOXAnswer() {
-            document.getElementById('oxAnswerArea').style.display = 'block';
-            document.getElementById('oxAnswerContent').innerHTML = marked.parse(oxAnswerCache);
-            // 정답 보기 버튼 숨기기
-            document.querySelector('#oxPlayArea .btn-primary').style.display = 'none';
-        }
-
-        function closeOXModal() {
-            document.getElementById('oxModal').style.display = 'none';
-            document.querySelector('#oxPlayArea .btn-primary').style.display = 'flex'; // 버튼 원상복구
         }
     </script>
 </body>
