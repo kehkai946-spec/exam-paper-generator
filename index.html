@@ -1013,16 +1013,3 @@
     </script>
 </body>
 </html>
-    
-<div class="floating-widget no-print" id="floatingTimer" style="position:fixed; bottom:30px; right:30px; width:220px; background:var(--bg-surface); padding:15px; border-radius:16px; border:1px solid var(--border-soft); box-shadow:0 10px 25px rgba(0,0,0,0.1); z-index:1000; user-select:none;">
-        <div class="widget-drag-handle" id="dragHandler" style="width:100%; height:25px; display:flex; justify-content:center; align-items:center; margin-bottom:5px; color:var(--text-sub); cursor:grab; background:rgba(0,0,0,0.02); border-radius:8px;"><i class="fa-solid fa-grip-lines"></i></div>
-        <div class="timer-time" id="timerDisplay" style="font-size:2rem; font-weight:900; margin-bottom:10px; text-align:center; color:var(--text-main); font-variant-numeric:tabular-nums;">25:00</div>
-        <div class="timer-controls" style="display:flex; justify-content:center; gap:8px;">
-            <button onclick="startTimer()" style="background:var(--bg-body); border:1px solid var(--border-soft); padding:8px 15px; border-radius:8px; cursor:pointer;"><i class="fa-solid fa-play"></i></button>
-            <button onclick="pauseTimer()" style="background:var(--bg-body); border:1px solid var(--border-soft); padding:8px 15px; border-radius:8px; cursor:pointer;"><i class="fa-solid fa-pause"></i></button>
-            <button onclick="resetTimer()" style="background:var(--bg-body); border:1px solid var(--border-soft); padding:8px 15px; border-radius:8px; cursor:pointer;"><i class="fa-solid fa-rotate-right"></i></button>
-        </div>
-        <audio id="bgm" loop preload="none"><source src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_0625c1539c.mp3?filename=heavy-rain-nature-sounds-8186.mp3" type="audio/mpeg"></audio>
-        <button class="btn-bgm" id="bgmBtn" onclick="toggleBGM()" style="margin-top:10px; width:100%; padding:8px; background:transparent; border:1px solid var(--text-sub); color:var(--text-sub); border-radius:8px; cursor:pointer;"><i class="fa-solid fa-cloud-rain"></i> 집중 빗소리</button>
-    </div>
-    
