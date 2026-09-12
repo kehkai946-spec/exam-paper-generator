@@ -464,7 +464,7 @@ async function executeUnifiedNote(type) {
 }
 
 // ==========================================
-// 8. 실전 멘탈 훈련소 (베타 기능 3종 완벽 연동)
+// 🔥 실전 멘탈 훈련소 (베타 3종 완벽 연동 로직)
 // ==========================================
 let trainingAnswerCache = "";
 let currentTrainingContext = "";
@@ -483,15 +483,18 @@ async function startTraining(type) {
     currentTrainingContext = item.content; // 훈련 데이터 캐싱
     
     // 모달창 UI 초기화
-    document.getElementById('trainingModal').style.display = 'flex';
-    document.getElementById('trainingPlayArea').style.display = 'none';
-    document.getElementById('trainingAnswerArea').style.display = 'none';
+    const modal = document.getElementById('trainingModal');
+    const playArea = document.getElementById('trainingPlayArea');
+    const answerArea = document.getElementById('trainingAnswerArea');
     const loader = document.getElementById('trainingLoader');
+    const titleEl = document.getElementById('trainingModalTitle');
+
+    modal.style.display = 'flex';
+    playArea.style.display = 'none';
+    answerArea.style.display = 'none';
     loader.style.display = 'block';
 
     let prompt = "";
-    const titleEl = document.getElementById('trainingModalTitle');
-    const playArea = document.getElementById('trainingPlayArea');
 
     try {
         if (type === 'ox') {
@@ -502,7 +505,7 @@ async function startTraining(type) {
             const parts = aiText.split('====ANSWER====');
             playArea.innerHTML = `
                 <div style="font-size:1.05rem; line-height:1.8;">${marked.parse(parts[0] ? parts[0].trim() : "출제 오류")}</div>
-                <button class="btn-primary" style="background:var(--accent-special); margin-top:30px;" onclick="revealTrainingAnswer()">정답 및 해설 확인</button>`;
+                <button id="trainingConfirmBtn" class="btn-primary" style="background:var(--accent-special); margin-top:30px;" onclick="revealTrainingAnswer()">정답 및 해설 확인</button>`;
             trainingAnswerCache = parts[1] ? parts[1].trim() : "해설 데이터가 없습니다.";
         } 
         else if (type === 'blank') {
@@ -514,19 +517,19 @@ async function startTraining(type) {
             playArea.innerHTML = `
                 <p style="color:var(--text-sub); margin-bottom:15px;"><i class="fa-solid fa-circle-info"></i> 빈칸에 들어갈 단어를 머릿속으로 떠올려보거나 종이에 적어보세요.</p>
                 <div style="font-size:1.05rem; line-height:1.8; background:var(--bg-body); padding:20px; border-radius:12px;">${marked.parse(parts[0] ? parts[0].trim() : "출제 오류")}</div>
-                <button class="btn-primary" style="background:var(--accent-blue); margin-top:30px;" onclick="revealTrainingAnswer()">채점하기 (정답 확인)</button>`;
+                <button id="trainingConfirmBtn" class="btn-primary" style="background:var(--accent-blue); margin-top:30px;" onclick="revealTrainingAnswer()">채점하기 (정답 확인)</button>`;
             trainingAnswerCache = parts[1] ? parts[1].trim() : "정답 데이터가 없습니다.";
         }
         else if (type === 'trap') {
             titleEl.innerHTML = '<i class="fa-solid fa-skull"></i> 함정 출제자 빙의';
-            // 함정 훈련은 사용자 입력을 받아야 하므로, 초기 화면만 즉시 세팅합니다.
+            // 함정 훈련은 사용자가 직접 타이핑해야 하므로 AI 호출 없이 바로 화면을 띄웁니다.
             loader.style.display = 'none';
             playArea.style.display = 'block';
             playArea.innerHTML = `
                 <p style="margin-bottom:15px; font-weight:600;">선택한 자료의 내용을 바탕으로, 친구들이 완벽하게 속아 넘어갈 만한 '교묘한 오답 선지(함정)'를 직접 하나 만들어보세요.</p>
                 <textarea id="trapInput" rows="3" style="width:100%; padding:15px; border-radius:10px; border:1px solid var(--border-soft); margin-bottom:15px; font-family:inherit;" placeholder="여기에 직접 만든 함정 선지를 입력하세요..."></textarea>
-                <button class="btn-primary" style="background:var(--accent-danger);" onclick="evaluateTrap()">AI 출제위원에게 평가받기</button>`;
-            return; // API 호출 없이 종료 (버튼 누를 때 호출)
+                <button id="trainingConfirmBtn" class="btn-primary" style="background:var(--accent-danger);" onclick="evaluateTrap()">AI 출제위원에게 평가받기</button>`;
+            return; 
         }
         else if (type === 'chain') {
             titleEl.innerHTML = '<i class="fa-solid fa-link"></i> 개념 짝맞추기 퀴즈';
@@ -536,12 +539,12 @@ async function startTraining(type) {
             const parts = aiText.split('====ANSWER====');
             playArea.innerHTML = `
                 <p style="color:var(--text-sub); margin-bottom:15px;"><i class="fa-solid fa-circle-info"></i> 제시된 개념과 올바른 설명을 선으로 연결하듯 짝지어 보세요.</p>
-                <div style="font-size:1.05rem; line-height:1.8;">${marked.parse(parts[0] ? parts[0].trim() : "출제 오류")}</div>
-                <button class="btn-primary" style="background:var(--text-main); margin-top:30px;" onclick="revealTrainingAnswer()">올바른 짝 확인하기</button>`;
+                <div style="font-size:1.05rem; line-height:1.8; background:var(--bg-body); padding:20px; border-radius:12px;">${marked.parse(parts[0] ? parts[0].trim() : "출제 오류")}</div>
+                <button id="trainingConfirmBtn" class="btn-primary" style="background:var(--text-main); margin-top:30px;" onclick="revealTrainingAnswer()">올바른 짝 확인하기</button>`;
             trainingAnswerCache = parts[1] ? parts[1].trim() : "정답 데이터가 없습니다.";
         }
 
-        // 공통 마무리 (trap 제외)
+        // 공통 마무리 (마크다운 수식 렌더링)
         loader.style.display = 'none';
         playArea.style.display = 'block';
         if (window.MathJax) MathJax.typesetPromise([playArea]);
@@ -553,7 +556,7 @@ async function startTraining(type) {
     }
 }
 
-// 함정 출제 기능의 '평가받기' 버튼 로직
+// 🎯 함정 출제 기능의 '평가받기' 전용 로직
 async function evaluateTrap() {
     const apiKey = document.getElementById('sysApiKey').value;
     const trapInput = document.getElementById('trapInput').value.trim();
@@ -564,7 +567,7 @@ async function evaluateTrap() {
     
     loader.style.display = 'block';
     loader.innerHTML = '<div class="spinner"></div>AI 출제위원이 제출하신 함정을 날카롭게 분석 중입니다...';
-    document.querySelector('#trainingPlayArea button').style.display = 'none'; // 버튼 숨김
+    document.getElementById('trainingConfirmBtn').style.display = 'none';
 
     const prompt = `[학습 자료]\n${currentTrainingContext}\n\n[학생이 직접 만든 함정 선지]\n"${trapInput}"\n\n[지시사항]\n학생이 만든 위 선지가 '매력적인 오답'으로서 얼마나 교묘하고 훌륭한지, 혹은 어떤 부분이 뻔하거나 엉성한지 출제위원의 관점에서 날카롭게 평가(팩트폭격) 해주세요.\n${formattingRules}`;
 
@@ -574,12 +577,12 @@ async function evaluateTrap() {
         answerArea.style.display = 'block';
         answerArea.innerHTML = `<h3 style="color:var(--accent-danger); margin-bottom:10px;"><i class="fa-solid fa-magnifying-glass"></i> AI 출제위원의 평가 결과</h3><div style="font-size:1.05rem; line-height:1.8;">${marked.parse(aiText)}</div>`;
         if (window.MathJax) MathJax.typesetPromise([answerArea]);
-        markStreak();
+        markStreak(); // 함정 평가받아도 잔디 심기
     } catch(error) {
         loader.style.display = 'none';
         answerArea.style.display = 'block';
-        answerArea.innerHTML = `<div style="color:red;">평가 중 오류 발생: ${error.message}</div>`;
-        document.querySelector('#trainingPlayArea button').style.display = 'block';
+        answerArea.innerHTML = `<div style="color:var(--accent-danger); font-weight:bold;">평가 중 오류 발생: ${error.message}</div>`;
+        document.getElementById('trainingConfirmBtn').style.display = 'block';
     }
 }
 
@@ -587,9 +590,9 @@ function revealTrainingAnswer() {
     const answerArea = document.getElementById('trainingAnswerArea');
     answerArea.style.display = 'block';
     answerArea.innerHTML = marked.parse(trainingAnswerCache);
-    document.querySelector('#trainingPlayArea button').style.display = 'none'; // 확인 버튼 숨김
+    document.getElementById('trainingConfirmBtn').style.display = 'none';
     if (window.MathJax) MathJax.typesetPromise([answerArea]);
-    markStreak(); // 훈련 완료 시 잔디 1스택 적립
+    markStreak(); // 정답 확인 시 잔디 심기
 }
 
 function closeTrainingModal() { 
