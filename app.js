@@ -2,6 +2,7 @@
 // 1. 초기화 및 기본 UI 설정
 // ==========================================
 document.addEventListener("DOMContentLoaded", () => {
+    // API 키 및 테마 불러오기
     const savedKey = localStorage.getItem('geminiApiKey');
     if (savedKey) document.getElementById('sysApiKey').value = savedKey;
     
@@ -10,11 +11,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const themeSelector = document.getElementById('themeSelector');
     if(themeSelector) themeSelector.value = savedTheme;
     
+    // UI 컴포넌트 초기화
     renderOMR();
     setupDragAndDrop('conceptDropZone', 'conceptFile');
     setupDragAndDrop('gradeDropZone', 'gradeQuestFile');
     dragElement(document.getElementById("floatingTimer"));
-    renderStreak(); // 잔디 심기 렌더링
+    renderStreak();
 });
 
 function saveApiKey() { localStorage.setItem('geminiApiKey', document.getElementById('sysApiKey').value); }
@@ -42,14 +44,14 @@ function navTo(pageId) {
     };
     document.getElementById('pageTitleText').innerHTML = titles[pageId] || '';
 
-    // 탭 이동 시 필요한 데이터 자동 로드
+    // 탭 이동 시 데이터 로드
     if(pageId === 'dashboard') { loadHistory(); renderKnowledgeTree(); }
     if(pageId === 'training') loadTrainingSelection();
     if(pageId === 'unified') loadUnifiedSelection();
 }
 
 // ==========================================
-// 2. 아이패드 완벽 지원 위젯 드래그
+// 2. 아이패드 완벽 지원 위젯 드래그 (Touch & Mouse)
 // ==========================================
 function dragElement(elmnt) {
     if(!elmnt) return;
@@ -59,16 +61,34 @@ function dragElement(elmnt) {
     handle.onmousedown = dragMouseDown;
     handle.ontouchstart = dragTouchStart;
 
-    function dragMouseDown(e) { e = e || window.event; e.preventDefault(); pos3 = e.clientX; pos4 = e.clientY; document.onmouseup = closeDragElement; document.onmousemove = elementDrag; }
-    function dragTouchStart(e) { e = e || window.event; pos3 = e.touches[0].clientX; pos4 = e.touches[0].clientY; document.ontouchend = closeDragElement; document.ontouchmove = elementTouchDrag; }
+    function dragMouseDown(e) { 
+        e = e || window.event; e.preventDefault(); 
+        pos3 = e.clientX; pos4 = e.clientY; 
+        document.onmouseup = closeDragElement; document.onmousemove = elementDrag; 
+    }
+    function dragTouchStart(e) { 
+        e = e || window.event; 
+        pos3 = e.touches[0].clientX; pos4 = e.touches[0].clientY; 
+        document.ontouchend = closeDragElement; document.ontouchmove = elementTouchDrag; 
+    }
     
-    function elementDrag(e) { e = e || window.event; e.preventDefault(); pos1 = pos3 - e.clientX; pos2 = pos4 - e.clientY; pos3 = e.clientX; pos4 = e.clientY; elmnt.style.top = (elmnt.offsetTop - pos2) + "px"; elmnt.style.left = (elmnt.offsetLeft - pos1) + "px"; elmnt.style.bottom = "auto"; elmnt.style.right = "auto"; }
-    function elementTouchDrag(e) { e = e || window.event; pos1 = pos3 - e.touches[0].clientX; pos2 = pos4 - e.touches[0].clientY; pos3 = e.touches[0].clientX; pos4 = e.touches[0].clientY; elmnt.style.top = (elmnt.offsetTop - pos2) + "px"; elmnt.style.left = (elmnt.offsetLeft - pos1) + "px"; elmnt.style.bottom = "auto"; elmnt.style.right = "auto"; }
+    function elementDrag(e) { 
+        e = e || window.event; e.preventDefault(); 
+        pos1 = pos3 - e.clientX; pos2 = pos4 - e.clientY; pos3 = e.clientX; pos4 = e.clientY; 
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px"; elmnt.style.left = (elmnt.offsetLeft - pos1) + "px"; 
+        elmnt.style.bottom = "auto"; elmnt.style.right = "auto"; 
+    }
+    function elementTouchDrag(e) { 
+        e = e || window.event; 
+        pos1 = pos3 - e.touches[0].clientX; pos2 = pos4 - e.touches[0].clientY; pos3 = e.touches[0].clientX; pos4 = e.touches[0].clientY; 
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px"; elmnt.style.left = (elmnt.offsetLeft - pos1) + "px"; 
+        elmnt.style.bottom = "auto"; elmnt.style.right = "auto"; 
+    }
     function closeDragElement() { document.onmouseup = null; document.onmousemove = null; document.ontouchend = null; document.ontouchmove = null; }
 }
 
 // ==========================================
-// 3. 오디오 및 타이머 기능
+// 3. 오디오 및 타이머 기능 (iOS 정책 우회)
 // ==========================================
 let timerInterval; let timeLeft = 25 * 60; let isTimerRunning = false;
 function updateTimerDisplay() {
@@ -83,9 +103,17 @@ function resetTimer() { pauseTimer(); timeLeft = 25 * 60; updateTimerDisplay(); 
 let bgmAudio = null; let isBgmPlaying = false;
 function toggleBGM() {
     const btn = document.getElementById('bgmBtn');
-    if(!bgmAudio) { bgmAudio = new Audio("https://cdn.pixabay.com/download/audio/2021/08/04/audio_0625c1539c.mp3?filename=heavy-rain-nature-sounds-8186.mp3"); bgmAudio.loop = true; }
-    if(isBgmPlaying) { bgmAudio.pause(); isBgmPlaying = false; btn.classList.remove('playing'); } 
-    else { bgmAudio.play().catch(e=>console.log("재생 실패", e)); isBgmPlaying = true; btn.classList.add('playing'); }
+    if(!bgmAudio) { 
+        bgmAudio = new Audio("https://cdn.pixabay.com/download/audio/2021/08/04/audio_0625c1539c.mp3?filename=heavy-rain-nature-sounds-8186.mp3"); 
+        bgmAudio.loop = true; 
+    }
+    if(isBgmPlaying) { 
+        bgmAudio.pause(); isBgmPlaying = false; btn.classList.remove('playing'); 
+        btn.innerHTML = '<i class="fa-solid fa-cloud-rain"></i> 집중 빗소리';
+    } else { 
+        bgmAudio.play().catch(e=>console.log("재생 실패", e)); isBgmPlaying = true; btn.classList.add('playing'); 
+        btn.innerHTML = '<i class="fa-solid fa-pause"></i> 재생 중지';
+    }
 }
 
 let isTTSPlaying = false;
@@ -93,12 +121,13 @@ function toggleTTS(elementId, btnId) {
     const btn = document.getElementById(btnId);
     if(isTTSPlaying || window.speechSynthesis.speaking) { 
         window.speechSynthesis.cancel(); isTTSPlaying = false; btn.classList.remove('active'); 
-        btn.innerHTML = '<i class="fa-solid fa-headphones"></i> 소리내어 읽기'; return; 
+        btn.innerHTML = '<i class="fa-solid fa-headphones"></i> 듣기'; return; 
     }
     
     const text = document.getElementById(elementId).innerText;
     if(!text) return;
     
+    // iOS 사파리 침묵 버그 해결을 위한 문장 단위 청킹(Chunking)
     const sentences = text.match(/[^.!?\n]+[.!?\n]+/g) || [text];
     let currentIndex = 0;
     isTTSPlaying = true;
@@ -107,7 +136,7 @@ function toggleTTS(elementId, btnId) {
 
     function speakNext() {
         if(currentIndex >= sentences.length || !isTTSPlaying) {
-            isTTSPlaying = false; btn.classList.remove('active'); btn.innerHTML = '<i class="fa-solid fa-headphones"></i> 소리내어 읽기'; return;
+            isTTSPlaying = false; btn.classList.remove('active'); btn.innerHTML = '<i class="fa-solid fa-headphones"></i> 듣기'; return;
         }
         let utterance = new SpeechSynthesisUtterance(sentences[currentIndex]);
         utterance.lang = 'ko-KR'; utterance.rate = 1.1;
@@ -119,7 +148,7 @@ function toggleTTS(elementId, btnId) {
 }
 
 // ==========================================
-// 4. 아이패드/굿노트 완벽 연동 PDF 추출 엔진
+// 4. 완벽한 PDF 및 굿노트 공유 엔진 (Hidden Canvas + Safari Fix)
 // ==========================================
 async function exportPDF(elementId, fileName) {
     const originalElement = document.getElementById(elementId);
@@ -131,6 +160,7 @@ async function exportPDF(elementId, fileName) {
     const noPrints = originalElement.querySelectorAll('.no-print, .toolbar-chips');
     noPrints.forEach(el => el.style.display = 'none');
 
+    // 짤림 방지 가상 캔버스 세팅
     const container = document.createElement('div');
     container.appendChild(originalElement.cloneNode(true));
     container.style.position = 'absolute'; container.style.top = '-9999px'; container.style.left = '0';
@@ -140,11 +170,13 @@ async function exportPDF(elementId, fileName) {
     container.querySelectorAll('table').forEach(t => { t.style.width = '100%'; t.style.tableLayout = 'fixed'; t.style.wordBreak = 'break-all'; });
     document.body.appendChild(container);
 
+    // 아이패드 메모리 방어를 위한 동적 Scale
+    const isMobile = window.innerWidth <= 1024;
     const opt = {
         margin: [10, 10, 10, 10], 
         filename: `${fileName}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 1.5, useCORS: true, windowWidth: 794, logging: false },
+        html2canvas: { scale: isMobile ? 1.5 : 2, useCORS: true, windowWidth: 794, logging: false },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
         pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
     };
@@ -153,6 +185,7 @@ async function exportPDF(elementId, fileName) {
         const pdfBlob = await html2pdf().set(opt).from(container).outputPdf('blob');
         const file = new File([pdfBlob], `${fileName}.pdf`, { type: 'application/pdf' });
         
+        // 아이패드 공유 시트 트리거 (굿노트 등)
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
             await navigator.share({ files: [file], title: fileName });
         } else {
@@ -168,7 +201,7 @@ async function exportPDF(elementId, fileName) {
 }
 
 // ==========================================
-// 5. 유틸리티 (암기모드, 파일처리, 노션복사, OMR)
+// 5. 유틸리티 (암기, 파일, 노션, OMR)
 // ==========================================
 function setupDragAndDrop(zoneId, inputId) {
     const zone = document.getElementById(zoneId); const input = document.getElementById(inputId);
@@ -197,10 +230,10 @@ function toggleCloze(btn) {
     let isCloze = btn.dataset.cloze === 'true';
     if (!isCloze) {
         strongTags.forEach(el => { el.style.background = 'var(--text-main)'; el.style.color = 'var(--text-main)'; el.style.borderRadius = '4px'; el.style.cursor = 'pointer'; el.onclick = function(){ this.style.background=''; this.style.color=''; }; });
-        btn.dataset.cloze = 'true'; btn.classList.add('active'); btn.innerHTML = '<i class="fa-solid fa-eye"></i> 빈칸 끄기';
+        btn.dataset.cloze = 'true'; btn.classList.add('active');
     } else {
         strongTags.forEach(el => { el.style.background = ''; el.style.color = ''; el.onclick = null; });
-        btn.dataset.cloze = 'false'; btn.classList.remove('active'); btn.innerHTML = '<i class="fa-solid fa-eye-slash"></i> 빈칸 암기';
+        btn.dataset.cloze = 'false'; btn.classList.remove('active');
     }
 }
 
@@ -216,32 +249,28 @@ function renderOMR() {
     let html = '';
     for(let i=1; i<=20; i++) {
         html += `<div class="omr-row"><div class="omr-qnum">${i}.</div><div style="display:flex; gap:10px;">`;
-        for(let j=1; j<=5; j++) html += `<div class="omr-bubble" onclick="selectOMR(${i}, ${j})" id="omr-q${i}-c${j}" style="width:30px; height:30px; border-radius:50%; border:1px solid var(--border-soft); display:flex; align-items:center; justify-content:center; cursor:pointer;">${j}</div>`;
+        for(let j=1; j<=5; j++) html += `<div class="omr-bubble" onclick="selectOMR(${i}, ${j})" id="omr-q${i}-c${j}">${j}</div>`;
         html += `</div></div>`;
     }
     container.innerHTML = html;
 }
 function selectOMR(q, c) {
     userAnswers[q] = c;
-    for(let j=1; j<=5; j++) {
-        let bubble = document.getElementById(`omr-q${q}-c${j}`);
-        bubble.style.background = 'transparent'; bubble.style.color = 'var(--text-sub)'; bubble.style.borderColor = 'var(--border-soft)';
-    }
-    let target = document.getElementById(`omr-q${q}-c${c}`);
-    target.style.background = 'var(--accent-primary)'; target.style.color = 'white'; target.style.borderColor = 'var(--accent-primary)';
+    for(let j=1; j<=5; j++) document.getElementById(`omr-q${q}-c${j}`).classList.remove('selected');
+    document.getElementById(`omr-q${q}-c${c}`).classList.add('selected');
     let ansArr = []; for(let i=1; i<=20; i++) if(userAnswers[i]) ansArr.push(`${i}:${userAnswers[i]}`);
     document.getElementById('omrAnswers').value = ansArr.join(',');
 }
-function clearOMR() { userAnswers = {}; for(let i=1; i<=20; i++) for(let j=1; j<=5; j++) { let b=document.getElementById(`omr-q${i}-c${j}`); b.style.background='transparent'; b.style.color='var(--text-sub)'; b.style.borderColor='var(--border-soft)'; } document.getElementById('omrAnswers').value = ''; }
+function clearOMR() { userAnswers = {}; for(let i=1; i<=20; i++) for(let j=1; j<=5; j++) document.getElementById(`omr-q${i}-c${j}`).classList.remove('selected'); document.getElementById('omrAnswers').value = ''; }
 
 // ==========================================
-// 6. Gemini AI 코어 엔진 및 주요 기능
+// 6. Gemini AI 코어 엔진
 // ==========================================
 const formattingRules = `
-[마크다운 필수 규칙]
-1. 하이픈(-) 절대 금지. 리스트는 별표(*)나 숫자 사용.
-2. 수식은 무조건 $$수식$$ 형태만 사용. 단일 $ 사용 금지.
-3. 표(Table) 가독성을 위해 내용이 길어지지 않게 쪼갤 것. 중요어 앞 2글자 **볼드체** 처리.`;
+[마크다운 및 렌더링 절대 준수 규칙]
+1. 글머리 기호나 리스트 작성 시 하이픈(-) 사용을 금지합니다. 대신 별표(*)나 숫자(1. 2.)를 사용하세요. 표 안에서도 마찬가지입니다.
+2. 텍스트 내에서 단일 달러 기호($)를 절대 사용하지 마세요. 수학 수식에만 이중 달러 기호($$수식$$)를 허용합니다.
+3. 표(Table) 작성 시 한 행(Row)의 내용이 너무 길어지지 않게 여러 개의 행으로 잘게 쪼개서 작성하세요. 중요어 앞 2글자는 반드시 **볼드체** 처리하세요.`;
 
 async function callGeminiAPI(apiKey, prompt, files = [], loaderId = null) {
     let requestParts = [{ text: prompt }];
@@ -260,8 +289,9 @@ async function callGeminiAPI(apiKey, prompt, files = [], loaderId = null) {
 let currentContext = ""; 
 
 async function executeAI(mode, subMode) {
+    if(window.speechSynthesis.speaking) window.speechSynthesis.cancel();
     const apiKey = document.getElementById('sysApiKey').value;
-    if (!apiKey) return alert("좌측 하단 메뉴에서 Gemini API Key를 입력하세요.");
+    if (!apiKey) return alert("좌측 하단 설정에서 API Key를 먼저 입력해주세요!");
 
     const loaderId = mode + 'Loader'; const resultWrapper = document.getElementById(mode + 'ResultWrapper'); const resultBox = document.getElementById(mode + 'Result');
     document.getElementById(loaderId).style.display = 'block'; resultWrapper.style.display = 'none';
@@ -278,7 +308,7 @@ async function executeAI(mode, subMode) {
             if (file) filesToProcess.push(await fileToBase64(file));
             
             let styleIns = formatChoice === "cornell" ? "2열 표(Table) 형식" : formatChoice === "bullet" ? "개조식" : "AI 자동 판단";
-            prompt = `[자료]: ${inputPrompt}\n[레이아웃]: ${styleIns}\n자료를 깊이 있게 분석하여 요약 노트를 작성하세요. [🚨 출제자 오답 패턴 경고] 포함.\n${formattingRules}`;
+            prompt = `[자료]: ${inputPrompt}\n[레이아웃 지정]: ${styleIns}\n내용 생략 금지. [🚨 출제자 오답 패턴 경고] 포함. 태그가 비어있으면 문서 끝에 '#태그' 추천.\n${formattingRules}`;
             title = `[개념 요약] ${rawTags || '노트'}`;
             tags = rawTags.split(',').map(t=>t.trim()).filter(t=>t);
         }
@@ -294,8 +324,8 @@ async function executeAI(mode, subMode) {
                 prompt = `[학생 답안]: ${omrInput}\n채점 결과와 오답 상세 해설을 제공하세요.\n${formattingRules}`;
                 title = `[오답 해설] 모의고사`;
             } else {
-                prompt = `이 시험지에서 가장 틀리기 쉬운 핵심 개념 3가지만 추출하여 초압축 노트를 작성하세요.\n${formattingRules}`;
-                title = `[약점 대비] 초압축 노트`;
+                prompt = `이 시험지에서 틀릴 확률이 가장 높은 핵심 개념 3개만 추출하여 초압축 노트를 작성하세요.\n${formattingRules}`;
+                title = `[초압축 노트] 약점 대비`;
             }
             tags = rawTags.split(',').map(t=>t.trim()).filter(t=>t);
         }
@@ -305,10 +335,10 @@ async function executeAI(mode, subMode) {
         
         resultBox.innerHTML = marked.parse(aiText);
         
+        // 표 가로 스크롤 적용 (아이패드 짤림 방지)
         resultBox.querySelectorAll('table').forEach(table => {
             if (table.parentElement.classList.contains('table-responsive')) return;
             const wrapper = document.createElement('div'); wrapper.className = 'table-responsive';
-            wrapper.style.width = '100%'; wrapper.style.overflowX = 'auto'; wrapper.style.WebkitOverflowScrolling = 'touch';
             table.parentNode.insertBefore(wrapper, table); wrapper.appendChild(table);
         });
 
@@ -327,23 +357,22 @@ async function executeAI(mode, subMode) {
 
 async function askTutor(mode) {
     const apiKey = document.getElementById('sysApiKey').value;
-    if (!apiKey) return alert("API Key를 입력하세요.");
+    if (!apiKey) return alert("API Key를 입력해주세요!");
     const inputField = document.getElementById('chatInput' + (mode === 'concept' ? 'Concept' : 'Grade'));
     const chatBox = document.getElementById('chatBox' + (mode === 'concept' ? 'Concept' : 'Grade'));
     const question = inputField.value.trim();
     if (!question) return;
 
-    chatBox.innerHTML += `<div class="chat-msg msg-user" style="background:var(--accent-primary); color:white; padding:10px; border-radius:12px; align-self:flex-end;">${question}</div>`; 
-    inputField.value = ""; chatBox.scrollTop = chatBox.scrollHeight;
+    chatBox.innerHTML += `<div class="chat-msg msg-user">${question}</div>`; inputField.value = ""; chatBox.scrollTop = chatBox.scrollHeight;
     const loadingId = "load-" + Date.now(); 
-    chatBox.innerHTML += `<div class="chat-msg msg-ai" id="${loadingId}" style="background:var(--bg-surface); padding:10px; border-radius:12px; align-self:flex-start; border:1px solid var(--border-soft);">답변 작성 중...</div>`;
+    chatBox.innerHTML += `<div class="chat-msg msg-ai" id="${loadingId}">답변 작성 중...</div>`;
     
     const prompt = `[학습 자료]:\n${currentContext}\n\n[학생 질문]: ${question}\n위 자료 맥락 안에서 답변하세요.\n${formattingRules}`;
 
     try {
         const answerText = await callGeminiAPI(apiKey, prompt, []);
         document.getElementById(loadingId).remove();
-        chatBox.innerHTML += `<div class="chat-msg msg-ai" style="background:var(--bg-surface); padding:10px; border-radius:12px; align-self:flex-start; border:1px solid var(--border-soft);">${marked.parse(answerText)}</div>`;
+        chatBox.innerHTML += `<div class="chat-msg msg-ai">${marked.parse(answerText)}</div>`;
         if (window.MathJax) MathJax.typesetPromise([chatBox]);
     } catch (error) { document.getElementById(loadingId).remove(); chatBox.innerHTML += `<div style="color:red;">에러 발생</div>`; }
     chatBox.scrollTop = chatBox.scrollHeight;
@@ -368,11 +397,10 @@ function renderStreak() {
     for(let i=29; i>=0; i--) {
         let d = new Date(); d.setDate(d.getDate() - i);
         let dateStr = d.toISOString().split('T')[0];
-        let bg = streaks[dateStr] ? 'var(--accent-mint)' : 'transparent';
-        let border = streaks[dateStr] ? 'var(--accent-mint)' : 'var(--border-soft)';
-        html += `<div style="width:18px; height:18px; border-radius:4px; background:${bg}; border:1px solid ${border};" title="${dateStr}"></div>`;
+        let activeClass = streaks[dateStr] ? 'active' : '';
+        html += `<div class="streak-box ${activeClass}" title="${dateStr}"></div>`;
     }
-    grid.innerHTML = `<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(18px, 1fr)); gap:4px;">${html}</div>`;
+    grid.innerHTML = html;
 }
 
 function saveHistory(title, tags, content) {
@@ -388,14 +416,14 @@ function loadHistory() {
     if (history.length === 0) return list.innerHTML = "<div style='color:var(--text-sub);'>저장된 기록이 없습니다.</div>";
     
     list.innerHTML = history.map(item => {
-        let tagsHtml = (item.tags || []).map(t => `<span style="background:var(--bg-body); padding:3px 8px; border-radius:4px; font-size:0.75rem; margin-right:5px; border:1px solid var(--border-soft); color:var(--text-sub);">${t}</span>`).join('');
+        let tagsHtml = (item.tags || []).map(t => `<span class="tag-badge">${t}</span>`).join('');
         return `
-        <div style="padding:15px; border:1px solid var(--border-soft); border-radius:10px; margin-bottom:10px; background:var(--bg-surface); display:flex; justify-content:space-between; align-items:center; cursor:pointer;" onclick="viewHistory(${item.id})">
+        <div class="archive-item" onclick="viewHistory(${item.id})">
             <div>
-                <div style="font-weight:700; margin-bottom:4px;">${item.title}</div>
+                <div class="archive-title">${item.title}</div>
                 <div>${tagsHtml}</div>
             </div>
-            <button style="background:transparent; border:none; color:#EF4444; padding:5px; cursor:pointer;" onclick="deleteHistory(${item.id}, event)"><i class="fa-solid fa-trash"></i></button>
+            <button style="background:transparent; border:none; color:#EF4444; cursor:pointer;" onclick="deleteHistory(${item.id}, event)"><i class="fa-solid fa-trash"></i></button>
         </div>`;
     }).join('');
 }
@@ -418,7 +446,6 @@ function viewHistory(id) {
         document.getElementById('conceptResult').querySelectorAll('table').forEach(table => {
             if (table.parentElement.classList.contains('table-responsive')) return;
             const wrapper = document.createElement('div'); wrapper.className = 'table-responsive';
-            wrapper.style.width = '100%'; wrapper.style.overflowX = 'auto'; wrapper.style.WebkitOverflowScrolling = 'touch';
             table.parentNode.insertBefore(wrapper, table); wrapper.appendChild(table);
         });
         document.getElementById('conceptResultWrapper').style.display = 'block';
@@ -430,15 +457,15 @@ function viewHistory(id) {
 
 function filterHistory() {
     const query = document.getElementById('archiveSearch').value.toLowerCase();
-    const items = document.getElementById('historyList').children;
-    Array.from(items).forEach(item => { item.style.display = item.innerText.toLowerCase().includes(query) ? 'flex' : 'none'; });
+    const items = document.querySelectorAll('#historyList .archive-item');
+    items.forEach(item => { item.style.display = item.innerText.toLowerCase().includes(query) ? 'flex' : 'none'; });
 }
 
 function renderKnowledgeTree() {
     let history = JSON.parse(localStorage.getItem('cozyArchive') || '[]');
     let treeContainer = document.getElementById('mermaidTree');
-    if (history.length === 0) return treeContainer.innerHTML = "<div style='color:var(--text-sub);'>데이터가 없습니다.</div>";
-    let graphDef = "graph TD\n Root((지식 코어))";
+    if (history.length === 0) return treeContainer.innerHTML = "<div style='color:var(--text-sub);'>지식 맵을 구성할 데이터가 없습니다.</div>";
+    let graphDef = "graph TD\n Root((핵심 지식))";
     history.forEach((item, index) => { graphDef += `\n Root --> node_${index}("${item.title.substring(0,15)}")`; });
     treeContainer.innerHTML = `<div class="mermaid">${graphDef}</div>`;
     mermaid.init(undefined, document.querySelectorAll('.mermaid'));
@@ -480,10 +507,13 @@ async function executeUnifiedNote(type) {
     let prompt = "", coverHtml = "";
     if (type === 'book') { 
         prompt = `단권화 병합 노트 작성\n${mergedContent}\n${formattingRules}`; 
-        coverHtml = `<div style="text-align:center; padding:100px 20px; background:var(--table-head); border-radius:16px; margin-bottom:30px;"><h1 style="font-size:2rem; font-weight:900;">단권화 노트</h1></div>`; 
-    } else { 
+        coverHtml = `<div class="book-cover"><h1 style="font-size:2rem; font-weight:900;">단권화 병합 노트</h1></div>`; 
+    } else if (type === 'exam') { 
         prompt = `실전 모의고사 출제 (정답/해설은 하단에 배치)\n${mergedContent}\n${formattingRules}`; 
-        coverHtml = `<div style="text-align:center; font-size:1.8rem; font-weight:900; margin:30px 0; border-bottom:3px solid var(--text-main); padding-bottom:15px;">실전 모의고사</div>`; 
+        coverHtml = `<div class="mock-exam-title">실전 모의고사</div>`; 
+    } else {
+        prompt = `다단원 융합 고난도 문제 1문제 출제\n${mergedContent}\n${formattingRules}`; 
+        coverHtml = `<div class="book-cover" style="background:var(--bg-body);"><h1 style="font-size:2rem; font-weight:900; color:var(--accent-danger);">다단원 융합 고난도 문제</h1></div>`;
     }
 
     try {
@@ -493,13 +523,12 @@ async function executeUnifiedNote(type) {
         resultBox.querySelectorAll('table').forEach(table => {
             if (table.parentElement.classList.contains('table-responsive')) return;
             const wrapper = document.createElement('div'); wrapper.className = 'table-responsive';
-            wrapper.style.width = '100%'; wrapper.style.overflowX = 'auto'; wrapper.style.WebkitOverflowScrolling = 'touch';
             table.parentNode.insertBefore(wrapper, table); wrapper.appendChild(table);
         });
 
         resultWrapper.style.display = 'block';
         if (window.MathJax) MathJax.typesetPromise([resultBox]);
-        saveHistory(`[저장] ${type === 'book' ? '단권화' : '모의고사'}`, [], aiText);
+        saveHistory(`[저장] ${type === 'book' ? '단권화' : type === 'exam' ? '모의고사' : '고난도 융합'}`, [], aiText);
     } catch (error) { 
         resultBox.innerHTML = `<div style="color:red; font-weight:bold;">🚨 에러 발생: ${error.message}</div>`; 
         resultWrapper.style.display = 'block'; 
@@ -543,7 +572,7 @@ function revealOXAnswer() {
     document.getElementById('oxAnswerArea').style.display = 'block';
     document.getElementById('oxAnswerContent').innerHTML = marked.parse(oxAnswerCache);
     document.querySelector('#oxPlayArea .btn-primary').style.display = 'none';
-    markStreak(); // 훈련 완료 시 잔디 심기
+    markStreak();
 }
 
 function closeOXModal() { 
