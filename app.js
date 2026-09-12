@@ -133,8 +133,14 @@ function setupDragAndDrop(zoneId, inputId) {
 
 function handleFile(inputId, previewId) {
     const file = document.getElementById(inputId).files[0];
-    if (file) document.getElementById(previewId).innerHTML = `[첨부됨] ${file.name}`;
+    const preview = document.getElementById(previewId);
+    if (file) {
+        preview.style.display = 'block';
+        preview.style.background = 'var(--accent-blue)';
+        preview.innerHTML = `[첨부됨] ${file.name}`;
+    }
 }
+
 
 function fileToBase64(file) {
     return new Promise((resolve, reject) => {
